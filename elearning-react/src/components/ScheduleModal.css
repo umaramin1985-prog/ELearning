@@ -1,0 +1,60 @@
+.schedule-modal-content {
+    max-width: 450px;
+    text-align: left;
+}
+
+.schedule-form {
+    margin-top: 1.5rem;
+}
+
+.schedule-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.schedule-form label {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.schedule-form .form-control {
+    padding: 0.8rem 1rem !important;
+    background: var(--item-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    color: var(--text-main) !important;
+    font-size: 1rem !important;
+    transition: var(--transition);
+}
+
+.schedule-form .form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.schedule-form input[type="time"]::-webkit-calendar-picker-indicator {
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+[data-theme="dark"] .schedule-form input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+.schedule-form input[type="time"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+@media (max-width: 500px) {
+    .schedule-modal-content {
+        width: 90%;
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    .schedule-form .form-row {
+        flex-direction: column;
+    }
+}

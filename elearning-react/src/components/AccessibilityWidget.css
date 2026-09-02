@@ -1,0 +1,181 @@
+.a11y-widget-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+}
+
+.a11y-toggle-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+    transition: var(--transition);
+}
+
+.a11y-toggle-btn:hover {
+    transform: scale(1.1);
+    background: var(--primary-dark);
+}
+
+.a11y-menu {
+    position: absolute;
+    bottom: 80px;
+    left: 0;
+    width: 280px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.a11y-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.8rem;
+}
+
+.a11y-header h3 {
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--text-main);
+}
+
+.a11y-close-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.a11y-close-btn:hover {
+    color: var(--primary-color);
+}
+
+.a11y-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.a11y-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-main);
+    border-radius: 10px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.a11y-option-btn:hover {
+    border-color: var(--primary-color);
+}
+
+.a11y-option-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Global Accessibility Overrides */
+
+/* Large Text */
+body.a11y-large-text {
+    font-size: 110%;
+}
+body.a11y-large-text h1 { font-size: 120%; }
+body.a11y-large-text h2 { font-size: 120%; }
+body.a11y-large-text h3 { font-size: 120%; }
+body.a11y-large-text p { font-size: 110%; }
+
+/* High Contrast */
+body.a11y-high-contrast {
+    --primary-color: #ffff00;
+    --primary-dark: #ccaa00;
+    --secondary-color: #000000;
+    --text-main: #ffffff;
+    --text-light: #dddddd;
+    --bg-main: #000000;
+    --bg-alt: #222222;
+    --header-bg: #000000;
+    --card-bg: #111111;
+    --glass-bg: #000000;
+    --glass-border: #ffffff;
+    --border-color: #ffffff;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+body.a11y-high-contrast * {
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+
+body.a11y-high-contrast img {
+    filter: grayscale(100%) contrast(120%);
+}
+
+/* Dyslexia Friendly Font */
+body.a11y-dyslexic-font * {
+    font-family: 'Comic Sans MS', 'OpenDyslexic', 'Arial', sans-serif !important;
+    letter-spacing: 0.05em !important;
+    word-spacing: 0.1em !important;
+    line-height: 1.8 !important;
+}
+
+/* Highlight Links */
+body.a11y-highlight-links a,
+body.a11y-highlight-links button {
+    outline: 3px solid #ffeb3b !important;
+    outline-offset: 2px !important;
+    text-decoration: underline !important;
+    font-weight: bold !important;
+}
+
+/* Greyscale - using backdrop-filter overlay to avoid breaking position: fixed */
+body.a11y-greyscale::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: grayscale(100%);
+    -webkit-backdrop-filter: grayscale(100%);
+    pointer-events: none;
+    z-index: 2147483647;
+}

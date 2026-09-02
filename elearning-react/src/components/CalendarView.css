@@ -1,0 +1,66 @@
+.calendar-container {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 1rem;
+}
+
+/* Customizing React Big Calendar for Dark Mode */
+.rbc-calendar {
+    font-family: inherit;
+    color: var(--text-color);
+}
+
+.rbc-month-view, .rbc-time-view, .rbc-agenda-view {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.rbc-day-bg, .rbc-header, .rbc-month-row, .rbc-time-content, .rbc-time-header {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.rbc-off-range-bg {
+    background: transparent;
+}
+
+.rbc-today {
+    background: rgba(37, 99, 235, 0.2);
+    border: 1px solid var(--primary-color) !important;
+}
+
+.rbc-past-date {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.rbc-event {
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    padding: 2px 5px;
+    border: none;
+}
+
+.rbc-event:hover {
+    background-color: var(--secondary-color);
+}
+
+.rbc-toolbar button {
+    color: var(--text-color);
+    border-color: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 5px 10px;
+    transition: background 0.3s ease;
+}
+
+.rbc-toolbar button:hover, .rbc-toolbar button:active, .rbc-toolbar button.rbc-active {
+    background: var(--primary-color) !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: none !important;
+}
+
+.rbc-agenda-view table {
+    color: var(--text-color);
+}
