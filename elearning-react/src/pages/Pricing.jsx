@@ -17,7 +17,7 @@ const Pricing = () => {
     const [sections, setSections] = useState([]);
     const [userSubscriptions, setUserSubscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const [error, setError] = useState(null);
     const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
     const [paymentData, setPaymentData] = useState(null);
 
@@ -31,6 +31,7 @@ const Pricing = () => {
     useEffect(() => {
         const initData = async () => {
             setLoading(true);
+            setError(null);
             try {
                 const courseData = await getCourses();
                 const courseMap = {};
@@ -47,6 +48,7 @@ const Pricing = () => {
                 }
             } catch (error) {
                 console.error("Error loading pricing data:", error);
+                setError(error.message || "Failed to load data.");
             } finally {
                 setLoading(false);
             }
