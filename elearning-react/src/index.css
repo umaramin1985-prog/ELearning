@@ -1373,3 +1373,142 @@ input:-webkit-autofill:active {
     -webkit-text-fill-color: var(--text-main) !important;
     transition: background-color 5000s ease-in-out 0s;
 }
+
+/* Comparison Table */
+.platform-comparison {
+    margin: 4rem 0;
+    padding: 2.5rem;
+    border-radius: 20px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+}
+
+.platform-comparison h3 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.comparison-subtitle {
+    text-align: center;
+    color: var(--text-color-light);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.comparison-table {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+}
+
+.comparison-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.2rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.3s ease;
+}
+
+.comparison-row:hover {
+    background: rgba(var(--primary-rgb), 0.02);
+}
+
+.comparison-row:last-child {
+    border-bottom: none;
+}
+
+.header-row {
+    background: rgba(var(--primary-rgb), 0.1);
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.header-row .feature-col {
+    color: var(--text-color);
+}
+
+.feature-col {
+    flex: 2;
+    font-weight: 600;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+}
+
+.us-col {
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+    color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.05);
+    border-radius: 8px;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.competitor-col {
+    flex: 1;
+    text-align: center;
+    font-weight: 500;
+    color: var(--text-color-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.text-success {
+    color: #10b981;
+}
+
+.text-danger {
+    color: #ef4444;
+}
+
+@media (max-width: 900px) {
+    .comparison-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .feature-col {
+        margin-bottom: 0.5rem;
+        border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 0.5rem;
+    }
+    .us-col, .competitor-col {
+        text-align: left;
+        justify-content: flex-start;
+        padding-left: 1rem;
+    }
+    .us-col::before {
+        content: "YYZ Data Matrix: ";
+        font-weight: bold;
+    }
+    .competitor-col:nth-child(3)::before {
+        content: "Coursera: ";
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+    .competitor-col:nth-child(4)::before {
+        content: "Udemy: ";
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+    .competitor-col:nth-child(5)::before {
+        content: "DataCamp: ";
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+    .header-row {
+        display: none;
+    }
+}

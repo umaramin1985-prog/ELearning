@@ -101,6 +101,7 @@ const Header = () => {
                         <li><Link to="/" className="nav-link" onClick={closeMobileMenu}>Home</Link></li>
                         <li><Link to="/about" className="nav-link" onClick={closeMobileMenu}>About Us</Link></li>
                         <li><Link to="/courses" className="nav-link" onClick={closeMobileMenu}>Courses</Link></li>
+                        <li><Link to="/pricing" className="nav-link" onClick={closeMobileMenu}>Pricing</Link></li>
                         {isAdmin && <li><Link to="/admin" className="nav-link" onClick={closeMobileMenu}>Admin Panel</Link></li>}
                         {!user ? (
                             <li className="mobile-nav-item"><Link to="/signin" className="nav-link" onClick={closeMobileMenu}>Sign In</Link></li>

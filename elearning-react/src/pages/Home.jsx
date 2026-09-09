@@ -24,8 +24,8 @@ const Home = () => {
                                 <strong>Learn Power BI, SQL, Excel, and MS Access through realistic business projects designed to build practical skills and a portfolio you can demonstrate.</strong>
                             </p>
                             <div className="hero-buttons" style={{ justifyContent: 'flex-start', marginTop: '2rem' }}>
-                                <Link to="/courses" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '1rem 2rem', fontSize: '1.1rem' }}>Explore Courses <i className="fa-solid fa-arrow-right"></i></Link>
                                 <Link to="/courses" className="btn btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>Compare Courses</Link>
+                                <Link to="/courses" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '1rem 2rem', fontSize: '1.1rem' }}>Explore Courses <i className="fa-solid fa-arrow-right"></i></Link>
                             </div>
 
                             <div style={{ display: 'flex', gap: '1.5rem', marginTop: '3rem', flexWrap: 'wrap' }}>
@@ -307,6 +307,60 @@ const Home = () => {
                             <p style={{ color: 'var(--text-light)', fontStyle: 'italic', marginBottom: '1.5rem' }}>"I highly recommend the Power BI track. The curriculum is perfectly aligned with what employers are asking for in interviews."</p>
                             <h4 style={{ margin: 0 }}>[Student Name]</h4>
                             <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>Financial Analyst, [Company]</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* E-LEARNING COMPARISON SECTION */}
+            <section className="section bg-alt" style={{ padding: '5rem 0' }}>
+                <div className="container">
+                    <div className="platform-comparison fade-in" style={{ margin: 0 }}>
+                        <h3>How We Compare</h3>
+                        <p className="comparison-subtitle">Why YYZ Data Matrix is the best choice for Business Intelligence training</p>
+                        <div className="comparison-table">
+                            <div className="comparison-row header-row">
+                                <div className="feature-col">Feature</div>
+                                <div className="us-col">YYZ Data Matrix</div>
+                                <div className="competitor-col">Coursera</div>
+                                <div className="competitor-col">Udemy</div>
+                                <div className="competitor-col">DataCamp</div>
+                            </div>
+                            <div className="comparison-row">
+                                <div className="feature-col">Enterprise-Level Real Projects</div>
+                                <div className="us-col"><i className="fa-solid fa-check text-success"></i> Yes</div>
+                                <div className="competitor-col"><i className="fa-solid fa-check text-success"></i> Yes</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Variable</div>
+                                <div className="competitor-col"><i className="fa-solid fa-xmark text-danger"></i> No</div>
+                            </div>
+                            <div className="comparison-row">
+                                <div className="feature-col">Live 1-on-1 Support & Q&A</div>
+                                <div className="us-col"><i className="fa-solid fa-check text-success"></i> Yes</div>
+                                <div className="competitor-col"><i className="fa-solid fa-xmark text-danger"></i> No</div>
+                                <div className="competitor-col"><i className="fa-solid fa-xmark text-danger"></i> No</div>
+                                <div className="competitor-col"><i className="fa-solid fa-xmark text-danger"></i> No</div>
+                            </div>
+                            <div className="comparison-row">
+                                <div className="feature-col">Career & Portfolio Focus</div>
+                                <div className="us-col"><i className="fa-solid fa-check text-success"></i> High</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Medium</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Low</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Medium</div>
+                            </div>
+                            <div className="comparison-row">
+                                <div className="feature-col">Custom Dashboard Building</div>
+                                <div className="us-col"><i className="fa-solid fa-check text-success"></i> From Scratch</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Academic</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Variable</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Guided</div>
+                            </div>
+                            <div className="comparison-row">
+                                <div className="feature-col">Verified Certification</div>
+                                <div className="us-col"><i className="fa-solid fa-check text-success"></i> Yes</div>
+                                <div className="competitor-col"><i className="fa-solid fa-check text-success"></i> Yes</div>
+                                <div className="competitor-col"><i className="fa-solid fa-check text-success"></i> Yes</div>
+                                <div className="competitor-col"><i className="fa-solid fa-check text-success"></i> Yes</div>
+                            </div>
                         </div>
                     </div>
                 </div>

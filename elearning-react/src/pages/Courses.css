@@ -256,6 +256,55 @@
     box-shadow: var(--box-shadow);
 }
 
+@media (min-width: 992px) {
+    .module-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto max-content 1fr;
+        gap: 0 2.5rem;
+        align-items: start;
+    }
+
+    .module-content > .module-intro-text {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+
+    .module-content > h4 {
+        grid-column: 2;
+        grid-row: 2;
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    .module-content > .module-image-container {
+        grid-column: 1;
+        grid-row: 2 / span 2;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        margin-bottom: 0;
+        align-self: center;
+    }
+
+    .module-content > ul {
+        grid-column: 2;
+        grid-row: 3;
+        align-self: start;
+    }
+
+    .module-content > .module-conclusion {
+        grid-column: 1 / -1;
+        grid-row: 4;
+        margin-top: 2rem;
+    }
+
+    .module-content > .module-pricing {
+        grid-column: 1 / -1;
+        grid-row: 5;
+        margin-top: 1rem;
+    }
+}
+
 .module-image {
     width: 100%;
     height: 100%;
@@ -537,76 +586,4 @@
     border-radius: 0 8px 8px 0;
 }
 
-/* Comparison Table */
-.udemy-comparison {
-    border: 2px solid var(--border-color);
-    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
-}
 
-.udemy-comparison h3 {
-    text-align: center;
-    color: var(--text-color);
-    margin-bottom: 0.5rem;
-}
-
-.comparison-subtitle {
-    text-align: center;
-    color: var(--text-color-light);
-    margin-bottom: 2rem;
-    font-size: 1.1rem;
-}
-
-.comparison-table {
-    display: flex;
-    flex-direction: column;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-}
-
-.comparison-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--card-bg);
-}
-
-.comparison-row:last-child {
-    border-bottom: none;
-}
-
-.header-row {
-    background: rgba(var(--primary-rgb), 0.1);
-    font-weight: bold;
-    color: var(--primary-color);
-}
-
-.feature-col {
-    flex: 2;
-    font-weight: 500;
-}
-
-.us-col, .udemy-col {
-    flex: 1;
-    text-align: center;
-    font-weight: 500;
-}
-
-.us-col {
-    color: var(--text-color);
-}
-
-.udemy-col {
-    color: var(--text-color-light);
-}
-
-.text-success {
-    color: #10b981;
-    margin-right: 0.5rem;
-}
-
-.text-danger {
-    color: #ef4444;
-    margin-right: 0.5rem;
-}

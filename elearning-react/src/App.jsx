@@ -8,6 +8,7 @@ import SignUp from './pages/SignUp';
 import Privacy from './pages/Privacy';
 import Courses from './pages/Courses';
 import About from './pages/About';
+import Pricing from './pages/Pricing';
 import AdminPanel from './pages/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
@@ -37,6 +38,7 @@ function App() {
             <Route path="signup" element={<SignUp />} />
             <Route path="privacy" element={<Privacy />} />
             <Route path="courses" element={<Courses />} />
+            <Route path="pricing" element={<Pricing />} />
             <Route path="live-class/:roomId" element={<ProtectedRoute><LiveClass /></ProtectedRoute>} />
             <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />

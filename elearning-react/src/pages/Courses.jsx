@@ -300,7 +300,8 @@ const Courses = () => {
                                 <div className="course-content fade-in">
                                     <div className="course-header powerbi-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem', padding: '3rem', background: 'var(--hero-bg)', borderRadius: '20px', border: '1px solid var(--border-color)' }}>
                                         <div style={{ flex: '1 1 400px' }}>
-                                            <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'var(--secondary-color)' }}>Become a Job-Ready Power BI Analyst</h2>
+                                            <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--secondary-color)' }}>Become a Job-Ready Power BI Analyst</h2>
+                                            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontStyle: 'italic', color: 'var(--primary-color)' }}>"What is Power BI? Beauty with Brain"</h3>
                                             {(() => {
                                                 const ratingData = getRatingData('all');
                                                 return (
@@ -454,18 +455,13 @@ const Courses = () => {
                                             <p className="module-intro-text">
                                                 Quickly connect to Excel, CSV, SQL database, SharePoint, and web data. Clean, merge, pivot/unpivot, and transform messy data into clean, report-ready formats—<strong>No Coding required</strong>.
                                             </p>
-                                            <h4 onClick={() => toggleModule(1)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                Key Topics:
-                                                <i className={`fa-solid ${expandedModules[1] ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '1rem', color: 'var(--primary-color)' }}></i>
-                                            </h4>
-                                            {expandedModules[1] && (
-                                                <ul>
+                                            <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                            <ul>
                                                 <li><strong>Connecting to Data Sources:</strong> Excel, CSV, Web, SQL Server, SharePoint, APIs, and more.</li>
                                                 <li><strong>Data Cleaning Techniques:</strong> Removing duplicates, handling nulls, formatting columns.</li>
                                                 <li><strong>Transformations:</strong> Pivot/unpivot, merge, append, split columns.</li>
                                                 <li><strong>M Code Basics:</strong> Introduction to the Power Query formula language for advanced transformations.</li>
                                             </ul>
-                                            )}
                                             <div className="module-conclusion">
                                                 🚀 Conclusion: "By the end of Module-1, you'll confidently transform messy data from any source into clean, report-ready datasets".
                                             </div>
@@ -511,12 +507,8 @@ const Courses = () => {
                                             <p className="module-intro-text">
                                                 Master powerful DAX formulas to build dynamic calculations, segment customers, rank performance, and implement time intelligence (YTD, MTD, LY). Create KPIs and deep insights with ease.
                                             </p>
-                                            <h4 onClick={() => toggleModule(2)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                Key Topics:
-                                                <i className={`fa-solid ${expandedModules[2] ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '1rem', color: 'var(--primary-color)' }}></i>
-                                            </h4>
-                                            {expandedModules[2] && (
-                                                <ul>
+                                            <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                            <ul>
                                                 <li><strong>Calculated Columns vs Measures:</strong> Understand when to use Calculated Columns vs Measures for better insights.</li>
                                                 <li><strong>Advanced DAX Patterns & Functions:</strong> Dynamic titles, Ranking (e.g., Top N customers), Segmentation (e.g., customer tiers), Cumulative totals and rolling averages.</li>
                                                 <li><strong>Aggregation & Iterators:</strong> SUM, SUMX, AVERAGE, AVERAGEX, MINX, MAXX, RANKX, COUNTROWS, DISTINCTCOUNT.</li>
@@ -526,7 +518,6 @@ const Courses = () => {
                                                 <li><strong>Relationship Indigence:</strong> RELATED, RELATEDTABLE, CROSSFILTER, ALLSELECTED.</li>
                                                 <li><strong>Advance Logic & Hierarchies:</strong> SWITCH, DIVIDE, PATH, PATHITEM, EARLIER.</li>
                                             </ul>
-                                            )}
                                             <div className="module-pricing">
                                                 {(() => {
                                                     const pricing = getSectionPricing(1, 99, 199);
@@ -568,18 +559,13 @@ const Courses = () => {
                                             <p className="module-intro-text">
                                                 Design stunning dashboards using best practices in layout, colors, and interactivity. Turn raw data into a decision-making system and learn to tell compelling stories with bookmarks, custom visuals, and insights that pop off the page.
                                             </p>
-                                            <h4 onClick={() => toggleModule(3)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                Key Topics:
-                                                <i className={`fa-solid ${expandedModules[3] ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '1rem', color: 'var(--primary-color)' }}></i>
-                                            </h4>
-                                            {expandedModules[3] && (
-                                                <ul>
+                                            <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                            <ul>
                                                 <li><strong>Choosing the Right Visual:</strong> When to use bar charts, line charts, maps, KPIs, etc.</li>
                                                 <li><strong>Custom Visuals:</strong> Importing and using visuals from the marketplace.</li>
                                                 <li><strong>Design Principles:</strong> Color theory, layout, consistency, accessibility.</li>
                                                 <li><strong>Storytelling Techniques:</strong> Using bookmarks and tooltips, Narrative flow in dashboards, Highlighting key insights.</li>
                                             </ul>
-                                            )}
                                             <div className="module-conclusion analysis-section">
                                                 <strong>Analyzing dashboards from:</strong>
                                                 <br />Human psychology & decision-making behavior
@@ -625,18 +611,13 @@ const Courses = () => {
                                                 <img src="/images/modules/data_modeling_light_1787127265917.jpg" alt="Data Modeling" className="module-image show-light" />
                                             </div>
                                             <p>Understand star schemas and relationships, reduce file size, optimize visuals, and supercharge reports with calculated tables and efficient model design.</p>
-                                            <h4 onClick={() => toggleModule(4)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                Key Topics:
-                                                <i className={`fa-solid ${expandedModules[4] ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '1rem', color: 'var(--primary-color)' }}></i>
-                                            </h4>
-                                            {expandedModules[4] && (
-                                                <ul>
+                                            <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                            <ul>
                                                 <li><strong>Data Modeling Concepts:</strong> Star schema vs snowflake schema</li>
                                                 <li><strong>Relationships:</strong> One-to-many, many-to-many, cross-filter direction</li>
                                                 <li><strong>Normalization & Denormalization</strong></li>
                                                 <li><strong>Customized DAX Measures</strong> for advanced analysis</li>
                                             </ul>
-                                            )}
                                             <div className="module-pricing">
                                                 {(() => {
                                                     const pricing = getSectionPricing(3, 99, 199);
@@ -676,18 +657,13 @@ const Courses = () => {
                                                 <img src="/images/modules/cloud_publishing_light_1787127276852.jpg" alt="Cloud Publishing" className="module-image show-light" />
                                             </div>
                                             <p>Publish to the cloud, manage workspaces and datasets, set up auto-refreshes, and fix common errors like gateway or credential issues - all in Power BI Service.</p>
-                                            <h4 onClick={() => toggleModule(5)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                Key Topics:
-                                                <i className={`fa-solid ${expandedModules[5] ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '1rem', color: 'var(--primary-color)' }}></i>
-                                            </h4>
-                                            {expandedModules[5] && (
-                                                <ul>
+                                            <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                            <ul>
                                                 <li><strong>Power BI Service Overview:</strong> Workspaces, apps, datasets, reports</li>
                                                 <li><strong>Publishing Reports:</strong> From Power BI Desktop to the cloud. Scheduled Refresh: Setting up automatic data updates</li>
                                                 <li><strong>Share, Row level Security - RLO, and Security</strong></li>
                                                 <li><strong>Common Errors & Fixes:</strong> Credential issues, gateway errors, refresh failures</li>
                                             </ul>
-                                            )}
                                             <div className="module-pricing">
                                                 {(() => {
                                                     const pricing = getSectionPricing(4, 99, 199);
@@ -726,17 +702,12 @@ const Courses = () => {
                                                 <img src="/images/modules/executive_dashboard_dark_1787127707989.jpg" alt="Executive Dashboards" className="module-image show-dark" />
                                                 <img src="/images/modules/executive_dashboard_light_1787127285637.jpg" alt="Executive Dashboards" className="module-image show-light" />
                                             </div>
-                                            <h4 onClick={() => toggleModule(6)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                Key Topics:
-                                                <i className={`fa-solid ${expandedModules[6] ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ fontSize: '1rem', color: 'var(--primary-color)' }}></i>
-                                            </h4>
-                                            {expandedModules[6] && (
-                                                <ul>
+                                            <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                            <ul>
                                                 <li><strong>Understand requirement, creating Master data and files</strong></li>
                                                 <li><strong>Mapping Master datasets with database</strong></li>
                                                 <li><strong>Designing and structuring a report and dashboards</strong></li>
                                             </ul>
-                                            )}
                                             <div className="module-pricing">
                                                 {(() => {
                                                     const pricing = getSectionPricing(5, 99, 199);

@@ -58,13 +58,13 @@ const About = () => {
                                     <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--glass-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--primary-color)' }}>
                                         <i className="fa-solid fa-chart-pie" style={{ color: 'var(--primary-color)' }}></i>
                                     </div>
-                                    <span>Experience in finance, business, and analytics</span>
+                                    <span>Professionally qualified and experienced in finance and business</span>
                                 </li>
                                 <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                     <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--glass-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--primary-color)' }}>
                                         <i className="fa-solid fa-briefcase" style={{ color: 'var(--primary-color)' }}></i>
                                     </div>
-                                    <span>Real-world project experience</span>
+                                    <span>Real world and real time projects</span>
                                 </li>
                                 <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                     <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--glass-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--primary-color)' }}>
