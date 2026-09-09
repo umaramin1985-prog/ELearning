@@ -17,6 +17,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ParticleBackground from './components/ParticleBackground';
 import './index.css';
 import './pages.css';
+import { Analytics } from '@vercel/analytics/react';
 
 import Profile from './pages/Profile';
 import useScrollAnimation from './hooks/useScrollAnimation';
@@ -28,6 +29,7 @@ function App() {
   return (
     <AuthProvider>
       <ParticleBackground />
+      <Analytics />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
