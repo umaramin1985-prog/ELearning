@@ -8,7 +8,7 @@ import CalendarView from '../components/CalendarView';
 import { subscribeToActiveChats, subscribeToChat, sendMessage, markChatReadByAdmin } from '../services/chatService';
 import { useAuth } from '../contexts/AuthContext';
 import './AdminPanel.css';
-import { startLiveSession } from '../services/liveSessionService';
+import { startLiveSession, endAllActiveSessions } from '../services/liveSessionService';
 import { getRatingsForCourse } from '../services/ratingService';
 import StarRating from '../components/StarRating';
 import { useNavigate } from 'react-router-dom';
@@ -825,7 +825,19 @@ const AdminPanel = () => {
                         {activeTab === 'live-classes' && (
                             <div className="admin-section fade-in">
                                 <h3>Manage Live Classes</h3>
-                                <p style={{marginBottom: '1rem', color: 'var(--text-light)'}}>Start a new video conferencing session for a specific course or directly with a user.</p>
+                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem'}}>
+                                    <p style={{margin: 0, color: 'var(--text-light)'}}>Start a new video conferencing session for a specific course or directly with a user.</p>
+                                    <button className="btn" style={{background: '#ef4444', color: 'white', padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 'bold'}} onClick={async () => {
+                                        if (window.confirm('Are you sure you want to forcibly end ALL currently active live sessions? This is useful if old sessions were not ended properly.')) {
+                                            try {
+                                                await endAllActiveSessions();
+                                                alert('All active sessions have been ended.');
+                                            } catch (err) {
+                                                alert('Failed to end active sessions.');
+                                            }
+                                        }
+                                    }}>End All Active Sessions (Cleanup)</button>
+                                </div>
                                 
                                 <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
                                     <form onSubmit={handleStartLiveClass} style={{flex: '1 1 400px', background: 'var(--bg-alt)', padding: '2rem', borderRadius: '10px', border: '1px solid var(--border-color)'}}>

@@ -38,11 +38,35 @@ export const subscribeToActiveSessions = (callback) => {
     const q = query(collection(db, 'liveSessions'), where("isActive", "==", true));
     return onSnapshot(q, (snapshot) => {
         const sessions = [];
+        const now = Date.now();
         snapshot.forEach((doc) => {
-            sessions.push({ id: doc.id, ...doc.data() });
+            const data = doc.data();
+            const startedAt = typeof data.startedAt?.toMillis === 'function' ? data.startedAt.toMillis() : (data.startedAt?.seconds ? data.startedAt.seconds * 1000 : 0);
+            
+            // Ignore zombie sessions older than 12 hours
+            if (now - startedAt < 43200000) {
+                sessions.push({ id: doc.id, ...data });
+            }
         });
         callback(sessions);
     });
+};
+
+export const endAllActiveSessions = async () => {
+    try {
+        const q = query(collection(db, 'liveSessions'), where("isActive", "==", true));
+        const snapshot = await getDocs(q);
+        const updates = snapshot.docs.map(docSnapshot => 
+            updateDoc(doc(db, 'liveSessions', docSnapshot.id), {
+                isActive: false,
+                endedAt: new Date()
+            })
+        );
+        await Promise.all(updates);
+    } catch (error) {
+        console.error("Error ending all active sessions:", error);
+        throw error;
+    }
 };
 
 export const getLiveSessionByRoomId = async (roomId) => {
@@ -52,4 +76,15 @@ export const getLiveSessionByRoomId = async (roomId) => {
         return { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
     }
     return null;
+};
+
+export const subscribeToLiveSessionByRoomId = (roomId, callback) => {
+    const q = query(collection(db, 'liveSessions'), where("roomId", "==", roomId));
+    return onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+            callback({ id: snapshot.docs[0].id, ...snapshot.docs[0].data() });
+        } else {
+            callback(null);
+        }
+    });
 };

@@ -301,7 +301,22 @@ const Courses = () => {
                                         <div className="course-header powerbi-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem', padding: '3rem', background: 'var(--hero-bg)', borderRadius: '20px', border: '1px solid var(--border-color)' }}>
                                             <div style={{ flex: '1 1 400px' }}>
                                                 <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--secondary-color)' }}>Become a Job-Ready Power BI Analyst</h2>
-                                                <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontStyle: 'italic', color: 'var(--primary-color)' }}>"What is Power BI? Beauty with Brain"</h3>
+                                                <div className="tagline-container">
+                                                    <h3 style={{ fontSize: '1.5rem', marginBottom: '0.2rem', fontStyle: 'italic', color: 'var(--primary-color)' }}>What is Power BI?</h3>
+                                                    <div className="beauty-brains-wrapper">
+                                                        <div className="beauty-brains-glow"></div>
+                                                        <h3 className="beauty-brains-text">
+                                                            <span className="beauty-brains-gradient">Beauty</span>
+                                                            <span className="beauty-brains-with">with</span>
+                                                            <span className="brains-wrapper">
+                                                                <span className="beauty-brains-gradient">Brains</span>
+                                                                <svg className="brains-underline" viewBox="0 0 100 14" preserveAspectRatio="none">
+                                                                    <path d="M2,10 Q50,14 98,4" fill="none" stroke="#ec4899" strokeWidth="3" strokeLinecap="round" />
+                                                                </svg>
+                                                            </span>
+                                                        </h3>
+                                                    </div>
+                                                </div>
                                                 {(() => {
                                                     const ratingData = getRatingData('all');
                                                     return (
@@ -422,11 +437,12 @@ const Courses = () => {
 
                                         <div className="course-modules">
                                             {/* Module 1 */}
-                                            <div className="module-card">
-                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-1'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-1'] ? '1.5rem' : '0', marginBottom: expandedModules['module-1'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-1')}>
                                                     {renderModuleHeader(1, "Power Query & Data Cleaning (ETL)", "module-1")}
-
+                                                    <i className={`fa-solid fa-chevron-${expandedModules['module-1'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
+                                                {expandedModules['module-1'] && (
                                                 <div className="module-content fade-in">
                                                     <div className="module-image-container">
                                                         <img src="/images/modules/data_cleaning_dark_1787127656632.jpg" alt="Data Cleaning" className="module-image show-dark" />
@@ -449,14 +465,16 @@ const Courses = () => {
 
 
                                                 </div>
+                                                )}
                                             </div>
 
                                             {/* Module 2 */}
-                                            <div className="module-card">
-                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-2'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-2'] ? '1.5rem' : '0', marginBottom: expandedModules['module-2'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-2')}>
                                                     {renderModuleHeader(2, "Power Pivot, DAX, and Data Analytics", "module-2")}
-
+                                                    <i className={`fa-solid fa-chevron-${expandedModules['module-2'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
+                                                {expandedModules['module-2'] && (
                                                 <div className="module-content fade-in">
                                                     <div className="module-image-container">
                                                         <img src="/images/modules/dax_analytics_dark_1787127668269.jpg" alt="DAX and Analytics" className="module-image show-dark" />
@@ -482,14 +500,16 @@ const Courses = () => {
 
 
                                                 </div>
+                                                )}
                                             </div>
 
                                             {/* Module 3 */}
-                                            <div className="module-card">
-                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-3'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-3'] ? '1.5rem' : '0', marginBottom: expandedModules['module-3'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-3')}>
                                                     {renderModuleHeader(3, "Data Visualization & Storytelling", "module-3")}
-
+                                                    <i className={`fa-solid fa-chevron-${expandedModules['module-3'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
+                                                {expandedModules['module-3'] && (
                                                 <div className="module-content fade-in">
                                                     <div className="module-image-container">
                                                         <img src="/images/modules/data_visualization_dark_1787127678048.jpg" alt="Data Visualization" className="module-image show-dark" />
@@ -514,14 +534,16 @@ const Courses = () => {
 
 
                                                 </div>
+                                                )}
                                             </div>
 
                                             {/* Module 4 */}
-                                            <div className="module-card">
-                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-4'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-4'] ? '1.5rem' : '0', marginBottom: expandedModules['module-4'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-4')}>
                                                     {renderModuleHeader(4, "Data Modeling and Optimization", "module-4")}
-
+                                                    <i className={`fa-solid fa-chevron-${expandedModules['module-4'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
+                                                {expandedModules['module-4'] && (
                                                 <div className="module-content fade-in">
                                                     <div className="module-image-container">
                                                         <img src="/images/modules/data_modeling_dark_1787127687751.jpg" alt="Data Modeling" className="module-image show-dark" />
@@ -540,14 +562,16 @@ const Courses = () => {
 
 
                                                 </div>
+                                                )}
                                             </div>
 
                                             {/* Module 5 */}
-                                            <div className="module-card">
-                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-5'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-5'] ? '1.5rem' : '0', marginBottom: expandedModules['module-5'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-5')}>
                                                     {renderModuleHeader(5, "Power BI Service & Publishing", "module-5")}
-
+                                                    <i className={`fa-solid fa-chevron-${expandedModules['module-5'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
+                                                {expandedModules['module-5'] && (
                                                 <div className="module-content fade-in">
                                                     <div className="module-image-container">
                                                         <img src="/images/modules/cloud_publishing_dark_1787127698462.jpg" alt="Cloud Publishing" className="module-image show-dark" />
@@ -566,14 +590,16 @@ const Courses = () => {
 
 
                                                 </div>
+                                                )}
                                             </div>
 
                                             {/* Module 6 */}
-                                            <div className="module-card">
-                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-6'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                                <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-6'] ? '1.5rem' : '0', marginBottom: expandedModules['module-6'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-6')}>
                                                     {renderModuleHeader(6, "From Raw Data to Executive Dashboards", "module-6")}
-
+                                                    <i className={`fa-solid fa-chevron-${expandedModules['module-6'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
+                                                {expandedModules['module-6'] && (
                                                 <div className="module-content fade-in">
                                                     <div className="module-image-container">
                                                         <img src="/images/modules/executive_dashboard_dark_1787127707989.jpg" alt="Executive Dashboards" className="module-image show-dark" />
@@ -594,6 +620,7 @@ const Courses = () => {
 
 
                                                 </div>
+                                                )}
                                             </div>
 
                                         </div>

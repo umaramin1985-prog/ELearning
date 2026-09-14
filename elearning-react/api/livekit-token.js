@@ -1,7 +1,7 @@
 import { AccessToken } from 'livekit-server-sdk';
 
 export default async function handler(req, res) {
-  const { room, username } = req.query;
+  const { room, username, userId } = req.query;
 
   if (!room || !username) {
     return res.status(400).json({ error: 'Missing room or username' });
@@ -15,8 +15,9 @@ export default async function handler(req, res) {
   }
 
   try {
+    const identity = userId || username;
     const at = new AccessToken(apiKey, apiSecret, {
-      identity: username,
+      identity: identity,
       name: username,
     });
     

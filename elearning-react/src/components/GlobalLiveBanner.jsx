@@ -46,11 +46,18 @@ const GlobalLiveBanner = () => {
 
     // Determine which live sessions the user can join
     const accessibleLiveSessions = liveSessions.filter(session => {
+        if (session.courseId === 'direct' && session.sectionId === user.uid) {
+            return true;
+        }
         return userSubscriptions.some(sub => 
             sub.courseId === session.courseId && 
             (sub.sectionId === 'all' || session.sectionId === 'all' || sub.sectionId === session.sectionId)
         );
-    });
+    }).sort((a, b) => {
+        const timeA = typeof a.startedAt?.toMillis === 'function' ? a.startedAt.toMillis() : 0;
+        const timeB = typeof b.startedAt?.toMillis === 'function' ? b.startedAt.toMillis() : 0;
+        return timeB - timeA;
+    }).slice(0, 1);
 
     if (accessibleLiveSessions.length === 0) {
         return null;

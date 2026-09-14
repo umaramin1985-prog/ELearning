@@ -24,7 +24,7 @@ const Home = () => {
                                 <strong>Learn Power BI, SQL, Excel, and MS Access through realistic business projects designed to build practical skills and a portfolio you can demonstrate.</strong>
                             </p>
                             <div className="hero-buttons" style={{ justifyContent: 'flex-start', marginTop: '2rem' }}>
-                                <Link to="/courses" className="btn btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>Compare Courses</Link>
+                                <a href="#compare-courses" onClick={(e) => { e.preventDefault(); document.getElementById('compare-courses')?.scrollIntoView({ behavior: 'smooth' }); }} className="btn btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1.1rem', textDecoration: 'none' }}>Compare Courses</a>
                                 <Link to="/courses" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '1rem 2rem', fontSize: '1.1rem' }}>Explore Courses <i className="fa-solid fa-arrow-right"></i></Link>
                             </div>
 
@@ -313,7 +313,7 @@ const Home = () => {
             </section>
 
             {/* E-LEARNING COMPARISON SECTION */}
-            <section className="section bg-alt" style={{ padding: '5rem 0' }}>
+            <section id="compare-courses" className="section bg-alt" style={{ padding: '5rem 0' }}>
                 <div className="container">
                     <div className="platform-comparison fade-in" style={{ margin: 0 }}>
                         <h3>How We Compare</h3>
@@ -374,7 +374,7 @@ const Home = () => {
                         Compare the Power BI, SQL, Excel, and MS Access tracks to find the program that best matches your goals and experience.
                     </p>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                        <Link to="/courses" className="btn btn-primary" style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem' }}>Compare Courses</Link>
+                        <a href="#compare-courses" onClick={(e) => { e.preventDefault(); document.getElementById('compare-courses')?.scrollIntoView({ behavior: 'smooth' }); }} className="btn btn-primary" style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem', textDecoration: 'none' }}>Compare Courses</a>
                         <Link to="/contact" className="btn btn-secondary" style={{ padding: '1.2rem 2.5rem', fontSize: '1.1rem' }}>Talk to an Instructor</Link>
                     </div>
                 </div>

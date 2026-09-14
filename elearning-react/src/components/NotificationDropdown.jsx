@@ -120,11 +120,18 @@ const NotificationDropdown = () => {
     };
 
     const accessibleLiveSessions = isAdmin ? [] : liveSessions.filter(session => {
+        if (session.courseId === 'direct' && session.sectionId === user.uid) {
+            return true;
+        }
         return userSubscriptions.some(sub => 
             sub.courseId === session.courseId && 
             (sub.sectionId === 'all' || session.sectionId === 'all' || sub.sectionId === session.sectionId)
         );
-    });
+    }).sort((a, b) => {
+        const timeA = typeof a.startedAt?.toMillis === 'function' ? a.startedAt.toMillis() : 0;
+        const timeB = typeof b.startedAt?.toMillis === 'function' ? b.startedAt.toMillis() : 0;
+        return timeB - timeA;
+    }).slice(0, 1);
 
     const liveNotifications = accessibleLiveSessions.map(session => ({
         id: `live-${session.id}`,

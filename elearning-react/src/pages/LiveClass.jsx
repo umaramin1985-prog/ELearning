@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getLiveSessionByRoomId, endLiveSession } from '../services/liveSessionService';
+import { getLiveSessionByRoomId, endLiveSession, subscribeToLiveSessionByRoomId } from '../services/liveSessionService';
 import { getUserSubscriptions } from '../services/subscriptionService';
 import { LiveKitRoom, VideoConference, RoomAudioRenderer } from '@livekit/components-react';
 import '@livekit/components-styles';
@@ -17,6 +17,21 @@ const LiveClass = () => {
     const [error, setError] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [token, setToken] = useState("");
+
+    useEffect(() => {
+        let unsubscribe = null;
+        if (roomId) {
+            unsubscribe = subscribeToLiveSessionByRoomId(roomId, (updatedSession) => {
+                if (!loading && (!updatedSession || !updatedSession.isActive)) {
+                    setToken(""); // Clearing the token forcefully unmounts the LiveKitRoom
+                    setError("This live class has been ended by the administrator.");
+                }
+            });
+        }
+        return () => {
+            if (unsubscribe) unsubscribe();
+        };
+    }, [roomId, loading]);
 
     useEffect(() => {
         const verifyAccess = async () => {
@@ -62,7 +77,7 @@ const LiveClass = () => {
                 // Fetch LiveKit Token
                 try {
                     const username = user.displayName || user.email.split('@')[0];
-                    const response = await fetch(`/api/livekit-token?room=${roomId}&username=${encodeURIComponent(username)}`);
+                    const response = await fetch(`/api/livekit-token?room=${roomId}&username=${encodeURIComponent(username)}&userId=${encodeURIComponent(user.uid)}`);
                     const data = await response.json();
                     
                     if (response.ok && data.token) {
