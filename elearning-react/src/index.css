@@ -1214,6 +1214,10 @@ h4 {
         display: block;
     }
 
+    .header .nav-link {
+        color: var(--text-main) !important;
+    }
+
     .header-actions .nav-btn {
         display: none;
         /* Hide buttons on mobile to save space, relies on hamburger */

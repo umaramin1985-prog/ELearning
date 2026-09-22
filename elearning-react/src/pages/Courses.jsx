@@ -311,8 +311,8 @@ const Courses = () => {
                             <>
                                 {activeTab === 'powerbi' && (
                                     <div className="course-content fade-in">
-                                        <div className="course-header powerbi-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem', padding: '3rem', background: 'var(--hero-bg)', borderRadius: '20px', border: '1px solid var(--border-color)' }}>
-                                            <div style={{ flex: '1 1 400px' }}>
+                                        <div className="course-header powerbi-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem', padding: 'clamp(1.5rem, 5vw, 3rem)', background: 'var(--hero-bg)', borderRadius: '20px', border: '1px solid var(--border-color)' }}>
+                                            <div style={{ flex: '1 1 min(100%, 400px)' }}>
                                                 <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: 'var(--secondary-color)' }}>Become a Job-Ready Power BI Analyst</h2>
                                                 <div className="tagline-container">
                                                     <h3 style={{ fontSize: '1.5rem', marginBottom: '0.2rem', fontStyle: 'italic', color: 'var(--primary-color)' }}>What is Power BI?</h3>
@@ -371,8 +371,8 @@ const Courses = () => {
 
                                         </div>
 
-                                        <div className="course-grid" style={{ margin: '4rem 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-                                            <div className="glass-panel highlight-card" style={{ padding: '2.5rem' }}>
+                                        <div className="course-grid" style={{ margin: 'clamp(2rem, 5vw, 4rem) 0', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: 'clamp(1rem, 4vw, 2rem)' }}>
+                                            <div className="glass-panel highlight-card" style={{ padding: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
                                                 <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'var(--primary-color)' }}>Why Learn Power BI?</h3>
                                                 <ul style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', fontSize: '1.1rem', color: 'var(--text-main)' }}>
                                                     <li style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}><i className="fa-solid fa-briefcase" style={{ color: 'var(--accent-color)', fontSize: '1.5rem' }}></i> <strong>High Demand:</strong> The #1 requested skill for Data Analysts.</li>
@@ -392,7 +392,7 @@ const Courses = () => {
                                                 </div>
                                             </div>
 
-                                            <div className="glass-panel" style={{ padding: '2.5rem' }}>
+                                            <div className="glass-panel" style={{ padding: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
                                                 <h3 style={{ fontSize: '1.8rem', marginBottom: '1.5rem', color: 'var(--primary-color)' }}>Why Train With Us?</h3>
                                                 <p style={{ color: 'var(--text-light)', marginBottom: '2rem', fontSize: '1.1rem' }}>A structured, guided approach designed to ensure you finish what you start and leave with a real portfolio.</p>
 
