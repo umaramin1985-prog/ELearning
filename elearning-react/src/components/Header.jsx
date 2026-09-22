@@ -93,7 +93,7 @@ const Header = () => {
 
             <div className="container header-container">
                 <Link to="/" className="logo" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', gap: '12px' }}>
-                    <img src="/images/logo.jpg" alt="Logo" style={{ height: '55px', width: '55px', borderRadius: '6px', objectFit: 'cover' }} />
+                    <img src="/images/logo.webp" alt="Logo" style={{ height: '55px', width: '55px', borderRadius: '6px', objectFit: 'cover' }} />
                     <span className="logo-text">YYZ Data Matrix Inc</span>
                 </Link>
                 <nav className={`nav ${isMobileMenuOpen ? 'active' : ''}`}>

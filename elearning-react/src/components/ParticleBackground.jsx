@@ -110,7 +110,7 @@ const ParticleBackground = () => {
                 height: '100%',
                 zIndex: -1,
                 pointerEvents: 'none',
-                opacity: 0.8
+                opacity: 0.5
             }}
         />
     );

@@ -242,6 +242,19 @@ const Courses = () => {
                 keywords="Power BI Courses, SQL Training, Excel Advanced Class, MS Access Certification, Business Intelligence Online Course"
                 url="/courses"
             />
+            <script type="application/ld+json">
+                {JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "Course",
+                    "name": "Power BI Certification Training",
+                    "description": "Master data modeling, DAX, and storytelling to turn raw data into decisions.",
+                    "provider": {
+                        "@type": "Organization",
+                        "name": "YYZ Data Matrix",
+                        "sameAs": "https://yyzdm.ca"
+                    }
+                })}
+            </script>
             <section className="dashboard-section">
                 <div className={`container dashboard-container ${isAdmin ? 'admin-mode' : ''}`}>
                     <div className="dashboard-header">
@@ -406,19 +419,38 @@ const Courses = () => {
                                                         </div>
                                                     </li>
                                                 </ul>
+
+                                                <div style={{ marginTop: '2.5rem', paddingTop: '2.5rem', borderTop: '1px solid var(--border-color)' }}>
+                                                    <h4 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--text-main)' }}>View Sample Projects</h4>
+                                                    <p style={{ color: 'var(--text-light)', fontSize: '0.95rem', marginBottom: '1.5rem' }}>Explore the actual Power BI dashboards you will learn to build during this course.</p>
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                                        <a href="/docs/Historical Sales Report.pdf" target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', textDecoration: 'none' }}>
+                                                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                                                <i className="fa-solid fa-file-pdf" style={{ color: '#ef4444', fontSize: '1.2rem' }}></i>
+                                                                Historical Sales Report
+                                                            </span>
+                                                            <i className="fa-solid fa-arrow-up-right-from-square" style={{ fontSize: '0.9rem', opacity: 0.7 }}></i>
+                                                        </a>
+                                                        <a href="/docs/Efficiency Report.pdf" target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', textDecoration: 'none' }}>
+                                                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                                                <i className="fa-solid fa-file-pdf" style={{ color: '#ef4444', fontSize: '1.2rem' }}></i>
+                                                                Efficiency Report
+                                                            </span>
+                                                            <i className="fa-solid fa-arrow-up-right-from-square" style={{ fontSize: '0.9rem', opacity: 0.7 }}></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
                                         <div className="process-flow-section" style={{ margin: '3rem 0' }}>
                                             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                                                <img
-                                                    src="/images/powerbi_process_flow_wide_light.jpg"
+                                                <img src="/images/powerbi_process_flow_wide_light.webp" width="800" height="400"
                                                     alt="Power BI Process Flow"
                                                     className="show-light"
                                                     style={{ width: '100%', height: 'auto', borderRadius: '15px', boxShadow: 'var(--box-shadow)' }}
                                                 />
-                                                <img
-                                                    src="/images/powerbi_process_flow_wide.jpg"
+                                                <img src="/images/powerbi_process_flow_wide_dark.webp" width="800" height="400"
                                                     alt="Power BI Process Flow"
                                                     className="show-dark"
                                                     style={{ width: '100%', height: 'auto', borderRadius: '15px', boxShadow: 'var(--box-shadow)' }}
@@ -443,28 +475,28 @@ const Courses = () => {
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-1'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
                                                 {expandedModules['module-1'] && (
-                                                <div className="module-content fade-in">
-                                                    <div className="module-image-container">
-                                                        <img src="/images/modules/data_cleaning_dark_1787127656632.jpg" alt="Data Cleaning" className="module-image show-dark" />
-                                                        <img src="/images/modules/data_cleaning_light_1787127237461.jpg" alt="Data Cleaning" className="module-image show-light" />
+                                                    <div className="module-content fade-in">
+                                                        <div className="module-image-container">
+                                                            <img src="/images/modules/mod_1_dark.webp" alt="Data Cleaning" className="module-image show-dark" width="400" height="250" />
+                                                            <img src="/images/modules/mod_1_light.webp" alt="Data Cleaning" className="module-image show-light" width="400" height="250" />
+                                                        </div>
+                                                        <p className="module-intro-text">
+                                                            Power Query is not for designing and developing reports, it meant to collect, clean, arrange and load data - also called as “Data prep Engine”
+                                                        </p>
+                                                        <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                                        <ul>
+                                                            <li><strong>Connecting to Data Sources:</strong> Excel, CSV, Web, SQL Server, SharePoint, APIs, and more.</li>
+                                                            <li><strong>Data Cleaning Techniques:</strong> Removing duplicates, handling nulls, formatting columns.</li>
+                                                            <li><strong>Transformations:</strong> Pivot/unpivot, merge, append, split columns.</li>
+                                                            <li><strong>M Code Basics:</strong> Introduction to the Power Query formula language for advanced transformations.</li>
+                                                        </ul>
+                                                        <div className="module-conclusion">
+                                                            🚀 Conclusion: "By the end of Module-1, you'll confidently transform messy data from any source into clean, report-ready datasets".
+                                                        </div>
+
+
+
                                                     </div>
-                                                    <p className="module-intro-text">
-                                                        Power Query is not for designing and developing reports, it meant to collect, clean, arrange and load data - also called as “Data prep Engine”
-                                                    </p>
-                                                    <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
-                                                    <ul>
-                                                        <li><strong>Connecting to Data Sources:</strong> Excel, CSV, Web, SQL Server, SharePoint, APIs, and more.</li>
-                                                        <li><strong>Data Cleaning Techniques:</strong> Removing duplicates, handling nulls, formatting columns.</li>
-                                                        <li><strong>Transformations:</strong> Pivot/unpivot, merge, append, split columns.</li>
-                                                        <li><strong>M Code Basics:</strong> Introduction to the Power Query formula language for advanced transformations.</li>
-                                                    </ul>
-                                                    <div className="module-conclusion">
-                                                        🚀 Conclusion: "By the end of Module-1, you'll confidently transform messy data from any source into clean, report-ready datasets".
-                                                    </div>
-
-
-
-                                                </div>
                                                 )}
                                             </div>
 
@@ -475,31 +507,31 @@ const Courses = () => {
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-2'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
                                                 {expandedModules['module-2'] && (
-                                                <div className="module-content fade-in">
-                                                    <div className="module-image-container">
-                                                        <img src="/images/modules/dax_analytics_dark_1787127668269.jpg" alt="DAX and Analytics" className="module-image show-dark" />
-                                                        <img src="/images/modules/dax_analytics_light_1787127247401.jpg" alt="DAX and Analytics" className="module-image show-light" />
-                                                    </div>
-                                                    <div className="module-intro-text">
-                                                        <div style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '0.5rem' }}>The Brain behind BI</div>
-                                                        <p style={{ fontSize: '1rem', margin: 0 }}>
-                                                            DAX (Data Analysis Expression) is a formula language used in Power BI to create normal, custom calculations and aggregation for Data Analysis.
-                                                        </p>
-                                                    </div>
-                                                    <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
-                                                    <ul>
-                                                        <li><strong>Calculated Columns vs Measures:</strong> Understand when to use Calculated Columns vs Measures for better insights.</li>
-                                                        <li><strong>Advanced DAX Patterns & Functions:</strong> Dynamic titles, Ranking (e.g., Top N customers), Segmentation (e.g., customer tiers), Cumulative totals and rolling averages.</li>
-                                                        <li><strong>Aggregation & Iterators:</strong> SUM, SUMX, AVERAGE, AVERAGEX, MINX, MAXX, RANKX, COUNTROWS, DISTINCTCOUNT.</li>
-                                                        <li><strong>Filter & Context Control:</strong> CALCULATE, CALCULATETABLE, KEEPFILTERS, REMOVEFILTERS.</li>
-                                                        <li><strong>Time Intelligence:</strong> YTD, MTD, QTD, SAMEPERIODLASTYEAR.</li>
-                                                        <li><strong>Table & Data Modeling:</strong> SUMMARIZECOLUMNS, SUMMARIZE, ADDCOLUMNS, CROSSJOIN, GENERATE.</li>
-                                                        <li><strong>Relationship Indigence:</strong> RELATED, RELATEDTABLE, CROSSFILTER, ALLSELECTED.</li>
-                                                        <li><strong>Advance Logic & Hierarchies:</strong> SWITCH, DIVIDE, PATH, PATHITEM, EARLIER.</li>
-                                                    </ul>
+                                                    <div className="module-content fade-in">
+                                                        <div className="module-image-container">
+                                                            <img src="/images/modules/mod_2_dark.webp" alt="DAX and Analytics" className="module-image show-dark" width="400" height="250" />
+                                                            <img src="/images/modules/mod_2_light.webp" alt="DAX and Analytics" className="module-image show-light" width="400" height="250" />
+                                                        </div>
+                                                        <div className="module-intro-text">
+                                                            <div style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '0.5rem' }}>The Brain behind BI</div>
+                                                            <p style={{ fontSize: '1rem', margin: 0 }}>
+                                                                DAX (Data Analysis Expression) is a formula language used in Power BI to create normal, custom calculations and aggregation for Data Analysis.
+                                                            </p>
+                                                        </div>
+                                                        <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                                        <ul>
+                                                            <li><strong>Calculated Columns vs Measures:</strong> Understand when to use Calculated Columns vs Measures for better insights.</li>
+                                                            <li><strong>Advanced DAX Patterns & Functions:</strong> Dynamic titles, Ranking (e.g., Top N customers), Segmentation (e.g., customer tiers), Cumulative totals and rolling averages.</li>
+                                                            <li><strong>Aggregation & Iterators:</strong> SUM, SUMX, AVERAGE, AVERAGEX, MINX, MAXX, RANKX, COUNTROWS, DISTINCTCOUNT.</li>
+                                                            <li><strong>Filter & Context Control:</strong> CALCULATE, CALCULATETABLE, KEEPFILTERS, REMOVEFILTERS.</li>
+                                                            <li><strong>Time Intelligence:</strong> YTD, MTD, QTD, SAMEPERIODLASTYEAR.</li>
+                                                            <li><strong>Table & Data Modeling:</strong> SUMMARIZECOLUMNS, SUMMARIZE, ADDCOLUMNS, CROSSJOIN, GENERATE.</li>
+                                                            <li><strong>Relationship Indigence:</strong> RELATED, RELATEDTABLE, CROSSFILTER, ALLSELECTED.</li>
+                                                            <li><strong>Advance Logic & Hierarchies:</strong> SWITCH, DIVIDE, PATH, PATHITEM, EARLIER.</li>
+                                                        </ul>
 
 
-                                                </div>
+                                                    </div>
                                                 )}
                                             </div>
 
@@ -510,30 +542,30 @@ const Courses = () => {
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-3'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
                                                 {expandedModules['module-3'] && (
-                                                <div className="module-content fade-in">
-                                                    <div className="module-image-container">
-                                                        <img src="/images/modules/data_visualization_dark_1787127678048.jpg" alt="Data Visualization" className="module-image show-dark" />
-                                                        <img src="/images/modules/data_visualization_light_1787127256757.jpg" alt="Data Visualization" className="module-image show-light" />
-                                                    </div>
-                                                    <p className="module-intro-text">
-                                                        Anyone can build charts. Great analyst tell stories that drive decisions. Master dashboard, design, visual storytelling, and interactive analytics to transform complex data into clear, actionable business insights. Develop the skills that elevate you from data analyst to Strategic Advisor by creating compelling dashboards that capture attention, built trust, and inspire meaningful action.
-                                                    </p>
-                                                    <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
-                                                    <ul>
-                                                        <li><strong>Choose the right Visual:</strong> Select the perfect Visual for Every Business Question</li>
-                                                        <li><strong>Custom Visuals:</strong> Advanced and Marketplace Visual</li>
-                                                        <li><strong>Design Principles:</strong> Dashboard Design Psychology & UX Best Practices</li>
-                                                        <li><strong>Storytelling Techniques:</strong> Executive Storytelling & Insight Communication</li>
-                                                    </ul>
-                                                    <div className="module-conclusion analysis-section">
-                                                        <strong>Analyzing dashboards from:</strong>
-                                                        <br />Human psychology & decision-making behavior
-                                                        <br />Information hierarchy and cognitive load
-                                                        <br />Consistency across tools like Power BI and Tableau.
-                                                    </div>
+                                                    <div className="module-content fade-in">
+                                                        <div className="module-image-container">
+                                                            <img src="/images/modules/mod_3_dark.webp" alt="Data Visualization" className="module-image show-dark" width="400" height="250" />
+                                                            <img src="/images/modules/mod_3_light.webp" alt="Data Visualization" className="module-image show-light" width="400" height="250" />
+                                                        </div>
+                                                        <p className="module-intro-text">
+                                                            Anyone can build charts. Great analyst tell stories that drive decisions. Master dashboard, design, visual storytelling, and interactive analytics to transform complex data into clear, actionable business insights. Develop the skills that elevate you from data analyst to Strategic Advisor by creating compelling dashboards that capture attention, built trust, and inspire meaningful action.
+                                                        </p>
+                                                        <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                                        <ul>
+                                                            <li><strong>Choose the right Visual:</strong> Select the perfect Visual for Every Business Question</li>
+                                                            <li><strong>Custom Visuals:</strong> Advanced and Marketplace Visual</li>
+                                                            <li><strong>Design Principles:</strong> Dashboard Design Psychology & UX Best Practices</li>
+                                                            <li><strong>Storytelling Techniques:</strong> Executive Storytelling & Insight Communication</li>
+                                                        </ul>
+                                                        <div className="module-conclusion analysis-section">
+                                                            <strong>Analyzing dashboards from:</strong>
+                                                            <br />Human psychology & decision-making behavior
+                                                            <br />Information hierarchy and cognitive load
+                                                            <br />Consistency across tools like Power BI and Tableau.
+                                                        </div>
 
 
-                                                </div>
+                                                    </div>
                                                 )}
                                             </div>
 
@@ -544,24 +576,24 @@ const Courses = () => {
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-4'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
                                                 {expandedModules['module-4'] && (
-                                                <div className="module-content fade-in">
-                                                    <div className="module-image-container">
-                                                        <img src="/images/modules/data_modeling_dark_1787127687751.jpg" alt="Data Modeling" className="module-image show-dark" />
-                                                        <img src="/images/modules/data_modeling_light_1787127265917.jpg" alt="Data Modeling" className="module-image show-light" />
+                                                    <div className="module-content fade-in">
+                                                        <div className="module-image-container">
+                                                            <img src="/images/modules/mod_4_dark.webp" alt="Data Modeling" className="module-image show-dark" width="400" height="250" />
+                                                            <img src="/images/modules/mod_4_light.webp" alt="Data Modeling" className="module-image show-light" width="400" height="250" />
+                                                        </div>
+                                                        <p className="module-intro-text">
+                                                            Anyone can connect data. Top analyst built models that scale. Master data modelling, relationship design, and performance optimization techniques that transform complex datasets into fast, reliable and business-ready analytics, creating the foundation for powerful reporting and informed decision making
+                                                        </p>
+                                                        <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                                        <ul>
+                                                            <li><strong>Enterprise data Modeling:</strong> Star schema, Snowflake Schema and best practice</li>
+                                                            <li><strong>Relationship Design:</strong> One-to-Many, Many-to-Many, & Filter Context</li>
+                                                            <li><strong>Performance Optimization:</strong> Normaliziation, Denormalization & Model Efficiency</li>
+                                                            <li><strong>Advanced DAX Engineering:</strong> Measures, Calculated Table and Business Logic</li>
+                                                        </ul>
+
+
                                                     </div>
-                                                    <p className="module-intro-text">
-                                                        Anyone can connect data. Top analyst built models that scale. Master data modelling, relationship design, and performance optimization techniques that transform complex datasets into fast, reliable and business-ready analytics, creating the foundation for powerful reporting and informed decision making
-                                                    </p>
-                                                    <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
-                                                    <ul>
-                                                        <li><strong>Enterprise data Modeling:</strong> Star schema, Snowflake Schema and best practice</li>
-                                                        <li><strong>Relationship Design:</strong> One-to-Many, Many-to-Many, & Filter Context</li>
-                                                        <li><strong>Performance Optimization:</strong> Normaliziation, Denormalization & Model Efficiency</li>
-                                                        <li><strong>Advanced DAX Engineering:</strong> Measures, Calculated Table and Business Logic</li>
-                                                    </ul>
-
-
-                                                </div>
                                                 )}
                                             </div>
 
@@ -572,24 +604,24 @@ const Courses = () => {
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-5'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
                                                 {expandedModules['module-5'] && (
-                                                <div className="module-content fade-in">
-                                                    <div className="module-image-container">
-                                                        <img src="/images/modules/cloud_publishing_dark_1787127698462.jpg" alt="Cloud Publishing" className="module-image show-dark" />
-                                                        <img src="/images/modules/cloud_publishing_light_1787127276852.jpg" alt="Cloud Publishing" className="module-image show-light" />
+                                                    <div className="module-content fade-in">
+                                                        <div className="module-image-container">
+                                                            <img src="/images/modules/mod_5_dark.webp" alt="Cloud Publishing" className="module-image show-dark" width="400" height="250" />
+                                                            <img src="/images/modules/mod_5_light.webp" alt="Cloud Publishing" className="module-image show-light" width="400" height="250" />
+                                                        </div>
+                                                        <p className="module-intro-text">
+                                                            Transition from report creator to Enterprise BI professional. Learn to publish, secure, automate, and manage Power BI solutions in the cloud, ensuring scalable, reliable, and governed access to insights that empower collaboration and drive confident business decisions.
+                                                        </p>
+                                                        <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                                        <ul>
+                                                            <li><strong>Power BI Service Architecture & Workspace Management</strong></li>
+                                                            <li><strong>Report Publishing & Automated Data Refresh</strong></li>
+                                                            <li><strong>Enterprise Security:</strong> Row-Level Security (RLS) & Access Control</li>
+                                                            <li><strong>Monitoring, Troubleshooting & Refresh Optimization</strong></li>
+                                                        </ul>
+
+
                                                     </div>
-                                                    <p className="module-intro-text">
-                                                        Transition from report creator to Enterprise BI professional. Learn to publish, secure, automate, and manage Power BI solutions in the cloud, ensuring scalable, reliable, and governed access to insights that empower collaboration and drive confident business decisions.
-                                                    </p>
-                                                    <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
-                                                    <ul>
-                                                        <li><strong>Power BI Service Architecture & Workspace Management</strong></li>
-                                                        <li><strong>Report Publishing & Automated Data Refresh</strong></li>
-                                                        <li><strong>Enterprise Security:</strong> Row-Level Security (RLS) & Access Control</li>
-                                                        <li><strong>Monitoring, Troubleshooting & Refresh Optimization</strong></li>
-                                                    </ul>
-
-
-                                                </div>
                                                 )}
                                             </div>
 
@@ -600,26 +632,26 @@ const Courses = () => {
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-6'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
                                                 </div>
                                                 {expandedModules['module-6'] && (
-                                                <div className="module-content fade-in">
-                                                    <div className="module-image-container">
-                                                        <img src="/images/modules/executive_dashboard_dark_1787127707989.jpg" alt="Executive Dashboards" className="module-image show-dark" />
-                                                        <img src="/images/modules/executive_dashboard_light_1787127285637.jpg" alt="Executive Dashboards" className="module-image show-light" />
+                                                    <div className="module-content fade-in">
+                                                        <div className="module-image-container">
+                                                            <img src="/images/modules/mod_6_dark.webp" alt="Executive Dashboards" className="module-image show-dark" width="400" height="250" />
+                                                            <img src="/images/modules/mod_6_light.webp" alt="Executive Dashboards" className="module-image show-light" width="400" height="250" />
+                                                        </div>
+                                                        <p className="module-intro-text">
+                                                            Turn theory into practice through a comprehensive end-to-end project. Learn how to transform raw business data into executive-ready dashboard by combining data preparation, modeling, analytics, visualization, and storytelling techniques into insights that drive strategy in business decisions.
+                                                        </p>
+                                                        <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
+                                                        <ul>
+                                                            <li><strong>Business Requirements Analysis and KPI Definition</strong></li>
+                                                            <li><strong>Master Data Creation and Data Source Integration</strong></li>
+                                                            <li><strong>Dataset Architecture & Data Mapping</strong></li>
+                                                            <li><strong>Executive Dashboard Design & Report Development</strong></li>
+                                                            <li><strong>End-to-End Business Intelligence Project</strong></li>
+                                                            <li><strong>Presenting Insights to Stakeholders</strong></li>
+                                                        </ul>
+
+
                                                     </div>
-                                                    <p className="module-intro-text">
-                                                        Turn theory into practice through a comprehensive end-to-end project. Learn how to transform raw business data into executive-ready dashboard by combining data preparation, modeling, analytics, visualization, and storytelling techniques into insights that drive strategy in business decisions.
-                                                    </p>
-                                                    <h4 style={{ marginBottom: '1rem' }}>Key Topics:</h4>
-                                                    <ul>
-                                                        <li><strong>Business Requirements Analysis and KPI Definition</strong></li>
-                                                        <li><strong>Master Data Creation and Data Source Integration</strong></li>
-                                                        <li><strong>Dataset Architecture & Data Mapping</strong></li>
-                                                        <li><strong>Executive Dashboard Design & Report Development</strong></li>
-                                                        <li><strong>End-to-End Business Intelligence Project</strong></li>
-                                                        <li><strong>Presenting Insights to Stakeholders</strong></li>
-                                                    </ul>
-
-
-                                                </div>
                                                 )}
                                             </div>
 

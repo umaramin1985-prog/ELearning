@@ -6,7 +6,7 @@ const SEO = ({
   description, 
   keywords, 
   url = '', 
-  image = '/images/logo.jpg', 
+  image = '/images/logo.webp', 
   type = 'website' 
 }) => {
   const siteName = 'YYZ Data Matrix Inc';

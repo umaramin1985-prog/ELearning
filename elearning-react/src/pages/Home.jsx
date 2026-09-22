@@ -13,44 +13,48 @@ const Home = () => {
             />
             {/* HERO SECTION */}
             <section id="home" className="hero">
-                <div className="container hero-container" style={{ flexDirection: 'column', alignItems: 'flex-start', paddingTop: '4rem', paddingBottom: '4rem', position: 'relative', zIndex: 2 }}>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4rem', marginBottom: '4rem', width: '100%' }}>
-                        <div className="hero-content" style={{ flex: '1 1 500px', marginBottom: '0' }}>
-                            <h1 className="hero-title">Build the Data Skills Employers Expect</h1>
-                            <p className="hero-subtitle" style={{ marginBottom: '0.5rem' }}>
-                                <strong style={{ color: 'var(--primary-color)', fontSize: '1.2em' }}>Become a job ready data analyst in 16 weeks</strong>
+                <div className="container hero-container" style={{ flexDirection: 'column', alignItems: 'center', paddingTop: 'clamp(2rem, 6vh, 4.5rem)', paddingBottom: 'clamp(3rem, 6vh, 5rem)', position: 'relative', zIndex: 2 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 'clamp(3rem, 5vw, 6rem)', width: '100%' }}>
+                        <div className="hero-content" style={{ flex: '1.2 1 450px', marginBottom: '0', maxWidth: '100%' }}>
+                            <h1 className="hero-title" style={{ marginBottom: '1.2rem', lineHeight: '1.15' }}>Build the Data Skills Employers Expect</h1>
+                            <p className="hero-subtitle" style={{ marginBottom: '0.75rem' }}>
+                                <strong style={{ color: 'var(--primary-color)', fontSize: '1.25rem' }}>Become a job ready data analyst in 16 weeks</strong>
                             </p>
-                            <p className="hero-subtitle">
-                                <strong>Learn Power BI, SQL, Excel, and MS Access through realistic business projects designed to build practical skills and a portfolio you can demonstrate.</strong>
+                            <p className="hero-subtitle" style={{ color: 'var(--text-light)', fontSize: '1.1rem', lineHeight: '1.6', marginBottom: '2rem' }}>
+                                Learn Power BI, SQL, Excel, and MS Access through realistic business projects designed to build practical skills and a portfolio you can demonstrate.
                             </p>
-                            <div className="hero-buttons" style={{ justifyContent: 'flex-start', marginTop: '2rem' }}>
-                                <a href="#compare-courses" onClick={(e) => { e.preventDefault(); document.getElementById('compare-courses')?.scrollIntoView({ behavior: 'smooth' }); }} className="btn btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1.1rem', textDecoration: 'none' }}>Compare Courses</a>
+                            <div className="hero-buttons" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', marginTop: '2rem' }}>
                                 <Link to="/courses" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '1rem 2rem', fontSize: '1.1rem' }}>Explore Courses <i className="fa-solid fa-arrow-right"></i></Link>
+                                <a href="#compare-courses" onClick={(e) => { e.preventDefault(); document.getElementById('compare-courses')?.scrollIntoView({ behavior: 'smooth' }); }} className="btn btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1.1rem', textDecoration: 'none' }}>Compare Courses</a>
                             </div>
 
-                            <div style={{ display: 'flex', gap: '1.5rem', marginTop: '3rem', flexWrap: 'wrap' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-light)', fontWeight: '600' }}>
-                                    <i className="fa-solid fa-video" style={{ color: 'var(--primary-color)' }}></i> Live Online
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '3rem' }}>
+                                <div style={{ display: 'flex', gap: '1.2rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-main)', fontSize: '0.95rem', fontWeight: '500' }}>
+                                        <i className="fa-solid fa-video" style={{ color: 'var(--primary-color)' }}></i> Live Online
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-main)', fontSize: '0.95rem', fontWeight: '500' }}>
+                                        <i className="fa-solid fa-laptop-code" style={{ color: 'var(--primary-color)' }}></i> Guided Projects
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-main)', fontSize: '0.95rem', fontWeight: '500' }}>
+                                        <i className="fa-solid fa-comment-dots" style={{ color: 'var(--primary-color)' }}></i> Instructor Feedback
+                                    </div>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-light)', fontWeight: '600' }}>
-                                    <i className="fa-solid fa-laptop-code" style={{ color: 'var(--primary-color)' }}></i> Guided Projects
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-light)', fontWeight: '600' }}>
-                                    <i className="fa-solid fa-comment-dots" style={{ color: 'var(--primary-color)' }}></i> Instructor Feedback
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-light)', fontWeight: '600' }}>
-                                    <i className="fa-solid fa-briefcase" style={{ color: 'var(--primary-color)' }}></i> Portfolio Projects
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-light)', fontWeight: '600' }}>
-                                    <i className="fa-solid fa-certificate" style={{ color: 'var(--primary-color)' }}></i> Certificate of Completion
+                                <div style={{ display: 'flex', gap: '1.2rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-main)', fontSize: '0.95rem', fontWeight: '500' }}>
+                                        <i className="fa-solid fa-briefcase" style={{ color: 'var(--primary-color)' }}></i> Portfolio Projects
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-main)', fontSize: '0.95rem', fontWeight: '500' }}>
+                                        <i className="fa-solid fa-certificate" style={{ color: 'var(--primary-color)' }}></i> Certificate of Completion
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="hero-image-wrapper" style={{ flex: '1 1 400px', display: 'flex', justifyContent: 'center', position: 'relative' }}>
-                            <div style={{ position: 'relative', width: '100%', maxWidth: '650px', transform: 'perspective(1000px) rotateY(-5deg) rotateX(2deg)', transition: 'transform 0.3s ease' }} onMouseOver={(e) => e.currentTarget.style.transform = 'perspective(1000px) rotateY(0) rotateX(0)'} onMouseOut={(e) => e.currentTarget.style.transform = 'perspective(1000px) rotateY(-5deg) rotateX(2deg)'}>
-                                <img src="/images/hero-dashboard-light.jpg" alt="Business Intelligence Dashboard" className="show-light" style={{ width: '100%', borderRadius: '15px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', border: '1px solid var(--border-color)' }} />
-                                <img src="/images/hero-dashboard-dark.jpg" alt="Business Intelligence Dashboard" className="show-dark" style={{ width: '100%', borderRadius: '15px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', border: '1px solid var(--border-color)' }} />
+                        <div className="hero-image-wrapper" style={{ flex: '0.95 1 400px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', width: '100%' }}>
+                            <div style={{ position: 'relative', width: '100%', maxWidth: '630px', transform: 'perspective(1000px) rotateY(-4deg) rotateX(2deg)', transition: 'transform 0.4s ease-out' }} onMouseOver={(e) => e.currentTarget.style.transform = 'perspective(1000px) rotateY(0) rotateX(0)'} onMouseOut={(e) => e.currentTarget.style.transform = 'perspective(1000px) rotateY(-4deg) rotateX(2deg)'}>
+                                <img src="/images/hero-dashboard-light.webp" width="650" height="365" alt="Data analytics dashboard showing key business metrics and visualizations" className="show-light" style={{ width: '100%', height: 'auto', borderRadius: '12px', boxShadow: '0 12px 32px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.04)', objectFit: 'contain' }} />
+                                <img src="/images/hero-dashboard-dark.webp" width="650" height="365" alt="Data analytics dashboard showing key business metrics and visualizations" className="show-dark" style={{ width: '100%', height: 'auto', borderRadius: '12px', boxShadow: '0 12px 32px rgba(0,0,0,0.4), 0 2px 6px rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.08)', objectFit: 'contain' }} />
                             </div>
                         </div>
                     </div>
@@ -260,12 +264,13 @@ const Home = () => {
                                 <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><i className="fa-solid fa-globe" style={{ color: 'var(--primary-color)' }}></i> Multinational Enterprise Experience</li>
                                 <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><i className="fa-solid fa-industry" style={{ color: 'var(--primary-color)' }}></i> Healthcare, Manufacturing, Auto, & Oil/Gas</li>
                                 <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><i className="fa-solid fa-chalkboard-teacher" style={{ color: 'var(--primary-color)' }}></i> Practical Training & Mentorship</li>
+                                <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><i className="fa-solid fa-award" style={{ color: 'var(--primary-color)' }}></i> Mentor credentials: MBA, CMA, CPA, PMP and PL 300 Data analytics</li>
                             </ul>
                         </div>
                         <div style={{ flex: '1 1 400px', display: 'flex', justifyContent: 'center' }}>
                             <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', maxWidth: '350px' }}>
                                 <div style={{ width: '120px', height: '120px', borderRadius: '50%', margin: '0 auto 1.5rem auto', overflow: 'hidden', border: '3px solid var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--card-bg)' }}>
-                                    <img src="/images/instructor.jpg" alt="Rauf Anwar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    <img src="/images/instructor.webp" width="120" height="120" alt="Rauf Anwar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 </div>
                                 <h3 style={{ marginBottom: '0.5rem' }}>Rauf Anwar</h3>
                                 <p style={{ color: 'var(--primary-color)', fontWeight: '600', marginBottom: '1rem' }}>Finance & Data Analytics Leader</p>
@@ -330,7 +335,7 @@ const Home = () => {
                                 <div className="feature-col">Enterprise-Level Real Projects</div>
                                 <div className="us-col"><i className="fa-solid fa-check text-success"></i> Yes</div>
                                 <div className="competitor-col"><i className="fa-solid fa-check text-success"></i> Yes</div>
-                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Variable</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{ color: 'var(--text-color-light)' }}></i> Variable</div>
                                 <div className="competitor-col"><i className="fa-solid fa-xmark text-danger"></i> No</div>
                             </div>
                             <div className="comparison-row">
@@ -343,16 +348,23 @@ const Home = () => {
                             <div className="comparison-row">
                                 <div className="feature-col">Career & Portfolio Focus</div>
                                 <div className="us-col"><i className="fa-solid fa-check text-success"></i> High</div>
-                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Medium</div>
-                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Low</div>
-                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Medium</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{ color: 'var(--text-color-light)' }}></i> Medium</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{ color: 'var(--text-color-light)' }}></i> Low</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{ color: 'var(--text-color-light)' }}></i> Medium</div>
                             </div>
                             <div className="comparison-row">
                                 <div className="feature-col">Custom Dashboard Building</div>
                                 <div className="us-col"><i className="fa-solid fa-check text-success"></i> From Scratch</div>
-                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Academic</div>
-                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Variable</div>
-                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{color: 'var(--text-color-light)'}}></i> Guided</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{ color: 'var(--text-color-light)' }}></i> Academic</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{ color: 'var(--text-color-light)' }}></i> Variable</div>
+                                <div className="competitor-col"><i className="fa-solid fa-minus" style={{ color: 'var(--text-color-light)' }}></i> Guided</div>
+                            </div>
+                            <div className="comparison-row">
+                                <div className="feature-col">Interview preparation support</div>
+                                <div className="us-col"><i className="fa-solid fa-check text-success"></i> Yes</div>
+                                <div className="competitor-col"><i className="fa-solid fa-xmark text-danger"></i> No</div>
+                                <div className="competitor-col"><i className="fa-solid fa-xmark text-danger"></i> No</div>
+                                <div className="competitor-col"><i className="fa-solid fa-xmark text-danger"></i> No</div>
                             </div>
                             <div className="comparison-row">
                                 <div className="feature-col">Verified Certification</div>

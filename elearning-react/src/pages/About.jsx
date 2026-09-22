@@ -75,8 +75,8 @@ const About = () => {
                             </ul>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>
-                            <img src="/icons/powerbi-badge.png" alt="Microsoft Power BI Certified" style={{ width: '200px', height: '200px', borderRadius: '50%', boxShadow: 'var(--box-shadow)' }} />
-                            <img src="/icons/pl300-badge.png" alt="PL-300 Course Completed" style={{ width: '200px', height: '200px', borderRadius: '50%', boxShadow: 'var(--box-shadow)' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                            <img src="/icons/powerbi-badge.webp" width="200" height="200" alt="Microsoft Power BI Certified" style={{ width: '200px', height: '200px', borderRadius: '50%', boxShadow: 'var(--box-shadow)' }} />
+                            <img src="/icons/pl300-badge.webp" width="200" height="200" alt="PL-300 Course Completed" style={{ width: '200px', height: '200px', borderRadius: '50%', boxShadow: 'var(--box-shadow)' }} onError={(e) => { e.target.style.display = 'none'; }} />
                         </div>
                     </div>
                 </div>

@@ -8,7 +8,7 @@ const Footer = () => {
             <div className="container footer-container">
                 <div className="footer-brand">
                     <Link to="/" className="logo footer-logo" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', marginBottom: '1rem', gap: '12px' }}>
-                        <img src="/images/logo.jpg" alt="Logo" style={{ height: '55px', width: '55px', borderRadius: '6px', objectFit: 'cover' }} />
+                        <img src="/images/logo.webp" alt="Logo" style={{ height: '55px', width: '55px', borderRadius: '6px', objectFit: 'cover' }} />
                         <span style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--text-color)' }}>YYZ Data Matrix Inc</span>
                     </Link>
                     <p>Empowering your career through expert data analytics and business intelligence training.</p>
