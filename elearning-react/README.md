@@ -1,16 +1,64 @@
-# React + Vite
+# YYZ Data Matrix E-Learning Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+An E-Learning platform for **YYZ Data Matrix Inc**, focusing on Business Intelligence tracks such as Power BI, SQL, MS Access, and Excel.
 
-Currently, two official plugins are available:
+## 🚀 Technology Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Frontend Framework**: React (bootstrapped with Vite)
+- **Styling**: Vanilla CSS utilizing custom CSS variables (`--primary-color`, `--card-bg`, etc.) to support a robust Dark/Light mode toggle.
+- **Backend/Database**: Firebase (Firebase Authentication with Google Sign-in, and Firestore for storing user profiles).
+- **Deployment**: Vercel
 
-## React Compiler
+## ✨ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Authentication**: Firebase auth state management with Google Sign-in. Automatically synchronizes authenticated users into the Firestore `users` collection upon login.
+- **Role-Based Route Guards**: 
+  - Restricts access based on whether the user's document exists in Firestore.
+  - `AdminRoute` specifically checks if the user's email matches the comma-separated list in the `VITE_ADMIN_EMAILS` environment variable.
+- **Admin Panel**: Secure dashboard where authorized admins can view all registered users and safely delete non-admin users from the platform.
+- **Dynamic Theming**: Premium glassmorphism, subtle gradients, micro-animations, and a fully functional Light/Dark mode (`data-theme="dark"`).
+- **Responsive Design**: Mobile-first responsive layouts, interactive components, and falling matrix backgrounds.
 
-## Expanding the Oxlint configuration
+## 🛠️ Local Development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+### Prerequisites
+- Node.js (v18 or higher recommended)
+- NPM or Yarn
+- Firebase project setup with Firestore and Authentication (Google Sign-In) enabled.
+
+### Setup
+
+1. **Clone the repository and install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Environment Variables:**
+   Create a `.env` file in the root directory and add your Firebase configuration and Admin emails:
+   ```env
+   VITE_FIREBASE_API_KEY=your_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   VITE_ADMIN_EMAILS=admin@example.com,anotheradmin@example.com
+   ```
+
+3. **Start the Development Server:**
+   ```bash
+   npm run dev
+   ```
+   The application will be available at `http://localhost:5173`.
+
+## 📦 Deployment
+
+The project is configured for deployment on Vercel.
+
+**Critical Deployment Rules:**
+Any new admin emails MUST be added to the `VITE_ADMIN_EMAILS` environment variable both in the local `.env` file AND inside the Vercel Dashboard (Settings > Environment Variables) before deploying.
+
+### Build for Production
+```bash
+npm run build
+```
