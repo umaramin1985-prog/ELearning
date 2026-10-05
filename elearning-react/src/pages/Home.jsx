@@ -6,9 +6,9 @@ const Home = () => {
     return (
         <>
             <SEO
-                title="Master the Data Skills Companies Use | YYZ Data Matrix"
-                description="Build dashboards, write SQL, and automate Excel to solve real business problems. Hands-on training covering Power BI, SQL, and Advanced Excel."
-                keywords="Business Intelligence, Data Analytics, Power BI Training, SQL Courses, Advanced Excel, Financial Modeling, MS Access Training, Data Consultant"
+                title="Power BI & Data Analytics Training in Toronto | YYZ Data Matrix"
+                description="Learn Power BI, Excel, SQL and data analytics with practical instructor-led training in Toronto. Build real-world analytics skills with YYZ Data Matrix."
+                keywords="Power BI training Toronto, Data analytics course Toronto, SQL course Toronto, Excel training Toronto, Business intelligence course Toronto"
                 url="/"
             />
             {/* HERO SECTION */}
@@ -16,7 +16,7 @@ const Home = () => {
                 <div className="container hero-container" style={{ flexDirection: 'column', alignItems: 'center', paddingTop: 'clamp(2rem, 6vh, 4.5rem)', paddingBottom: 'clamp(3rem, 6vh, 5rem)', position: 'relative', zIndex: 2 }}>
                     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 'clamp(3rem, 5vw, 6rem)', width: '100%' }}>
                         <div className="hero-content" style={{ flex: '1.2 1 450px', marginBottom: '0', maxWidth: '100%' }}>
-                            <h1 className="hero-title" style={{ marginBottom: '1.2rem', lineHeight: '1.15' }}>Build the Data Skills Employers Expect</h1>
+                            <h1 className="hero-title" style={{ marginBottom: '1.2rem', lineHeight: '1.15' }}>Power BI & Data Analytics Training in Toronto</h1>
                             <p className="hero-subtitle" style={{ marginBottom: '0.75rem' }}>
                                 <strong style={{ color: 'var(--primary-color)', fontSize: '1.25rem' }}>Become a job ready data analyst in 16 weeks</strong>
                             </p>
