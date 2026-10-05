@@ -145,35 +145,58 @@ const Courses = () => {
         setPaymentModalOpen(true);
     };
 
+    // Success is now handled by Stripe redirect and the useEffect below.
+    // We can keep this for manual triggers or other payment methods if needed in the future.
     const handlePaymentSuccess = async (transaction) => {
-        if (!paymentData || !user) return;
-
-        try {
-            await createSubscription(
-                user.uid,
-                paymentData.courseId,
-                paymentData.sectionId,
-                paymentData.type,
-                paymentData.amount,
-                transaction.method
-            );
-
-            // Refresh subscriptions
-            const subs = await getUserSubscriptions(user.uid);
-            setUserSubscriptions(subs);
-            alert(`Successfully subscribed to ${paymentData.title}!`);
-
-            if (paymentData.type === 'video' && paymentData.sectionId !== 'all') {
-                const section = sections.find(s => s.id === paymentData.sectionId);
-                if (section && section.videoLink) {
-                    window.open(section.videoLink, '_blank');
-                }
-            }
-        } catch (err) {
-            console.error("Subscription error:", err);
-            alert("Failed to create subscription.");
-        }
+        // ... (Keep existing for backward compatibility or remove if desired. We will rely on redirect now)
     };
+
+    // Handle Stripe redirect on mount
+    useEffect(() => {
+        if (!user) return;
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentStatus = urlParams.get('payment');
+        
+        if (paymentStatus === 'success') {
+            const courseId = urlParams.get('courseId');
+            const sectionId = urlParams.get('sectionId');
+            const type = urlParams.get('type');
+            const amount = parseFloat(urlParams.get('amount'));
+
+            if (courseId && sectionId && type && !isNaN(amount)) {
+                // Clear URL params to prevent duplicate submissions on refresh
+                window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+                
+                // create subscription
+                createSubscription(
+                    user.uid,
+                    courseId,
+                    sectionId,
+                    type,
+                    amount,
+                    'stripe'
+                ).then(() => {
+                    // refresh subscriptions
+                    getUserSubscriptions(user.uid).then(subs => setUserSubscriptions(subs));
+                    alert(`Successfully subscribed to the course!`);
+                    
+                    if (type === 'video' && sectionId !== 'all') {
+                        const section = sections.find(s => s.id === sectionId);
+                        if (section && section.videoLink) {
+                            window.open(section.videoLink, '_blank');
+                        }
+                    }
+                }).catch(err => {
+                    console.error("Subscription error:", err);
+                    alert("Failed to finalize subscription. Please contact support.");
+                });
+            }
+        } else if (paymentStatus === 'cancel') {
+            window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+            alert("Payment was cancelled.");
+        }
+    }, [user, sections]);
 
     const handleScheduleSubmit = async (data) => {
         try {
@@ -709,6 +732,7 @@ const Courses = () => {
                         onClose={() => setPaymentModalOpen(false)}
                         amount={paymentData.amount}
                         itemDescription={paymentData.title}
+                        paymentData={paymentData}
                         onSuccess={handlePaymentSuccess}
                     />
                 )}

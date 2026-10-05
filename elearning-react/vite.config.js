@@ -49,11 +49,67 @@ export default defineConfig({
                res.statusCode = 200;
                return res.end(JSON.stringify({ token }));
             }
+            
+            if (req.originalUrl && req.originalUrl.startsWith('/api/create-checkout-session') && req.method === 'POST') {
+                let body = '';
+                req.on('data', chunk => {
+                    body += chunk.toString();
+                });
+                req.on('end', async () => {
+                    try {
+                        const parsedBody = JSON.parse(body);
+                        const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+                        
+                        if (!stripeSecretKey) {
+                            res.statusCode = 500;
+                            return res.end(JSON.stringify({ error: 'Missing Stripe secret key.' }));
+                        }
+
+                        // We can lazily import stripe here so it doesn't break if not installed
+                        const Stripe = (await import('stripe')).default;
+                        const stripe = new Stripe(stripeSecretKey);
+                        
+                        const unitAmount = Math.round(parsedBody.amount * 100);
+                        
+                        const session = await stripe.checkout.sessions.create({
+                            line_items: [
+                                {
+                                    price_data: {
+                                        currency: 'usd',
+                                        product_data: { name: parsedBody.title },
+                                        unit_amount: unitAmount,
+                                    },
+                                    quantity: 1,
+                                },
+                            ],
+                            mode: 'payment',
+                            success_url: `http://${req.headers.host}/courses?payment=success&courseId=${encodeURIComponent(parsedBody.courseId)}&sectionId=${encodeURIComponent(parsedBody.sectionId)}&type=${encodeURIComponent(parsedBody.type)}&amount=${encodeURIComponent(parsedBody.amount)}`,
+                            cancel_url: `http://${req.headers.host}/courses?payment=cancel`,
+                            metadata: {
+                                courseId: parsedBody.courseId,
+                                sectionId: parsedBody.sectionId,
+                                type: parsedBody.type,
+                                userId: parsedBody.userId
+                            }
+                        });
+                        
+                        res.setHeader('Content-Type', 'application/json');
+                        res.statusCode = 200;
+                        return res.end(JSON.stringify({ url: session.url }));
+                    } catch (err) {
+                        console.error("Stripe session error:", err);
+                        res.statusCode = 500;
+                        res.end(JSON.stringify({ error: err.message }));
+                    }
+                });
+                return;
+            }
+
             next();
           } catch (error) {
             console.error(error);
             res.statusCode = 500;
-            res.end(JSON.stringify({ error: 'Failed to generate token' }));
+            res.end(JSON.stringify({ error: 'Server error' }));
           }
         });
       }

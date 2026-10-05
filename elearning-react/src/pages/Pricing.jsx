@@ -244,6 +244,7 @@ const Pricing = () => {
                         onClose={() => setPaymentModalOpen(false)}
                         amount={paymentData.amount}
                         itemDescription={paymentData.title}
+                        paymentData={paymentData}
                         onSuccess={handlePaymentSuccess}
                     />
                 )}
