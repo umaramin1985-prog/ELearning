@@ -289,29 +289,48 @@ const Home = () => {
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
                         {/* TODO: Add legitimate testimonials here when available from the site owner. */}
-                        <div className="glass-panel" style={{ padding: '2rem', opacity: 0.9 }}>
+                        <div className="glass-panel" style={{ padding: '2rem', opacity: 0.9, display: 'flex', flexDirection: 'column' }}>
                             <div style={{ color: '#f59e0b', marginBottom: '1rem' }}>
                                 <i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i>
                             </div>
-                            <p style={{ color: 'var(--text-light)', fontStyle: 'italic', marginBottom: '1.5rem' }}>"The hands-on projects were exactly what I needed to bridge the gap between theory and actual business applications. I was able to build a portfolio that landed me my current role."</p>
-                            <h4 style={{ margin: 0 }}>[Student Name]</h4>
-                            <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>Data Analyst, [Company]</span>
+                            <p style={{ color: 'var(--text-light)', fontStyle: 'italic', marginBottom: '1rem' }}>"What set this program apart was that the instructors didn't just focus on teaching DAX and SQL; they taught us how to approach problems and analyze data with a business mindset. Their practical insights and continuous guidance made the learning experience extremely valuable.</p>
+                            <p style={{ color: 'var(--text-light)', fontStyle: 'italic', marginBottom: '1.5rem' }}>The hands-on projects closely mirrored real business scenarios, helping me connect theory with practical application. As a result, I was able to build a professional portfolio and gain the experience and confidence that ultimately helped me at work place."</p>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginTop: 'auto' }}>
+                                <img src="/images/mohammad-imran.jpeg" alt="Mohammad Imran" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary-color)' }} />
+                                <h4 style={{ margin: 0 }}>Mohammad Imran</h4>
+                                <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>Data and System Analyst, BMO Canada</span>
+                            </div>
                         </div>
-                        <div className="glass-panel" style={{ padding: '2rem', opacity: 0.9 }}>
+                        <div className="glass-panel" style={{ padding: '2rem', opacity: 0.9, display: 'flex', flexDirection: 'column' }}>
                             <div style={{ color: '#f59e0b', marginBottom: '1rem' }}>
                                 <i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i>
                             </div>
-                            <p style={{ color: 'var(--text-light)', fontStyle: 'italic', marginBottom: '1.5rem' }}>"The instructors didn't just teach DAX and SQL; they taught how to think about data from a business perspective. The guidance was invaluable."</p>
-                            <h4 style={{ margin: 0 }}>[Student Name]</h4>
-                            <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>Business Analyst, [Company]</span>
+                            <p style={{ color: 'var(--text-light)', fontStyle: 'italic', marginBottom: '1rem' }}>"The coach consistently emphasized that an analyst must be an "out-of-the-box thinker" and delivered the training accordingly. Through real-world projects, he demonstrated the practical application of various analytical tools and explained how they are utilized in business environments.</p>
+                            <p style={{ color: 'var(--text-light)', fontStyle: 'italic', marginBottom: '1.5rem' }}>The hands-on projects were exactly what I needed to bridge the gap between academic theory and real business requirements. The training provided valuable practical experience, and the assigned projects played a significant role in helping me secure my current role."</p>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginTop: 'auto' }}>
+                                <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(255, 255, 255, 0.05)', border: '2px dashed var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <i className="fa-solid fa-user" style={{ color: 'var(--text-light)', fontSize: '1.5rem' }}></i>
+                                </div>
+                                {/* When you have the picture, delete the div above and uncomment the img tag below: */}
+                                {/* <img src="/images/student2.jpeg" alt="Student" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary-color)' }} /> */}
+                                <h4 style={{ margin: 0 }}>[Student Name]</h4>
+                                <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>[Role], [Company]</span>
+                            </div>
                         </div>
-                        <div className="glass-panel" style={{ padding: '2rem', opacity: 0.9 }}>
+                        <div className="glass-panel" style={{ padding: '2rem', opacity: 0.9, display: 'flex', flexDirection: 'column' }}>
                             <div style={{ color: '#f59e0b', marginBottom: '1rem' }}>
                                 <i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i>
                             </div>
                             <p style={{ color: 'var(--text-light)', fontStyle: 'italic', marginBottom: '1.5rem' }}>"I highly recommend the Power BI track. The curriculum is perfectly aligned with what employers are asking for in interviews."</p>
-                            <h4 style={{ margin: 0 }}>[Student Name]</h4>
-                            <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>Financial Analyst, [Company]</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginTop: 'auto' }}>
+                                <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(255, 255, 255, 0.05)', border: '2px dashed var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <i className="fa-solid fa-user" style={{ color: 'var(--text-light)', fontSize: '1.5rem' }}></i>
+                                </div>
+                                {/* When you have the picture, delete the div above and uncomment the img tag below: */}
+                                {/* <img src="/images/student3.jpeg" alt="Student" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary-color)' }} /> */}
+                                <h4 style={{ margin: 0 }}>[Student Name]</h4>
+                                <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>Financial Analyst, [Company]</span>
+                            </div>
                         </div>
                     </div>
                 </div>
