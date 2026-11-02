@@ -1,8 +1,14 @@
 import React from 'react';
+import SEO from '../components/SEO';
 
 const Privacy = () => {
     return (
         <>
+            <SEO
+                title="Privacy Policy"
+                description="Read the Privacy Policy of YYZ Data Matrix Inc regarding how we collect, use, and safeguard your personal information."
+                url="/privacy"
+            />
             <section className="page-header">
                 <div className="container">
                     <h1 className="section-title">Privacy Policy</h1>

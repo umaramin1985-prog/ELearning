@@ -44,7 +44,7 @@ const About = () => {
             {/* WHO WE ARE SECTION */}
             <section className="section bg-alt" style={{ padding: '5rem 0' }}>
                 <div className="container">
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: '4rem', alignItems: 'center' }}>
                         <div>
                             <h2 style={{ fontSize: '2.5rem', color: 'var(--secondary-color)', marginBottom: '1.5rem' }}>Industry-Experienced. Practical. Results-Focused.</h2>
                             <ul style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', fontSize: '1.1rem' }}>
@@ -74,9 +74,8 @@ const About = () => {
                                 </li>
                             </ul>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
                             <img src="/icons/powerbi-badge.webp" width="200" height="200" alt="Microsoft Power BI Certified" style={{ width: '200px', height: '200px', borderRadius: '50%', boxShadow: 'var(--box-shadow)' }} />
-                            <img src="/icons/pl300-badge.webp" width="200" height="200" alt="PL-300 Course Completed" style={{ width: '200px', height: '200px', borderRadius: '50%', boxShadow: 'var(--box-shadow)' }} onError={(e) => { e.target.style.display = 'none'; }} />
                         </div>
                     </div>
                 </div>

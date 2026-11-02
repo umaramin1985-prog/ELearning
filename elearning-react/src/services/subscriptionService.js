@@ -55,3 +55,31 @@ export const updateSubscription = async (subscriptionId, data) => {
     const subRef = doc(db, 'subscriptions', subscriptionId);
     await updateDoc(subRef, data);
 };
+
+export const updateSubscriptionStatus = async (subscriptionId, status, subscriptionDetails = null) => {
+    const subRef = doc(db, 'subscriptions', subscriptionId);
+    await updateDoc(subRef, {
+        status,
+        completedAt: status === 'completed' ? serverTimestamp() : null
+    });
+
+    if (status === 'completed' && subscriptionDetails?.userId) {
+        const courseName = subscriptionDetails.courseId === 'powerbi'
+            ? 'Microsoft Power BI'
+            : (subscriptionDetails.courseId || 'Course').toUpperCase();
+        const sectionLabel = subscriptionDetails.sectionId === 'all'
+            ? 'Full Course'
+            : subscriptionDetails.sectionId.replace('module-', 'Module ');
+
+        const notifCol = collection(db, 'notifications');
+        await addDoc(notifCol, {
+            userId: subscriptionDetails.userId,
+            type: 'completion',
+            title: `Completed: ${courseName} (${sectionLabel})`,
+            message: `Congratulations! Your instructor marked ${sectionLabel} as completed. You can now leave a rating and review!`,
+            read: false,
+            createdAt: serverTimestamp(),
+            link: `/courses#${subscriptionDetails.courseId}`
+        });
+    }
+};

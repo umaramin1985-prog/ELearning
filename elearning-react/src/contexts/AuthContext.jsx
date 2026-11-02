@@ -6,8 +6,7 @@ import {
   signOut, 
   onAuthStateChanged,
   signInWithPopup,
-  updateProfile,
-  getAdditionalUserInfo
+  updateProfile
 } from 'firebase/auth';
 import { db } from '../firebase';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';

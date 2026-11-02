@@ -88,7 +88,7 @@ c:\Code\ELearning\
     │   │   ├── Header.jsx               # Fixed top navbar, mobile drawer, theme toggle, notifications, profile
     │   │   ├── Layout.jsx               # Shared page shell (Header, GlobalLiveBanner, Outlet, ChatWidget, A11y, Footer)
     │   │   ├── Loader.jsx               # Animated spinner (inline or fullScreen)
-    │   │   ├── NotificationDropdown.jsx # Real-time bell dropdown + audio chime (/sounds/notification.mp3)
+    │   │   ├── NotificationDropdown.jsx # Real-time bell dropdown + Web Audio API chime (AudioContext)
     │   │   ├── ParticleBackground.jsx   # Fixed background canvas rendering theme-aware digital rain
     │   │   ├── PaymentModal.jsx         # Checkout modal initiating Stripe redirect
     │   │   ├── ProtectedRoute.jsx       # Route guard: verifies auth user + Firestore user doc existence
@@ -164,8 +164,9 @@ c:\Code\ELearning\
    - `sectionId`: `string` (`'all'` for full course bundle, or `'module-1'`..`'module-6'`)
    - `type`: `'video' | 'live'`
    - `amount`: `number`
-   - `status`: `'active'`
+   - `status`: `'active' | 'completed'` (toggled by teachers/admins via `updateSubscriptionStatus` in `AdminPanel.jsx`)
    - `createdAt`: `Timestamp`
+   - `completedAt`: `Timestamp | null` (set when marked `'completed'`)
 
 4. **`transactions/{transId}`** (Managed in `subscriptionService.js`)
    - Created automatically alongside every subscription in `createSubscription()`.
@@ -212,14 +213,14 @@ c:\Code\ELearning\
      - `createdAt`: `Timestamp`
      - `isAdmin`: `boolean`
 
-8. **`notifications/{notifId}`** (Managed in `chatService.js`, `scheduleService.js`, `Contact.jsx`, `NotificationDropdown.jsx`)
+8. **`notifications/{notifId}`** (Managed in `chatService.js`, `scheduleService.js`, `subscriptionService.js`, `Contact.jsx`, `NotificationDropdown.jsx`)
    - `userId`: `string` (specific user's `uid`, or `'admin'` for admin-targeted notifications)
-   - `type`: `'chat' | 'session' | 'message'`
+   - `type`: `'chat' | 'session' | 'message' | 'completion'`
    - `title`: `string`
    - `message`: `string`
    - `read`: `boolean`
    - `createdAt`: `Timestamp`
-   - `link`: `string` (`'/profile'`, `'/admin'`, etc.)
+   - `link`: `string` (`'/profile'`, `'/admin'`, `'/courses#powerbi'`, etc.)
    - `chatUserId`: `string` (optional, for chat notifications)
 
 9. **`ratings/{ratingId}`** (Managed in `ratingService.js`)
@@ -272,7 +273,7 @@ c:\Code\ELearning\
 ### 5.4 Real-Time Support Chat & Notifications
 - **Student View (`ChatWidget.jsx`)**: Floating bottom-right chat button (`#chat-toggle`). Streams messages from `chats/{user.uid}/messages`. Shows a red unread badge when the last message is from an admin while the window is closed.
 - **Admin View (`ChatWidget.jsx`)**: Renders a toggleable right-hand fixed sidebar (`.admin-chat-sidebar-fixed`) listing all non-admin users sorted by `lastMessageAt`, with red/green status dots for `unreadByAdmin`, plus a chat window offset to `right: 310px`.
-- **Notifications (`NotificationDropdown.jsx`)**: Subscribes to `notifications` where `userId == user.uid` (and `userId == 'admin'` if the user is an admin), merges in any active accessible LiveKit sessions, plays `/sounds/notification.mp3` when unread count increases, and allows marking individual notifications as read or batch-deleting read notifications.
+- **Notifications (`NotificationDropdown.jsx`)**: Subscribes to `notifications` where `userId == user.uid` (and `userId == 'admin'` if the user is an admin), merges in any active accessible LiveKit sessions, plays a synthesized Web Audio API chime (`AudioContext`) when unread count increases, and allows marking individual notifications as read or batch-deleting read notifications.
 
 ---
 
@@ -312,11 +313,11 @@ STRIPE_SECRET_KEY=sk_...
 
 1. **Git Commands**: Do NOT check `git status` (or run git inspection commands) unless the user explicitly asks you to.
 2. **Vanilla CSS Only**: Never introduce TailwindCSS or CSS-in-JS libraries. Use the established CSS variables in `src/index.css`:
-   - Light Mode (`:root`): `--primary-color: #2563eb`, `--primary-dark: #1d4ed8`, `--secondary-color: #1e293b`, `--accent-color: #f59e0b`, `--text-main: #334155`, `--text-light: #64748b`, `--bg-main: #ffffff`, `--bg-alt: #f8fafc`.
-   - Dark Mode (`[data-theme="dark"]` on `<body>`, which is the default in `index.html`): `--primary-color: #3b82f6`, `--primary-dark: #60a5fa`, `--secondary-color: #f8fafc`, `--text-main: #e2e8f0`, `--text-light: #cbd5e1`, `--bg-main: #0f172a`, `--bg-alt: #1e293b`.
+   - Light Mode (`:root`): `--primary-color: #2563eb`, `--primary-rgb: 37, 99, 235`, `--primary-dark: #1d4ed8`, `--secondary-color: #1e293b`, `--accent-color: #f59e0b`, `--text-main` / `--text-color: #334155`, `--text-light` / `--text-color-light: #64748b`, `--bg-main` / `--background: #ffffff`, `--bg-alt: #f8fafc`, `--border-color: rgba(0, 0, 0, 0.1)`, `--border-radius: 12px`.
+   - Dark Mode (`[data-theme="dark"]` on `<body>`, which is the default in `index.html`): `--primary-color: #3b82f6`, `--primary-rgb: 59, 130, 246`, `--primary-dark: #60a5fa`, `--secondary-color: #f8fafc`, `--text-main` / `--text-color: #e2e8f0`, `--text-light` / `--text-color-light: #cbd5e1`, `--bg-main` / `--background: #0f172a`, `--bg-alt: #1e293b`, `--border-color: rgba(255, 255, 255, 0.1)`, `--border-radius: 12px`.
 3. **Theme-Aware Assets**: Whenever displaying diagrams or screenshots that have light/dark variants, render both with `.show-light` and `.show-dark` utility classes. Use `.webp` images (`scripts/convert_to_webp.py`).
 4. **Admin Emails Rule**: Any new admin email MUST be added to `VITE_ADMIN_EMAILS` in both local `.env` and Vercel Environment Variables before deploying (`vercel --prod`).
 5. **Notable Implementation Details to Keep in Mind**:
-   - In `Courses.jsx`, the `"Unlock Full Course"` button scrolls to `.course-overall-pricing`, and `"Rate Module"` opens `ReviewModal` (ensure `<ReviewModal />` is mounted in `Courses.jsx` if editing review flows).
-   - In `AdminPanel.jsx`, state/handlers for `live-chat` and `showAddSubscriptionModal` exist in component logic alongside the floating `ChatWidget` admin sidebar.
+   - In `Courses.jsx`, the `"Unlock Full Course"` button navigates to `/pricing#${activeTab}`. Enrolled students see an `"Enrolled"` badge while `status === 'active'` and a green `"Completed"` badge once the teacher marks their course/module complete. The `"Rate Module"` / `"Leave a Review"` buttons appear **only after** `isCompleted(sectionId)` is true, opening `<ReviewModal />` (mounted at the bottom of `Courses.jsx`) and refreshing `courseRatings` on submission.
+   - In `AdminPanel.jsx`, the **Subscriptions** tab includes a `"+ Add Subscription"` button (`showAddSubscriptionModal`) to manually grant course/module access, a **Status** column (`Active` / `Completed`), and a `"Mark Complete"` / `"Mark Active"` toggle button (`handleToggleSubscriptionStatus`) that updates `subscriptions/{subId}` and sends a `'completion'` notification to the student. The **Form Submissions** tab displays the full `Message` column, and live support chat is handled via the floating `ChatWidget` admin sidebar.
 

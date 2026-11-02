@@ -1,5 +1,5 @@
 import { db } from '../firebase';
-import { collection, addDoc, getDocs, query, where, serverTimestamp, setDoc, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, serverTimestamp, setDoc, doc, getDoc } from 'firebase/firestore';
 
 // Save or update a rating
 export const submitRating = async (courseId, sectionId, userId, userName, rating, review) => {

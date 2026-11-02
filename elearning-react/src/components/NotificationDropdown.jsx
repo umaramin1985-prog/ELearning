@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../firebase';
-import { collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, writeBatch } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc, updateDoc, writeBatch } from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { subscribeToActiveSessions } from '../services/liveSessionService';
@@ -36,9 +36,23 @@ const NotificationDropdown = () => {
                 const currentUnreadCount = merged.filter(n => !n.read).length;
                 if (currentUnreadCount > previousUnreadCountRef.current) {
                     try {
-                        const audio = new Audio('/sounds/notification.mp3');
-                        audio.play().catch(e => console.log('Audio play failed', e));
-                    } catch (err) {}
+                        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                        if (AudioCtx) {
+                            const ctx = new AudioCtx();
+                            const osc = ctx.createOscillator();
+                            const gain = ctx.createGain();
+                            osc.type = 'sine';
+                            osc.frequency.setValueAtTime(880, ctx.currentTime);
+                            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+                            osc.connect(gain);
+                            gain.connect(ctx.destination);
+                            osc.start();
+                            osc.stop(ctx.currentTime + 0.25);
+                        }
+                    } catch (err) {
+                        console.debug('Notification sound skipped:', err);
+                    }
                 }
                 previousUnreadCountRef.current = currentUnreadCount;
                 
@@ -119,8 +133,8 @@ const NotificationDropdown = () => {
         }
     };
 
-    const accessibleLiveSessions = isAdmin ? [] : liveSessions.filter(session => {
-        if (session.courseId === 'direct' && session.sectionId === user.uid) {
+    const accessibleLiveSessions = (!user || isAdmin) ? [] : liveSessions.filter(session => {
+        if (session.courseId === 'direct' && session.sectionId === user?.uid) {
             return true;
         }
         return userSubscriptions.some(sub => 
@@ -172,13 +186,27 @@ const NotificationDropdown = () => {
                                     onClick={() => markAsRead(notif.id, notif.link)}
                                 >
                                     <div className="notification-icon">
-                                        {notif.type === 'session' ? <i className="fa-solid fa-video"></i> : <i className="fa-solid fa-envelope"></i>}
+                                        {notif.type === 'session' ? (
+                                            <i className="fa-solid fa-video"></i>
+                                        ) : notif.type === 'completion' ? (
+                                            <i className="fa-solid fa-graduation-cap" style={{ color: '#10b981' }}></i>
+                                        ) : (
+                                            <i className="fa-solid fa-envelope"></i>
+                                        )}
                                     </div>
                                     <div className="notification-content">
                                         <div className="notification-title">{notif.title}</div>
                                         <div className="notification-message">{notif.message}</div>
                                         <div className="notification-time">
-                                            {notif.createdAt ? new Date(notif.createdAt.toMillis()).toLocaleString() : 'Just now'}
+                                            {notif.createdAt
+                                                ? new Date(
+                                                      typeof notif.createdAt.toMillis === 'function'
+                                                          ? notif.createdAt.toMillis()
+                                                          : notif.createdAt.seconds
+                                                            ? notif.createdAt.seconds * 1000
+                                                            : notif.createdAt
+                                                  ).toLocaleString()
+                                                : 'Just now'}
                                         </div>
                                     </div>
                                     {!notif.read && <div className="notification-dot"></div>}

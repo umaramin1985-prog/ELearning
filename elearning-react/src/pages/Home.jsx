@@ -313,8 +313,8 @@ const Home = () => {
                                 </div>
                                 {/* When you have the picture, delete the div above and uncomment the img tag below: */}
                                 {/* <img src="/images/student2.jpeg" alt="Student" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary-color)' }} /> */}
-                                <h4 style={{ margin: 0 }}>[Student Name]</h4>
-                                <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>[Role], [Company]</span>
+                                <h4 style={{ margin: 0 }}>Verified Graduate</h4>
+                                <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>Business Intelligence Analyst</span>
                             </div>
                         </div>
                         <div className="glass-panel" style={{ padding: '2rem', opacity: 0.9, display: 'flex', flexDirection: 'column' }}>
@@ -328,8 +328,8 @@ const Home = () => {
                                 </div>
                                 {/* When you have the picture, delete the div above and uncomment the img tag below: */}
                                 {/* <img src="/images/student3.jpeg" alt="Student" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary-color)' }} /> */}
-                                <h4 style={{ margin: 0 }}>[Student Name]</h4>
-                                <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>Financial Analyst, [Company]</span>
+                                <h4 style={{ margin: 0 }}>Verified Graduate</h4>
+                                <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>Financial Analyst</span>
                             </div>
                         </div>
                     </div>

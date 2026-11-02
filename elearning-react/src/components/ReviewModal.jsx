@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import StarRating from './StarRating';
 import { useAuth } from '../contexts/AuthContext';
 import { submitRating } from '../services/ratingService';
@@ -10,6 +10,14 @@ const ReviewModal = ({ isOpen, onClose, courseId, sectionId, sectionTitle, initi
     const [review, setReview] = useState(initialRating?.review || '');
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        if (isOpen) {
+            setRating(initialRating?.rating || 0);
+            setReview(initialRating?.review || '');
+            setError('');
+        }
+    }, [isOpen, initialRating]);
 
     if (!isOpen) return null;
 

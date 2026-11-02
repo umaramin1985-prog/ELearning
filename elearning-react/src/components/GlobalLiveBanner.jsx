@@ -40,13 +40,13 @@ const GlobalLiveBanner = () => {
         };
     }, [user]);
 
-    if (isAdmin || location.pathname.startsWith('/live-class')) {
+    if (!user || isAdmin || location.pathname.startsWith('/live-class')) {
         return null;
     }
 
     // Determine which live sessions the user can join
     const accessibleLiveSessions = liveSessions.filter(session => {
-        if (session.courseId === 'direct' && session.sectionId === user.uid) {
+        if (session.courseId === 'direct' && session.sectionId === user?.uid) {
             return true;
         }
         return userSubscriptions.some(sub => 

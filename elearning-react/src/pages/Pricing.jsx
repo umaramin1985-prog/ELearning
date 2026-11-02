@@ -133,6 +133,12 @@ const Pricing = () => {
                         </button>
                     </div>
 
+                    {error && (
+                        <div className="admin-error" style={{ marginBottom: '2rem' }}>
+                            {error}
+                        </div>
+                    )}
+
                     {loading ? (
                         <div style={{ textAlign: 'center', padding: '2rem' }}>Loading pricing plans...</div>
                     ) : activeTab !== 'powerbi' ? (

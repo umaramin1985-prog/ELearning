@@ -26,6 +26,12 @@
     --font-main: 'Inter', system-ui, sans-serif;
     --font-heading: 'Outfit', system-ui, sans-serif;
     --transition: all 0.3s ease;
+
+    --primary-rgb: 37, 99, 235;
+    --text-color: var(--text-main);
+    --text-color-light: var(--text-light);
+    --background: var(--bg-main);
+    --border-radius: 12px;
 }
 
 [data-theme="dark"] {
@@ -49,6 +55,12 @@
     --box-shadow-hover: 0 15px 50px rgba(0, 0, 0, 0.5);
     --item-bg: #1e293b;
     --input-border: #475569;
+
+    --primary-rgb: 59, 130, 246;
+    --text-color: var(--text-main);
+    --text-color-light: var(--text-light);
+    --background: var(--bg-main);
+    --border-radius: 12px;
 }
 
 /* Theme Visibility Utilities */
@@ -922,38 +934,6 @@ h4 {
 
     .logo-text {
         font-size: 1.1rem;
-    }
-
-    .nav {
-        position: fixed;
-        top: 80px;
-        left: -100%;
-        width: 100%;
-        height: calc(100vh - 80px);
-        background: #0f172a;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        transition: var(--transition);
-    }
-
-    .nav.active {
-        left: 0;
-    }
-
-    .nav-list {
-        flex-direction: column;
-        text-align: center;
-        gap: 2rem;
-        font-size: 1.2rem;
-    }
-
-    .mobile-toggle {
-        display: block;
-    }
-
-    .nav-btn {
-        display: none;
     }
 
     .hero-title {

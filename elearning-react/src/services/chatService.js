@@ -1,5 +1,5 @@
 import { db } from '../firebase';
-import { collection, doc, addDoc, serverTimestamp, query, orderBy, onSnapshot, getDocs, updateDoc, setDoc, getDoc } from 'firebase/firestore';
+import { collection, doc, addDoc, serverTimestamp, query, orderBy, onSnapshot, updateDoc, setDoc, getDoc } from 'firebase/firestore';
 
 export const subscribeToChat = (userId, callback) => {
     const messagesRef = collection(db, 'chats', userId, 'messages');
@@ -25,14 +25,14 @@ export const sendMessage = async (userId, senderId, text, isAdmin = false) => {
     });
 
     // 2. Ensure the root chat document exists (so we can query active chats)
+    let userName = 'Unknown User';
     try {
         const chatRef = doc(db, 'chats', userId);
         const userRef = doc(db, 'users', userId);
         const userSnap = await getDoc(userRef);
-        let userName = 'Unknown User';
         if (userSnap.exists()) {
             const userData = userSnap.data();
-            userName = userData.firstName ? `${userData.firstName} ${userData.lastName}` : (userData.email || 'User');
+            userName = userData.firstName ? `${userData.firstName} ${userData.lastName}` : (userData.displayName || userData.email || 'User');
         }
 
         await setDoc(chatRef, {

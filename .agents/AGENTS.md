@@ -31,12 +31,13 @@ This project is an interactive E-Learning and Live Coaching platform for **YYZ D
    - `LiveClass.jsx` (`/live-class/:roomId`) verifies subscription/admin access, fetches a JWT from `/api/livekit-token`, and mounts `<LiveKitRoom>`.
 5. **Real-Time Support Chat & Notifications (`src/components/ChatWidget.jsx`, `NotificationDropdown.jsx`, `chatService.js`)**:
    - `ChatWidget` provides a floating support chat for logged-in students (`chats/{userId}/messages`) and a fixed right-hand user-list sidebar + chat window for admins.
-   - `NotificationDropdown` streams user and `'admin'` notifications from Firestore `notifications`, plays an audio alert (`/sounds/notification.mp3`), and surfaces active live classes.
-6. **Scheduling & Ratings (`CalendarView.jsx`, `ScheduleModal.jsx`, `StarRating.jsx`, `ReviewModal.jsx`)**:
+   - `NotificationDropdown` streams user and `'admin'` notifications from Firestore `notifications`, plays a synthesized Web Audio API chime (`AudioContext`), and surfaces active live classes.
+6. **Scheduling, Course Completion & Ratings (`CalendarView.jsx`, `ScheduleModal.jsx`, `StarRating.jsx`, `ReviewModal.jsx`, `subscriptionService.js`)**:
    - Students and admins can view/request/schedule sessions on an interactive calendar (`sessions` collection).
-   - Enrolled students can rate courses/modules (1–5 stars publicly aggregated, with private written feedback visible only to admins in `ratings/{userId}_{courseId}_{sectionId}`).
+   - Teachers/admins can mark a student's course or module subscription as `'completed'` (or reopen as `'active'`) in the Admin Panel, which keeps course materials accessible, displays a `"Completed"` badge on `/courses`, sends a `'completion'` notification to the student, and unlocks the ability to rate/review.
+   - Students whose course/module is marked `'completed'` can rate courses/modules (1–5 stars publicly aggregated, with private written feedback visible only to admins in `ratings/{userId}_{courseId}_{sectionId}`).
 7. **Admin Control Panel (`src/pages/AdminPanel.jsx`)**:
-   - Multi-tab dashboard for authorized admins: **Users** (view/delete non-admin users), **Course Pricing** (edit full-course and module rates in Firestore), **Subscriptions** (view revenue/subscriptions, manually grant or delete subscriptions), **Calendar** (master schedule management), **Form Submissions** (view/delete `/contact` messages), **Live Classes** (start course or 1-on-1 LiveKit sessions, cleanup zombie sessions), and **Course Reviews** (read student ratings & private reviews).
+   - Multi-tab dashboard for authorized admins: **Users** (view/delete non-admin users), **Course Pricing** (edit full-course and module rates in Firestore), **Subscriptions** (view revenue/subscriptions, manually grant or delete subscriptions, and toggle student course/module status between `Active` and `Completed`), **Calendar** (master schedule management), **Form Submissions** (view/delete `/contact` messages), **Live Classes** (start course or 1-on-1 LiveKit sessions, cleanup zombie sessions), and **Course Reviews** (read student ratings & private reviews).
 8. **Global UI & Accessibility (`Header.jsx`, `Footer.jsx`, `AccessibilityWidget.jsx`, `ParticleBackground.jsx`)**:
    - Fixed `<Header />` with responsive mobile drawer, Dark/Light theme persistence (`localStorage.getItem('theme')`), and notification bell.
    - `<AccessibilityWidget />` toggles body classes for Large Text, High Contrast, Dyslexia Friendly font, Highlight Links, and Greyscale.

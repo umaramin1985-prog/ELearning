@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
-import { collection, getDocs, deleteDoc, doc, addDoc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { getCourses, getSections, saveCourse, saveSection, seedInitialCourses } from '../services/courseService';
-import { getAllSubscriptions, getAllTransactions, createSubscription, deleteSubscription } from '../services/subscriptionService';
+import { getAllSubscriptions, getAllTransactions, createSubscription, deleteSubscription, updateSubscriptionStatus } from '../services/subscriptionService';
 import { getAllSessions, createSession, deleteSession } from '../services/scheduleService';
 import CalendarView from '../components/CalendarView';
-import { subscribeToActiveChats, subscribeToChat, sendMessage, markChatReadByAdmin } from '../services/chatService';
 import { useAuth } from '../contexts/AuthContext';
 import './AdminPanel.css';
 import { startLiveSession, endAllActiveSessions } from '../services/liveSessionService';
@@ -16,22 +15,16 @@ import { useNavigate } from 'react-router-dom';
 const AdminPanel = () => {
     const { user: currentUser } = useAuth();
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState('users'); // users, pricing, subscriptions, calendar, messages, live-chat, live-classes
+    const [activeTab, setActiveTab] = useState('users'); // users, pricing, subscriptions, calendar, messages, live-classes, reviews
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    
-    // Live Chat states
-    const [activeChats, setActiveChats] = useState([]);
-    const [selectedChatUser, setSelectedChatUser] = useState(null);
-    const [chatMessages, setChatMessages] = useState([]);
-    const [chatInput, setChatInput] = useState('');
 
     // Data states
     const [users, setUsers] = useState([]);
     
     // Pricing states
     const [courses, setCourses] = useState([]);
-    const [selectedCourse, setSelectedCourse] = useState('powerbi');
+    const selectedCourse = 'powerbi';
     const [sections, setSections] = useState([]);
     const [courseRates, setCourseRates] = useState({ videoRate: 0, liveRate: 0 });
 
@@ -65,13 +58,6 @@ const AdminPanel = () => {
     const [reviews, setReviews] = useState([]);
 
     useEffect(() => {
-        fetchData();
-    }, [activeTab]);
-
-    // Added to import chatService functions
-    // (Needs to be imported at the top, I'll add imports in a separate chunk)
-
-    useEffect(() => {
         const fetchLiveClassSections = async () => {
             if (newLiveClassCourseId) {
                 const secs = await getSections(newLiveClassCourseId);
@@ -100,11 +86,9 @@ const AdminPanel = () => {
                 await fetchSessionsData();
             } else if (activeTab === 'messages') {
                 await fetchMessagesData();
-            } else if (activeTab === 'live-chat') {
-                if (users.length === 0) await fetchUsers();
-                // Subscription handled via useEffect
             } else if (activeTab === 'live-classes') {
                 if (courses.length === 0) await fetchPricingData();
+                if (users.length === 0) await fetchUsers();
             } else if (activeTab === 'reviews') {
                 await fetchReviewsData();
             }
@@ -115,6 +99,11 @@ const AdminPanel = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab]);
 
     const fetchUsers = async () => {
         const usersCol = collection(db, 'users');
@@ -196,44 +185,6 @@ const AdminPanel = () => {
         }
     };
 
-    useEffect(() => {
-        let unsubscribeChats;
-        if (activeTab === 'live-chat') {
-            unsubscribeChats = subscribeToActiveChats((chats) => {
-                setActiveChats(chats);
-            });
-        }
-        return () => {
-            if (unsubscribeChats) unsubscribeChats();
-        };
-    }, [activeTab]);
-
-    useEffect(() => {
-        let unsubscribeMessages;
-        if (activeTab === 'live-chat' && selectedChatUser) {
-            unsubscribeMessages = subscribeToChat(selectedChatUser, (msgs) => {
-                setChatMessages(msgs);
-            });
-            markChatReadByAdmin(selectedChatUser).catch(console.error);
-        }
-        return () => {
-            if (unsubscribeMessages) unsubscribeMessages();
-        };
-    }, [activeTab, selectedChatUser]);
-
-    const handleSendAdminMessage = async (e) => {
-        e.preventDefault();
-        if (chatInput.trim() === '' || !selectedChatUser) return;
-        
-        const text = chatInput;
-        setChatInput('');
-        try {
-            await sendMessage(selectedChatUser, currentUser.uid, text, true);
-        } catch (error) {
-            console.error('Error sending message:', error);
-        }
-    };
-
     const getUserDisplayName = (userId) => {
         const user = users.find(u => u.id === userId);
         if (!user) return userId;
@@ -274,6 +225,7 @@ const AdminPanel = () => {
             });
             alert("Course rates updated successfully!");
         } catch (error) {
+            console.error(error);
             alert("Failed to update course rates.");
         }
     };
@@ -292,6 +244,7 @@ const AdminPanel = () => {
             });
             alert(`${section.title} rates updated successfully!`);
         } catch (error) {
+            console.error(error);
             alert(`Failed to update ${section.title} rates.`);
         }
     };
@@ -306,6 +259,23 @@ const AdminPanel = () => {
         } catch (error) {
             console.error(error);
             alert('Failed to delete subscription: ' + error.message);
+        }
+    };
+
+    const handleToggleSubscriptionStatus = async (sub) => {
+        const newStatus = sub.status === 'completed' ? 'active' : 'completed';
+        try {
+            await updateSubscriptionStatus(sub.id, newStatus, {
+                userId: sub.userId,
+                courseId: sub.courseId,
+                sectionId: sub.sectionId
+            });
+            setSubscriptions(subscriptions.map(s =>
+                s.id === sub.id ? { ...s, status: newStatus } : s
+            ));
+        } catch (error) {
+            console.error(error);
+            alert('Failed to update course status: ' + error.message);
         }
     };
 
@@ -376,6 +346,7 @@ const AdminPanel = () => {
             await fetchSessionsData();
             alert('Session scheduled successfully!');
         } catch (error) {
+            console.error(error);
             alert('Failed to schedule session.');
         }
     };
@@ -429,28 +400,12 @@ const AdminPanel = () => {
             await deleteDoc(doc(db, 'messages', id));
             setMessages(messages.filter(m => m.id !== id));
         } catch (error) {
+            console.error(error);
             alert('Failed to delete message.');
         }
     };
 
     const totalRevenue = transactions.reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
-
-    // Prepare chat users list by merging all non-admin users with activeChats data
-    const chatUsersList = users.filter(u => !u.isAdmin).map(u => {
-        const activeChat = activeChats.find(c => c.userId === u.id);
-        return {
-            userId: u.id,
-            userName: u.displayName || u.email || u.id,
-            unreadByAdmin: activeChat ? activeChat.unreadByAdmin : false,
-            lastMessage: activeChat ? activeChat.lastMessage : 'No messages yet',
-            lastMessageAt: activeChat ? activeChat.lastMessageAt : null
-        };
-    }).sort((a, b) => {
-        const aTime = a.lastMessageAt?.toMillis?.() || 0;
-        const bTime = b.lastMessageAt?.toMillis?.() || 0;
-        if (aTime !== bTime) return bTime - aTime;
-        return a.userName.localeCompare(b.userName);
-    });
 
     return (
         <section className="admin-section">
@@ -492,7 +447,7 @@ const AdminPanel = () => {
                                     </thead>
                                     <tbody>
                                         {users.length === 0 ? (
-                                            <tr><td colSpan="5" className="admin-no-data">No users found.</td></tr>
+                                            <tr><td colSpan="6" className="admin-no-data">No users found.</td></tr>
                                         ) : (
                                             users.map((u) => (
                                                 <tr key={u.id}>
@@ -614,7 +569,12 @@ const AdminPanel = () => {
                                 </div>
 
                                 <div className="admin-table-container mt-2">
-                                    <h2 style={{ marginBottom: '1.5rem' }}>All Subscriptions</h2>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                                        <h2 style={{ margin: 0 }}>All Subscriptions</h2>
+                                        <button className="admin-action-btn" onClick={() => setShowAddSubscriptionModal(true)}>
+                                            <i className="fa-solid fa-plus" style={{ marginRight: '0.5rem' }}></i> Add Subscription
+                                        </button>
+                                    </div>
                                     <table className="admin-table">
                                         <thead>
                                             <tr>
@@ -623,26 +583,42 @@ const AdminPanel = () => {
                                                 <th>Section</th>
                                                 <th>Type</th>
                                                 <th>Amount ($)</th>
+                                                <th>Status</th>
                                                 <th>Date</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {subscriptions.length === 0 ? (
-                                                <tr><td colSpan="7" className="admin-no-data">No subscriptions found.</td></tr>
+                                                <tr><td colSpan="8" className="admin-no-data">No subscriptions found.</td></tr>
                                             ) : (
                                                 subscriptions.map((sub) => (
                                                     <tr key={sub.id}>
                                                         <td><strong>{getUserDisplayName(sub.userId)}</strong></td>
                                                         <td>{sub.courseId}</td>
-                                                        <td>{sub.sectionId}</td>
+                                                        <td>{sub.sectionId === 'all' ? 'Full Course' : sub.sectionId}</td>
                                                         <td><span className={`badge ${sub.type}`}>{sub.type}</span></td>
                                                         <td>${sub.amount}</td>
+                                                        <td>
+                                                            <span className={`badge ${sub.status === 'completed' ? 'completed' : 'active-status'}`}>
+                                                                {sub.status === 'completed' ? 'Completed' : 'Active'}
+                                                            </span>
+                                                        </td>
                                                         <td>{sub.createdAt ? new Date(sub.createdAt.toDate()).toLocaleDateString() : 'N/A'}</td>
                                                         <td>
-                                                            <button className="admin-delete-btn" onClick={() => setSubscriptionToDelete(sub.id)} style={{padding: '0.2rem 0.5rem', fontSize: '0.8rem'}}>
-                                                                <i className="fa-solid fa-trash"></i>
-                                                            </button>
+                                                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                                                <button
+                                                                    className={`admin-status-btn ${sub.status === 'completed' ? 'reopen' : 'complete'}`}
+                                                                    onClick={() => handleToggleSubscriptionStatus(sub)}
+                                                                    title={sub.status === 'completed' ? 'Reopen / Mark as Active' : 'Mark Course/Module as Complete'}
+                                                                >
+                                                                    <i className={`fa-solid ${sub.status === 'completed' ? 'fa-rotate-left' : 'fa-check'}`}></i>
+                                                                    {sub.status === 'completed' ? 'Mark Active' : 'Mark Complete'}
+                                                                </button>
+                                                                <button className="admin-delete-btn" onClick={() => setSubscriptionToDelete(sub.id)} style={{padding: '0.35rem 0.6rem', fontSize: '0.8rem'}} title="Delete Subscription">
+                                                                    <i className="fa-solid fa-trash"></i>
+                                                                </button>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 ))
@@ -786,9 +762,9 @@ const AdminPanel = () => {
                         )}
 
                         {activeTab === 'messages' && (
-                            <div className="admin-section fade-in">
-                                <h3>Form Submissions</h3>
-                                <div className="table-container">
+                            <div className="admin-section fade-in" style={{ padding: 0 }}>
+                                <div className="admin-table-container">
+                                    <h3>Form Submissions</h3>
                                     <table className="admin-table">
                                         <thead>
                                             <tr>
@@ -796,6 +772,7 @@ const AdminPanel = () => {
                                                 <th>Name</th>
                                                 <th>Email</th>
                                                 <th>Subject</th>
+                                                <th>Message</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -803,9 +780,10 @@ const AdminPanel = () => {
                                             {messages.map(msg => (
                                                 <tr key={msg.id}>
                                                     <td>{msg.createdAt?.toDate ? msg.createdAt.toDate().toLocaleDateString() : 'N/A'}</td>
-                                                    <td>{msg.name}</td>
-                                                    <td><a href={`mailto:${msg.email}`}>{msg.email}</a></td>
+                                                    <td><strong>{msg.name}</strong></td>
+                                                    <td><a href={`mailto:${msg.email}`} style={{ color: 'var(--primary-color)' }}>{msg.email}</a></td>
                                                     <td>{msg.subject}</td>
+                                                    <td style={{ maxWidth: '350px', whiteSpace: 'normal', lineHeight: '1.5' }}>{msg.message}</td>
                                                     <td>
                                                         <button className="admin-action-btn-small" style={{background: '#ef4444'}} onClick={() => handleDeleteMessage(msg.id)}>
                                                             <i className="fa-solid fa-trash"></i>
@@ -814,7 +792,7 @@ const AdminPanel = () => {
                                                 </tr>
                                             ))}
                                             {messages.length === 0 && (
-                                                <tr><td colSpan="5" style={{textAlign: 'center'}}>No messages found.</td></tr>
+                                                <tr><td colSpan="6" style={{textAlign: 'center'}}>No messages found.</td></tr>
                                             )}
                                         </tbody>
                                     </table>
@@ -833,6 +811,7 @@ const AdminPanel = () => {
                                                 await endAllActiveSessions();
                                                 alert('All active sessions have been ended.');
                                             } catch (err) {
+                                                console.error(err);
                                                 alert('Failed to end active sessions.');
                                             }
                                         }

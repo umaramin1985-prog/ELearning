@@ -143,7 +143,7 @@
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 1rem;
 }
 
@@ -159,7 +159,7 @@
 }
 
 .admin-tab-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(var(--primary-rgb), 0.05);
     color: var(--text-color);
 }
 
@@ -171,7 +171,7 @@
 
 .admin-pricing-container .pricing-card {
     background: var(--card-bg);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
     padding: 1.5rem;
     border-radius: 12px;
     margin-bottom: 2rem;
@@ -191,9 +191,9 @@
 }
 
 .form-group input, .rate-input {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
     padding: 0.5rem;
     border-radius: 6px;
     width: 100%;
@@ -204,8 +204,8 @@
 }
 
 .rate-input option {
-    background: #1e293b;
-    color: white;
+    background: var(--bg-main);
+    color: var(--text-main);
 }
 
 .admin-action-btn, .admin-action-btn-small {
@@ -238,7 +238,7 @@
 
 .stat-card {
     background: var(--card-bg);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
     padding: 1.5rem;
     border-radius: 12px;
     flex: 1;
@@ -274,6 +274,54 @@
 .badge.live {
     background: rgba(255, 87, 34, 0.2);
     color: #ff5722;
+}
+
+.badge.completed {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge.active-status {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--primary-color);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.admin-status-btn {
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.admin-status-btn.complete {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.admin-status-btn.complete:hover {
+    background: #10b981;
+    color: white;
+    border-color: #10b981;
+}
+
+.admin-status-btn.reopen {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.admin-status-btn.reopen:hover {
+    background: #f59e0b;
+    color: white;
+    border-color: #f59e0b;
 }
 
 .mt-2 {

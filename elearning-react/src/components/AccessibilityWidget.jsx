@@ -17,11 +17,11 @@ const AccessibilityWidget = () => {
         // Apply classes to body based on settings
         const body = document.body;
         
-        settings.largeText ? body.classList.add('a11y-large-text') : body.classList.remove('a11y-large-text');
-        settings.highContrast ? body.classList.add('a11y-high-contrast') : body.classList.remove('a11y-high-contrast');
-        settings.dyslexicFont ? body.classList.add('a11y-dyslexic-font') : body.classList.remove('a11y-dyslexic-font');
-        settings.highlightLinks ? body.classList.add('a11y-highlight-links') : body.classList.remove('a11y-highlight-links');
-        settings.greyscale ? body.classList.add('a11y-greyscale') : body.classList.remove('a11y-greyscale');
+        body.classList.toggle('a11y-large-text', settings.largeText);
+        body.classList.toggle('a11y-high-contrast', settings.highContrast);
+        body.classList.toggle('a11y-dyslexic-font', settings.dyslexicFont);
+        body.classList.toggle('a11y-highlight-links', settings.highlightLinks);
+        body.classList.toggle('a11y-greyscale', settings.greyscale);
         
     }, [settings]);
 

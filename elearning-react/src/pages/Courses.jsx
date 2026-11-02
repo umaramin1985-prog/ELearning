@@ -6,8 +6,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { getCourses, getSections } from '../services/courseService';
 import { createSubscription, getUserSubscriptions } from '../services/subscriptionService';
 import { getUserSessions, createSession, deleteSession } from '../services/scheduleService';
-import { subscribeToActiveSessions } from '../services/liveSessionService';
-import PaymentModal from '../components/PaymentModal';
 import CalendarView from '../components/CalendarView';
 import ScheduleModal from '../components/ScheduleModal';
 import { getRatingsForCourse } from '../services/ratingService';
@@ -36,13 +34,7 @@ const Courses = () => {
     const [sections, setSections] = useState([]);
     const [userSubscriptions, setUserSubscriptions] = useState([]);
     const [userSessions, setUserSessions] = useState([]);
-    const [liveSessions, setLiveSessions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    // Payment Modal State
-    const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
-    const [paymentData, setPaymentData] = useState(null);
 
     // Schedule Modal State
     const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
@@ -111,14 +103,6 @@ const Courses = () => {
             }
         };
         initData();
-
-        const unsubscribeLive = subscribeToActiveSessions((sessions) => {
-            setLiveSessions(sessions);
-        });
-
-        return () => {
-            unsubscribeLive();
-        };
     }, [user]);
 
     const hasAccess = (sectionId, type) => {
@@ -130,25 +114,17 @@ const Courses = () => {
         );
     };
 
-    const handleSubscribe = (sectionId, type, amount, title) => {
-        if (!user) {
-            navigate('/signin');
-            return;
-        }
-        setPaymentData({
-            courseId: activeTab,
-            sectionId,
-            type,
-            amount,
-            title: `Subscription for ${title} (${type === 'video' ? 'Video Lectures' : 'Live Online'})`
-        });
-        setPaymentModalOpen(true);
+    const isEnrolled = (sectionId) => {
+        return hasAccess('all', 'video') || hasAccess('all', 'live') || hasAccess(sectionId, 'video') || hasAccess(sectionId, 'live');
     };
 
-    // Success is now handled by Stripe redirect and the useEffect below.
-    // We can keep this for manual triggers or other payment methods if needed in the future.
-    const handlePaymentSuccess = async (transaction) => {
-        // ... (Keep existing for backward compatibility or remove if desired. We will rely on redirect now)
+    const isCompleted = (sectionId) => {
+        if (!user) return false;
+        return userSubscriptions.some(sub =>
+            sub.courseId === activeTab &&
+            (sub.sectionId === 'all' || sub.sectionId === sectionId) &&
+            sub.status === 'completed'
+        );
     };
 
     // Handle Stripe redirect on mount
@@ -214,34 +190,35 @@ const Courses = () => {
     const currentCourse = courses[activeTab] || { title: 'Microsoft Power BI', overallVideoRate: 499, overallLiveRate: 999 };
     const totalSpent = userSubscriptions.reduce((acc, sub) => acc + sub.amount, 0);
 
-    // Fallback pricing if Firestore sections are empty
-    const getSectionPricing = (index, fallbackVideo, fallbackLive) => {
-        const section = sections[index];
-        return {
-            id: section?.id || `module-${index + 1}`,
-            videoRate: section?.videoRate || fallbackVideo,
-            liveRate: section?.liveRate || fallbackLive
-        };
-    };
-
     const renderModuleHeader = (moduleNum, moduleTitle, moduleId) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', width: '100%' }}>
             <span className="module-number">{moduleNum}</span>
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                     <h3 style={{ margin: 0 }}>{moduleTitle}</h3>
-                    {(hasAccess('all', 'video') || hasAccess('all', 'live') || hasAccess(moduleId, 'video') || hasAccess(moduleId, 'live')) && (
-                        <button
-                            className="btn btn-secondary"
-                            style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setReviewModalData({ isOpen: true, sectionId: moduleId, sectionTitle: moduleTitle, initialRating: getUserReview(moduleId) });
-                            }}
-                        >
-                            {getUserReview(moduleId) ? 'Update Review' : 'Rate Module'}
-                        </button>
-                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        {isCompleted(moduleId) ? (
+                            <>
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.65rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600, background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                                    <i className="fa-solid fa-circle-check"></i> Completed
+                                </span>
+                                <button
+                                    className="btn btn-secondary"
+                                    style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setReviewModalData({ isOpen: true, sectionId: moduleId, sectionTitle: moduleTitle, initialRating: getUserReview(moduleId) });
+                                    }}
+                                >
+                                    {getUserReview(moduleId) ? 'Update Review' : 'Rate Module'}
+                                </button>
+                            </>
+                        ) : isEnrolled(moduleId) ? (
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.65rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600, background: 'rgba(59, 130, 246, 0.12)', color: 'var(--primary-color)', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+                                <i className="fa-solid fa-book-open"></i> Enrolled
+                            </span>
+                        ) : null}
+                    </div>
                 </div>
                 {(() => {
                     const r = getRatingData(moduleId);
@@ -364,31 +341,42 @@ const Courses = () => {
                                                 <p className="subtitle" style={{ fontSize: '1.2rem', color: 'var(--text-main)', marginBottom: '1.5rem', lineHeight: '1.6' }}>
                                                     Master data modeling, DAX, and storytelling to turn raw data into decisions. Build a professional portfolio and gain the confidence to lead analytics projects.
                                                 </p>
-                                                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                                                    <button
-                                                        className="btn btn-primary"
-                                                        onClick={() => {
-                                                            document.querySelector('.course-overall-pricing').scrollIntoView({ behavior: 'smooth' });
-                                                        }}
-                                                    >
-                                                        Unlock Full Course
-                                                    </button>
+                                                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                                                    {!(hasAccess('all', 'video') || hasAccess('all', 'live')) && (
+                                                        <button
+                                                            className="btn btn-primary"
+                                                            onClick={() => {
+                                                                navigate(`/pricing#${activeTab}`);
+                                                            }}
+                                                        >
+                                                            Unlock Full Course
+                                                        </button>
+                                                    )}
                                                     <button
                                                         className="btn btn-secondary"
                                                         onClick={() => {
-                                                            document.querySelector('.demo-video-container').scrollIntoView({ behavior: 'smooth' });
+                                                            document.querySelector('.demo-video-container')?.scrollIntoView({ behavior: 'smooth' });
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-play"></i> Watch Free Demo
                                                     </button>
-                                                    {(hasAccess('all', 'video') || hasAccess('all', 'live')) && (
-                                                        <button
-                                                            className="btn btn-secondary"
-                                                            onClick={() => setReviewModalData({ isOpen: true, sectionId: 'all', sectionTitle: currentCourse.title, initialRating: getUserReview('all') })}
-                                                        >
-                                                            {getUserReview('all') ? 'Update Your Review' : 'Leave a Review'}
-                                                        </button>
-                                                    )}
+                                                    {isCompleted('all') ? (
+                                                        <>
+                                                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.55rem 1rem', borderRadius: '30px', fontSize: '0.9rem', fontWeight: 600, background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                                                                <i className="fa-solid fa-graduation-cap"></i> Course Completed
+                                                            </span>
+                                                            <button
+                                                                className="btn btn-secondary"
+                                                                onClick={() => setReviewModalData({ isOpen: true, sectionId: 'all', sectionTitle: currentCourse.title, initialRating: getUserReview('all') })}
+                                                            >
+                                                                {getUserReview('all') ? 'Update Your Review' : 'Leave a Review'}
+                                                            </button>
+                                                        </>
+                                                    ) : (hasAccess('all', 'video') || hasAccess('all', 'live')) ? (
+                                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.55rem 1rem', borderRadius: '30px', fontSize: '0.9rem', fontWeight: 600, background: 'rgba(59, 130, 246, 0.12)', color: 'var(--primary-color)', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+                                                            <i className="fa-solid fa-book-open"></i> Full Course Enrolled
+                                                        </span>
+                                                    ) : null}
                                                 </div>
                                             </div>
 
@@ -726,23 +714,27 @@ const Courses = () => {
                     </div>
                 </div>
 
-                {paymentData && (
-                    <PaymentModal
-                        isOpen={isPaymentModalOpen}
-                        onClose={() => setPaymentModalOpen(false)}
-                        amount={paymentData.amount}
-                        itemDescription={paymentData.title}
-                        paymentData={paymentData}
-                        onSuccess={handlePaymentSuccess}
-                    />
-                )}
-
                 <ScheduleModal
                     isOpen={isScheduleModalOpen}
                     onClose={() => setIsScheduleModalOpen(false)}
                     slotInfo={selectedSlotInfo}
                     onSubmit={handleScheduleSubmit}
                     isAdmin={isAdmin}
+                />
+
+                <ReviewModal
+                    isOpen={reviewModalData.isOpen}
+                    onClose={async (didSubmit) => {
+                        setReviewModalData({ isOpen: false, sectionId: null, sectionTitle: '', initialRating: null });
+                        if (didSubmit) {
+                            const ratings = await getRatingsForCourse(activeTab);
+                            setCourseRatings(ratings);
+                        }
+                    }}
+                    courseId={activeTab}
+                    sectionId={reviewModalData.sectionId}
+                    sectionTitle={reviewModalData.sectionTitle}
+                    initialRating={reviewModalData.initialRating}
                 />
             </section>
         </>
