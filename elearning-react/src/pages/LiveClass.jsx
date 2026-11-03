@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getLiveSessionByRoomId, endLiveSession, subscribeToLiveSessionByRoomId } from '../services/liveSessionService';
 import { getUserSubscriptions } from '../services/subscriptionService';
 import { LiveKitRoom, VideoConference, RoomAudioRenderer } from '@livekit/components-react';
+import { DisconnectReason } from 'livekit-client';
 import '@livekit/components-styles';
 import './LiveClass.css';
 
-const LiveClass = () => {
-    const { roomId } = useParams();
+const LiveClass = ({ roomId: propRoomId, isMinimized = false, onClose }) => {
+    const { roomId: paramsRoomId } = useParams();
+    const roomId = propRoomId || paramsRoomId;
     const { user } = useAuth();
     const navigate = useNavigate();
     
@@ -17,12 +19,134 @@ const LiveClass = () => {
     const [error, setError] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [token, setToken] = useState("");
+    const [isPipActive, setIsPipActive] = useState(false);
+    const initializedRoomRef = useRef(null);
+    const sessionEndedRef = useRef(false);
+    const containerRef = useRef(null);
+
+    const roomOptions = useMemo(() => ({
+        // Keep video tracks streaming continuously even when switching tabs/windows or using Picture-in-Picture
+        adaptiveStream: false,
+        dynacast: true,
+        disconnectOnPageLeave: false,
+    }), []);
+
+    const getBestVideoElement = useCallback(() => {
+        const root = containerRef.current || document;
+        const videos = Array.from(root.querySelectorAll('video')).filter(
+            (v) => v.readyState >= 2 && v.videoWidth > 0 && !v.paused
+        );
+        if (videos.length === 0) return null;
+
+        // Prefer remote participant / screen-share video over local self-view when multiple videos exist
+        const remoteVideo = videos.find((v) => {
+            const tile = v.closest('[data-lk-local-participant]');
+            return tile && tile.getAttribute('data-lk-local-participant') === 'false';
+        });
+        return remoteVideo || videos[0];
+    }, []);
+
+    const togglePictureInPicture = useCallback(async () => {
+        try {
+            if (document.pictureInPictureElement) {
+                await document.exitPictureInPicture();
+                setIsPipActive(false);
+                return;
+            }
+            const targetVideo = getBestVideoElement();
+            if (!targetVideo) {
+                alert('No active video stream found yet. Make sure a camera or screen share is turned on.');
+                return;
+            }
+            targetVideo.disablePictureInPicture = false;
+            await targetVideo.requestPictureInPicture();
+            setIsPipActive(true);
+        } catch (err) {
+            console.error('Picture-in-Picture error:', err);
+        }
+    }, [getBestVideoElement]);
+
+    // Enable automatic Picture-in-Picture on active video elements & MediaSession API
+    useEffect(() => {
+        if (!token) return;
+
+        const configureVideosForPiP = () => {
+            const root = containerRef.current || document;
+            const allVideos = Array.from(root.querySelectorAll('video'));
+            allVideos.forEach((v) => {
+                v.disablePictureInPicture = false;
+                v.autoPictureInPicture = false;
+            });
+            const best = getBestVideoElement();
+            if (best) {
+                best.autoPictureInPicture = true;
+            }
+        };
+
+        const handleEnterPiP = () => setIsPipActive(true);
+        const handleLeavePiP = () => setIsPipActive(false);
+
+        const handleVisibilityChange = async () => {
+            if (document.visibilityState === 'hidden' && !document.pictureInPictureElement) {
+                const targetVideo = getBestVideoElement();
+                if (targetVideo && typeof targetVideo.requestPictureInPicture === 'function') {
+                    try {
+                        targetVideo.disablePictureInPicture = false;
+                        await targetVideo.requestPictureInPicture();
+                    } catch {
+                        // Browser may require user gesture or site setting for auto-PiP
+                    }
+                }
+            }
+        };
+
+        document.addEventListener('enterpictureinpicture', handleEnterPiP, true);
+        document.addEventListener('leavepictureinpicture', handleLeavePiP, true);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        const intervalId = window.setInterval(configureVideosForPiP, 1500);
+
+        if ('mediaSession' in navigator && typeof navigator.mediaSession.setActionHandler === 'function') {
+            try {
+                navigator.mediaSession.setActionHandler('enterpictureinpicture', async () => {
+                    const targetVideo = getBestVideoElement();
+                    if (targetVideo && !document.pictureInPictureElement) {
+                        targetVideo.disablePictureInPicture = false;
+                        await targetVideo.requestPictureInPicture();
+                    }
+                });
+            } catch {
+                // Ignore if browser does not support enterpictureinpicture action
+            }
+        }
+
+        return () => {
+            window.clearInterval(intervalId);
+            document.removeEventListener('enterpictureinpicture', handleEnterPiP, true);
+            document.removeEventListener('leavepictureinpicture', handleLeavePiP, true);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, [token, getBestVideoElement]);
+
+    const fetchMeetingToken = useCallback(async (currentUser, targetRoomId) => {
+        const username = currentUser.displayName || currentUser.email.split('@')[0];
+        const response = await fetch(
+            `/api/livekit-token?room=${encodeURIComponent(targetRoomId)}&username=${encodeURIComponent(username)}&userId=${encodeURIComponent(currentUser.uid)}`
+        );
+        const data = await response.json();
+        if (response.ok && data.token) {
+            setToken(data.token);
+            return true;
+        }
+        return false;
+    }, []);
 
     useEffect(() => {
         let unsubscribe = null;
         if (roomId) {
             unsubscribe = subscribeToLiveSessionByRoomId(roomId, (updatedSession) => {
                 if (!loading && (!updatedSession || !updatedSession.isActive)) {
+                    sessionEndedRef.current = true;
                     setToken(""); // Clearing the token forcefully unmounts the LiveKitRoom
                     setError("This live class has been ended by the administrator.");
                 }
@@ -39,6 +163,12 @@ const LiveClass = () => {
                 navigate('/signin');
                 return;
             }
+
+            const roomUserKey = `${roomId}_${user.uid}`;
+            if (initializedRoomRef.current === roomUserKey) {
+                return;
+            }
+            initializedRoomRef.current = roomUserKey;
 
             try {
                 const adminEmails = import.meta.env.VITE_ADMIN_EMAILS ? import.meta.env.VITE_ADMIN_EMAILS.split(',').map(e => e.trim().toLowerCase()) : [];
@@ -78,13 +208,8 @@ const LiveClass = () => {
 
                 // Fetch LiveKit Token
                 try {
-                    const username = user.displayName || user.email.split('@')[0];
-                    const response = await fetch(`/api/livekit-token?room=${roomId}&username=${encodeURIComponent(username)}&userId=${encodeURIComponent(user.uid)}`);
-                    const data = await response.json();
-                    
-                    if (response.ok && data.token) {
-                        setToken(data.token);
-                    } else {
+                    const ok = await fetchMeetingToken(user, roomId);
+                    if (!ok) {
                         setError("Failed to get meeting token.");
                     }
                 } catch (err) {
@@ -101,12 +226,25 @@ const LiveClass = () => {
         };
 
         verifyAccess();
-    }, [roomId, user, navigate]);
+    }, [roomId, user, navigate, fetchMeetingToken]);
+
+    const handleLeaveClass = useCallback(() => {
+        if (document.pictureInPictureElement) {
+            document.exitPictureInPicture().catch(() => {});
+        }
+        if (onClose) onClose();
+        navigate(isAdmin ? '/admin' : '/courses');
+    }, [onClose, navigate, isAdmin]);
 
     const handleEndClass = async () => {
         if (isAdmin && session) {
             try {
+                sessionEndedRef.current = true;
+                if (document.pictureInPictureElement) {
+                    document.exitPictureInPicture().catch(() => {});
+                }
                 await endLiveSession(session.id);
+                if (onClose) onClose();
                 navigate('/admin');
             } catch (err) {
                 console.error("Failed to end session:", err);
@@ -114,33 +252,108 @@ const LiveClass = () => {
         }
     };
 
+    const handleRoomDisconnected = useCallback(async (reason) => {
+        if (sessionEndedRef.current) {
+            return;
+        }
+        // Only leave the page when the participant explicitly clicks the Leave button
+        if (reason === DisconnectReason.CLIENT_INITIATED) {
+            handleLeaveClass();
+            return;
+        }
+        // If disconnected unexpectedly (e.g., tab/window switch or brief network drop),
+        // keep the call alive and automatically re-fetch token to reconnect if the session is still active.
+        if (user && roomId) {
+            try {
+                const activeSession = await getLiveSessionByRoomId(roomId);
+                if (activeSession && activeSession.isActive) {
+                    await fetchMeetingToken(user, roomId);
+                }
+            } catch (err) {
+                console.error("Error reconnecting to live session:", err);
+            }
+        }
+    }, [handleLeaveClass, user, roomId, fetchMeetingToken]);
+
     if (loading) {
+        if (isMinimized) return null;
         return <div className="live-class-loading"><h2>Joining Live Class...</h2></div>;
     }
 
     if (error) {
+        if (isMinimized) return null;
         return (
             <div className="live-class-error">
                 <h2>Access Denied</h2>
                 <p>{error}</p>
-                <button className="btn btn-primary" onClick={() => navigate('/courses')}>Return to Dashboard</button>
+                <button className="btn btn-primary" onClick={handleLeaveClass}>Return to Dashboard</button>
             </div>
         );
     }
 
     return (
-        <div className="live-class-container">
+        <div className={`live-class-container ${isMinimized ? 'minimized' : ''}`}>
             <div className="live-class-header">
-                <h2>{session.title || 'Live Class'}</h2>
-                {isAdmin && (
-                    <button className="btn btn-danger" onClick={handleEndClass}>End Class for Everyone</button>
-                )}
-                {!isAdmin && (
-                    <button className="btn btn-secondary" onClick={() => navigate('/courses')}>Leave Class</button>
-                )}
+                <h2 title={session.title || 'Live Class'}>
+                    {isMinimized && <span className="live-dot-indicator"></span>}
+                    {session.title || 'Live Class'}
+                </h2>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    {isMinimized ? (
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            style={{ padding: '5px 10px', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                            onClick={() => navigate(`/live-class/${encodeURIComponent(roomId)}`)}
+                            title="Expand back to full-screen classroom"
+                        >
+                            <i className="fa-solid fa-expand"></i> Expand
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            style={{ padding: '8px 14px', fontSize: '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}
+                            onClick={() => navigate(isAdmin ? '/admin' : '/courses')}
+                            title="Minimize video call to corner while browsing the site"
+                        >
+                            <i className="fa-solid fa-compress"></i> Minimize
+                        </button>
+                    )}
+                    {typeof document !== 'undefined' && document.pictureInPictureEnabled && (
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            style={{ padding: isMinimized ? '5px 10px' : '8px 14px', fontSize: isMinimized ? '0.8rem' : '0.9rem', display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}
+                            onClick={togglePictureInPicture}
+                            title="Pop out a floating mini video window that stays visible on top of other tabs and apps"
+                        >
+                            <i className="fa-solid fa-clone"></i>
+                            {isMinimized ? 'PiP' : (isPipActive ? 'Exit Floating Video' : 'Floating Video (PiP)')}
+                        </button>
+                    )}
+                    {isAdmin && (
+                        <button
+                            className="btn btn-danger"
+                            style={isMinimized ? { padding: '5px 10px', fontSize: '0.8rem' } : undefined}
+                            onClick={handleEndClass}
+                        >
+                            {isMinimized ? 'End' : 'End Class for Everyone'}
+                        </button>
+                    )}
+                    {!isAdmin && (
+                        <button
+                            className="btn btn-secondary"
+                            style={isMinimized ? { padding: '5px 10px', fontSize: '0.8rem' } : undefined}
+                            onClick={handleLeaveClass}
+                        >
+                            {isMinimized ? 'Leave' : 'Leave Class'}
+                        </button>
+                    )}
+                </div>
             </div>
             
-            <div className="livekit-container" style={{ height: 'calc(100vh - 150px)', width: '100%' }}>
+            <div ref={containerRef} className="livekit-container" style={{ height: isMinimized ? 'calc(100% - 44px)' : 'calc(100vh - 150px)', width: '100%' }}>
                 {token === "" ? (
                     <div className="live-class-loading"><h2>Connecting to LiveClass...</h2></div>
                 ) : (
@@ -149,15 +362,10 @@ const LiveClass = () => {
                         audio={true}
                         token={token}
                         serverUrl={import.meta.env.VITE_LIVEKIT_URL}
+                        options={roomOptions}
                         data-lk-theme="default"
                         style={{ height: '100%' }}
-                        onDisconnected={() => {
-                            if (!isAdmin) {
-                                navigate('/courses');
-                            } else {
-                                handleEndClass();
-                            }
-                        }}
+                        onDisconnected={handleRoomDisconnected}
                     >
                         <VideoConference />
                         <RoomAudioRenderer />

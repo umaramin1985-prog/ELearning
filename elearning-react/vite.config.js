@@ -2,13 +2,35 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { AccessToken } from 'livekit-server-sdk';
 import { URL } from 'url';
+import fs from 'fs';
+import path from 'path';
 import dotenv from 'dotenv';
 
 // Load .env variables so they are available in vite.config.js
 dotenv.config();
 
+const getAssignmentFiles = () => {
+  try {
+    const dir = path.resolve(process.cwd(), 'public/docs/Assignments');
+    if (!fs.existsSync(dir)) return [];
+    return fs.readdirSync(dir)
+      .filter(name => !name.startsWith('.'))
+      .map(name => {
+        const stats = fs.statSync(path.join(dir, name));
+        return stats.isFile() ? { name, size: stats.size } : null;
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+  } catch {
+    return [];
+  }
+};
+
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    'globalThis.__ASSIGNMENT_FILES__': JSON.stringify(getAssignmentFiles())
+  },
   build: {
     target: 'es2015'
   },
@@ -23,6 +45,7 @@ export default defineConfig({
                const url = new URL(req.originalUrl, `http://${req.headers.host}`);
                const room = url.searchParams.get('room');
                const username = url.searchParams.get('username');
+               const userId = url.searchParams.get('userId');
 
                if (!room || !username) {
                  res.statusCode = 400;
@@ -38,7 +61,7 @@ export default defineConfig({
                }
 
                const at = new AccessToken(apiKey, apiSecret, {
-                 identity: username,
+                 identity: userId || username,
                  name: username,
                });
                

@@ -15,6 +15,52 @@ import StarRating from '../components/StarRating';
 import ReviewModal from '../components/ReviewModal';
 import './Courses.css';
 
+const DEFAULT_ASSIGNMENT_FILES = [
+    { name: 'Assignment No 01.07.zip', size: 99668854 },
+    { name: 'Assignment No 01.10.xlsx', size: 23722 },
+    { name: 'Assignment No 01.12.xlsx', size: 22302 },
+    { name: 'Assignment No 01.13.xlsx', size: 21969 },
+    { name: 'Assignment No 01.14.xlsx', size: 19751 },
+    { name: 'Assignment No 01.15.xlsx', size: 16661 },
+    { name: 'Assignment No 01.16.xlsx', size: 255102 },
+    { name: 'Assignment No 01.17.xlsx', size: 106227 },
+    { name: 'Assignment No 01.18.xlsx', size: 164377 },
+    { name: 'DAX Assignment.xlsx', size: 18194007 }
+];
+
+const ALL_ASSIGNMENT_FILES = (
+    Array.isArray(globalThis.__ASSIGNMENT_FILES__) && globalThis.__ASSIGNMENT_FILES__.length > 0
+        ? globalThis.__ASSIGNMENT_FILES__
+        : DEFAULT_ASSIGNMENT_FILES
+);
+
+const formatFileSize = (bytes) => {
+    if (!bytes || isNaN(bytes)) return '';
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
+const getFileMeta = (fileName) => {
+    const ext = (fileName.split('.').pop() || '').toLowerCase();
+    if (ext === 'xlsx' || ext === 'xls' || ext === 'csv') {
+        return { icon: 'fa-solid fa-file-excel', color: '#10b981', typeLabel: `Excel (${ext.toUpperCase()})` };
+    }
+    if (ext === 'accdb' || ext === 'mdb') {
+        return { icon: 'fa-solid fa-database', color: '#e11d48', typeLabel: `MS Access (${ext.toUpperCase()})` };
+    }
+    if (ext === 'zip') {
+        return { icon: 'fa-solid fa-file-zipper', color: '#8b5cf6', typeLabel: 'MS Access DB (ZIP)' };
+    }
+    if (ext === 'pdf') {
+        return { icon: 'fa-solid fa-file-pdf', color: '#ef4444', typeLabel: 'PDF Document' };
+    }
+    if (ext === 'pbix') {
+        return { icon: 'fa-solid fa-chart-simple', color: '#f59e0b', typeLabel: 'Power BI (.PBIX)' };
+    }
+    return { icon: 'fa-solid fa-file-lines', color: 'var(--primary-color)', typeLabel: ext ? ext.toUpperCase() : 'File' };
+};
+
 const Courses = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -225,59 +271,134 @@ const Courses = () => {
     const currentCourse = courses[activeTab] || { title: 'Microsoft Power BI', overallVideoRate: 499, overallLiveRate: 999 };
     const totalSpent = userSubscriptions.reduce((acc, sub) => acc + sub.amount, 0);
 
-    const renderModuleHeader = (moduleNum, moduleTitle, moduleId) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(0.75rem, 2vw, 1.5rem)', width: '100%' }}>
-            <span className="module-number">{moduleNum}</span>
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    <h3 style={{ margin: 0 }}>{moduleTitle}</h3>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        {isCompleted(moduleId) ? (
-                            <>
-                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.65rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600, background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                                    <i className="fa-solid fa-circle-check"></i> Completed
-                                </span>
-                                {(() => {
-                                    const g = getSectionGrade(moduleId);
-                                    if (!g) return null;
-                                    return (
-                                        <span
-                                            title={g.remarks ? `Instructor Feedback: ${g.remarks}` : 'Official Grade'}
-                                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.65rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700, background: 'rgba(245, 158, 11, 0.15)', color: 'var(--accent-color)', border: '1px solid rgba(245, 158, 11, 0.35)' }}
-                                        >
-                                            <i className="fa-solid fa-award"></i> Grade: {g.letterGrade} ({g.score}%)
-                                        </span>
-                                    );
-                                })()}
-                                <button
-                                    className="btn btn-secondary"
-                                    style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setReviewModalData({ isOpen: true, sectionId: moduleId, sectionTitle: moduleTitle, initialRating: getUserReview(moduleId) });
-                                    }}
-                                >
-                                    {getUserReview(moduleId) ? 'Update Review' : 'Rate Module'}
-                                </button>
-                            </>
-                        ) : isEnrolled(moduleId) ? (
-                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.65rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600, background: 'rgba(59, 130, 246, 0.12)', color: 'var(--primary-color)', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-                                <i className="fa-solid fa-book-open"></i> Enrolled
-                            </span>
-                        ) : null}
+    const getModuleAssignments = (moduleId) => {
+        if (activeTab !== 'powerbi') return [];
+        if (moduleId === 'module-1') {
+            return ALL_ASSIGNMENT_FILES.filter(f => f.name.toLowerCase().startsWith('assignment'));
+        }
+        if (moduleId === 'module-2') {
+            return ALL_ASSIGNMENT_FILES.filter(f => f.name.toLowerCase().startsWith('dax assignment'));
+        }
+        return [];
+    };
+
+    const canAccessAssignments = (moduleId) => {
+        if (!user) return false;
+        return isEnrolled(moduleId) || isCompleted(moduleId) || isAdmin;
+    };
+
+    const renderModuleAssignments = (moduleId) => {
+        const files = getModuleAssignments(moduleId);
+        if (files.length === 0 || !canAccessAssignments(moduleId)) return null;
+
+        return (
+            <div className="module-assignments">
+                <div className="module-assignments-header">
+                    <div>
+                        <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.55rem', fontSize: '1.15rem', color: 'var(--text-main)' }}>
+                            <i className="fa-solid fa-folder-open" style={{ color: 'var(--primary-color)' }}></i>
+                            Practice Assignments &amp; Datasets
+                        </h4>
+                        <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem', color: 'var(--text-light)' }}>
+                            Download the practical workbooks and database files below to complete your hands-on module exercises.
+                        </p>
                     </div>
+                    <span className="module-assignments-count">
+                        {files.length} {files.length === 1 ? 'File' : 'Files'} Available
+                    </span>
                 </div>
-                {(() => {
-                    const r = getRatingData(moduleId);
-                    return (
-                        <div style={{ marginTop: '0.2rem' }}>
-                            <StarRating rating={r.avg} totalReviews={r.count} />
-                        </div>
-                    );
-                })()}
+                <div className="module-assignments-grid">
+                    {files.map((file) => {
+                        const meta = getFileMeta(file.name);
+                        const displayTitle = file.name.replace(/\.[^/.]+$/, '');
+                        return (
+                            <a
+                                key={file.name}
+                                href={`/docs/Assignments/${encodeURIComponent(file.name)}`}
+                                download={file.name}
+                                className="assignment-file-card"
+                            >
+                                <div className="assignment-file-icon" style={{ color: meta.color, background: `${meta.color}18` }}>
+                                    <i className={meta.icon}></i>
+                                </div>
+                                <div className="assignment-file-info">
+                                    <span className="assignment-file-name" title={file.name}>{displayTitle}</span>
+                                    <span className="assignment-file-meta">
+                                        {meta.typeLabel}{file.size ? ` • ${formatFileSize(file.size)}` : ''}
+                                    </span>
+                                </div>
+                                <div className="assignment-file-action" title={`Download ${file.name}`}>
+                                    <i className="fa-solid fa-download"></i>
+                                </div>
+                            </a>
+                        );
+                    })}
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
+
+    const renderModuleHeader = (moduleNum, moduleTitle, moduleId) => {
+        const accessibleAssignments = canAccessAssignments(moduleId) ? getModuleAssignments(moduleId) : [];
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(0.75rem, 2vw, 1.5rem)', width: '100%' }}>
+                <span className="module-number">{moduleNum}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                        <h3 style={{ margin: 0 }}>{moduleTitle}</h3>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            {accessibleAssignments.length > 0 && (
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.65rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600, background: 'rgba(139, 92, 246, 0.14)', color: '#8b5cf6', border: '1px solid rgba(139, 92, 246, 0.3)' }}>
+                                    <i className="fa-solid fa-file-arrow-down"></i> {accessibleAssignments.length} {accessibleAssignments.length === 1 ? 'Assignment' : 'Assignments'}
+                                </span>
+                            )}
+                            {isCompleted(moduleId) ? (
+                                <>
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.65rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600, background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                                        <i className="fa-solid fa-circle-check"></i> Completed
+                                    </span>
+                                    {(() => {
+                                        const g = getSectionGrade(moduleId);
+                                        if (!g) return null;
+                                        return (
+                                            <span
+                                                title={g.remarks ? `Instructor Feedback: ${g.remarks}` : 'Official Grade'}
+                                                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.65rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700, background: 'rgba(245, 158, 11, 0.15)', color: 'var(--accent-color)', border: '1px solid rgba(245, 158, 11, 0.35)' }}
+                                            >
+                                                <i className="fa-solid fa-award"></i> Grade: {g.letterGrade} ({g.score}%)
+                                            </span>
+                                        );
+                                    })()}
+                                    <button
+                                        className="btn btn-secondary"
+                                        style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setReviewModalData({ isOpen: true, sectionId: moduleId, sectionTitle: moduleTitle, initialRating: getUserReview(moduleId) });
+                                        }}
+                                    >
+                                        {getUserReview(moduleId) ? 'Update Review' : 'Rate Module'}
+                                    </button>
+                                </>
+                            ) : isEnrolled(moduleId) ? (
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.65rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600, background: 'rgba(59, 130, 246, 0.12)', color: 'var(--primary-color)', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+                                    <i className="fa-solid fa-book-open"></i> Enrolled
+                                </span>
+                            ) : null}
+                        </div>
+                    </div>
+                    {(() => {
+                        const r = getRatingData(moduleId);
+                        return (
+                            <div style={{ marginTop: '0.2rem' }}>
+                                <StarRating rating={r.avg} totalReviews={r.count} />
+                            </div>
+                        );
+                    })()}
+                </div>
+            </div>
+        );
+    };
 
     // Live sessions are now handled globally in GlobalLiveBanner
 
@@ -591,9 +712,7 @@ const Courses = () => {
                                                         <div className="module-conclusion">
                                                             🚀 Conclusion: "By the end of Module-1, you'll confidently transform messy data from any source into clean, report-ready datasets".
                                                         </div>
-
-
-
+                                                        {renderModuleAssignments('module-1')}
                                                     </div>
                                                 )}
                                             </div>
@@ -627,8 +746,7 @@ const Courses = () => {
                                                             <li><strong>Relationship Indigence:</strong> RELATED, RELATEDTABLE, CROSSFILTER, ALLSELECTED.</li>
                                                             <li><strong>Advance Logic & Hierarchies:</strong> SWITCH, DIVIDE, PATH, PATHITEM, EARLIER.</li>
                                                         </ul>
-
-
+                                                        {renderModuleAssignments('module-2')}
                                                     </div>
                                                 )}
                                             </div>

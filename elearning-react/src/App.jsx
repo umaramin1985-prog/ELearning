@@ -13,7 +13,6 @@ import AdminPanel from './pages/AdminPanel';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import NotFound from './pages/NotFound';
-import LiveClass from './pages/LiveClass';
 import { AuthProvider } from './contexts/AuthContext';
 import ParticleBackground from './components/ParticleBackground';
 import './index.css';
@@ -42,7 +41,7 @@ function App() {
             <Route path="privacy" element={<Privacy />} />
             <Route path="courses" element={<Courses />} />
             <Route path="pricing" element={<Pricing />} />
-            <Route path="live-class/:roomId" element={<ProtectedRoute><LiveClass /></ProtectedRoute>} />
+            <Route path="live-class/:roomId" element={<div />} />
             <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
             <Route path="*" element={<NotFound />} />

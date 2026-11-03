@@ -18,12 +18,14 @@ An interactive E-Learning and Live Coaching platform for **YYZ Data Matrix Inc**
 - **Role-Based Route Guards**:
   - `ProtectedRoute` verifies both Firebase Authentication and Firestore user document existence (auto-signing out deleted accounts).
   - `AdminRoute` verifies that the authenticated user's email matches the comma-separated list in `VITE_ADMIN_EMAILS`.
-- **Flexible Course Subscriptions & Stripe Checkout**:
+- **Flexible Course Subscriptions, Practice Assignments & Stripe Checkout**:
   - Full Course bundles (`sectionId: 'all'`) and Individual Module (`module-1`..`module-6`) subscriptions across **Self-Paced Video** and **Live Coaching** tiers.
+  - **Enrolled Module Assignments & Datasets**: Students enrolled in a course/module (via subscription or cohort) unlock downloadable hands-on assignment workbooks and databases from `public/docs/Assignments` directly inside Module 1 (*Power Query & Data Cleaning (ETL)*) and Module 2 (*Power Pivot, DAX, and Data Analytics*).
   - Dynamic pricing managed in Firestore and editable in real time from the Admin Control Panel.
-- **Embedded Live Video Classes (LiveKit)**:
+- **Persistent Live Video Classes, Docked Mini-Player & Picture-in-Picture (LiveKit)**:
   - Admins can launch live video classrooms for any course/module, for a multi-student **Class Cohort**, or start 1-on-1 direct sessions for a specific student.
   - Subscribed and cohort students receive a real-time pulsing **"Join Live Class"** banner (`GlobalLiveBanner`) and notification alert.
+  - **Docked Corner Mini-Player & Floating Video (PiP)**: Live calls stay continuously connected when switching tabs/windows (`adaptiveStream: false`, `disconnectOnPageLeave: false`), dock into a floating corner player when browsing other pages on the site (`/courses`, `/admin`, etc.), and support OS-level **Picture-in-Picture (PiP)** so the live video floats on top of Power BI Desktop, Excel, or other browser tabs.
 - **Multi-Student Classes (Cohorts / Batches)**:
   - Admins can create and manage multi-student classes (`classService.js`) to schedule group coaching sessions on the calendar, launch cohort LiveKit classrooms, and grade/complete an entire cohort at once.
 - **Real-Time Support Chat & Notifications**:

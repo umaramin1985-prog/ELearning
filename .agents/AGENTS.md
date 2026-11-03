@@ -21,14 +21,19 @@ This project is an interactive E-Learning and Live Coaching platform for **YYZ D
 2. **Route Guards (`src/components/ProtectedRoute.jsx` & `AdminRoute.jsx`)**:
    - `ProtectedRoute` (protects `/profile` and `/live-class/:roomId`): Restricts access based on whether the authenticated user's `users/{uid}` document exists in Firestore (auto-logs out deleted users).
    - `AdminRoute` (protects `/admin`): Checks that the user's email matches the comma-separated list in `import.meta.env.VITE_ADMIN_EMAILS` and that their Firestore user document exists.
-3. **Course Catalog, Pricing & Stripe Checkout (`src/pages/Courses.jsx`, `Pricing.jsx`, `PaymentModal.jsx`)**:
+3. **Course Catalog, Assignments, Pricing & Stripe Checkout (`src/pages/Courses.jsx`, `Pricing.jsx`, `PaymentModal.jsx`, `public/docs/Assignments/`)**:
    - Supports **Full Course (`sectionId: 'all'`)** and **Individual Module (`module-1`..`module-6`)** subscriptions across two tiers: **Self-Paced Video (`video`)** and **Live Coaching (`live`)**.
+   - **Enrolled Module Assignments (`public/docs/Assignments/`)**: Automatically discovered at build/dev time via `vite.config.js` (`globalThis.__ASSIGNMENT_FILES__`) and displayed exclusively to enrolled/completed students and admins inside the expanded module cards on `/courses`:
+     - **Module 1 (`module-1` — *"Power Query & Data Cleaning (ETL)"*)**: Displays all files starting with `"Assignment"` (e.g., `Assignment No 01.07.zip`, `Assignment No 01.10.xlsx` .. `01.18.xlsx`).
+     - **Module 2 (`module-2` — *"Power Pivot, DAX, and Data Analytics"*)**: Displays `"DAX Assignment"` files (`DAX Assignment.xlsx`).
    - `PaymentModal` posts to `/api/create-checkout-session` and redirects to Stripe Checkout.
    - Upon redirect back to `/courses?payment=success&...`, `Courses.jsx` records the subscription (`subscriptions` collection) and transaction (`transactions` collection) in Firestore.
-4. **Live Video Classes (`src/pages/LiveClass.jsx`, `GlobalLiveBanner.jsx`, `liveSessionService.js`)**:
+4. **Live Video Classes, Docked Mini-Player & Picture-in-Picture (`src/pages/LiveClass.jsx`, `Layout.jsx`, `GlobalLiveBanner.jsx`, `liveSessionService.js`)**:
    - Admins can launch live video rooms for a course/module, for a multi-student **Class Cohort** (`courseId: 'class'`, `sectionId: classId`, `studentIds`), or directly for a specific user (`courseId: 'direct'`, `sectionId: userId`).
    - `GlobalLiveBanner` and `NotificationDropdown` listen to active `liveSessions` in real time (filtering out sessions older than 12 hours) and alert subscribed/cohort students with a pulsing **"Join Live Class"** banner.
-   - `LiveClass.jsx` (`/live-class/:roomId`) verifies subscription/cohort/admin access, fetches a JWT from `/api/livekit-token`, and mounts `<LiveKitRoom>`.
+   - `LiveClass.jsx` (`/live-class/:roomId`, persistently mounted via `Layout.jsx`) verifies subscription/cohort/admin access, fetches a JWT from `/api/livekit-token`, and mounts `<LiveKitRoom>` with `adaptiveStream: false` and `disconnectOnPageLeave: false` so calls never drop or pause when switching tabs/windows:
+     - **Docked Corner Mini-Player**: Navigating to other pages on the website (`/courses`, `/admin`, etc.) or clicking **"Minimize"** docks the active video call into a floating bottom-left corner player with an **Expand** button.
+     - **OS-Level Picture-in-Picture (PiP)**: Supports both one-click **"Floating Video (PiP)"** and automatic PiP (`autoPictureInPicture` / MediaSession `enterpictureinpicture`) so the live video floats on top of external desktop apps (Power BI, Excel, Access) and other browser tabs.
 5. **Real-Time Support Chat & Notifications (`src/components/ChatWidget.jsx`, `NotificationDropdown.jsx`, `chatService.js`)**:
    - `ChatWidget` provides a floating support chat for logged-in students (`chats/{userId}/messages`) and a fixed right-hand user-list sidebar + chat window for admins.
    - `NotificationDropdown` streams user and `'admin'` notifications from Firestore `notifications`, plays a synthesized Web Audio API chime (`AudioContext`), and surfaces active live classes.
