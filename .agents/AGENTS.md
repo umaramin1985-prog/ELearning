@@ -26,29 +26,30 @@ This project is an interactive E-Learning and Live Coaching platform for **YYZ D
    - `PaymentModal` posts to `/api/create-checkout-session` and redirects to Stripe Checkout.
    - Upon redirect back to `/courses?payment=success&...`, `Courses.jsx` records the subscription (`subscriptions` collection) and transaction (`transactions` collection) in Firestore.
 4. **Live Video Classes (`src/pages/LiveClass.jsx`, `GlobalLiveBanner.jsx`, `liveSessionService.js`)**:
-   - Admins can launch live video rooms for a course/module or directly for a specific user (`courseId: 'direct'`, `sectionId: userId`).
-   - `GlobalLiveBanner` and `NotificationDropdown` listen to active `liveSessions` in real time (filtering out sessions older than 12 hours) and alert subscribed students with a pulsing **"Join Live Class"** banner.
-   - `LiveClass.jsx` (`/live-class/:roomId`) verifies subscription/admin access, fetches a JWT from `/api/livekit-token`, and mounts `<LiveKitRoom>`.
+   - Admins can launch live video rooms for a course/module, for a multi-student **Class Cohort** (`courseId: 'class'`, `sectionId: classId`, `studentIds`), or directly for a specific user (`courseId: 'direct'`, `sectionId: userId`).
+   - `GlobalLiveBanner` and `NotificationDropdown` listen to active `liveSessions` in real time (filtering out sessions older than 12 hours) and alert subscribed/cohort students with a pulsing **"Join Live Class"** banner.
+   - `LiveClass.jsx` (`/live-class/:roomId`) verifies subscription/cohort/admin access, fetches a JWT from `/api/livekit-token`, and mounts `<LiveKitRoom>`.
 5. **Real-Time Support Chat & Notifications (`src/components/ChatWidget.jsx`, `NotificationDropdown.jsx`, `chatService.js`)**:
    - `ChatWidget` provides a floating support chat for logged-in students (`chats/{userId}/messages`) and a fixed right-hand user-list sidebar + chat window for admins.
    - `NotificationDropdown` streams user and `'admin'` notifications from Firestore `notifications`, plays a synthesized Web Audio API chime (`AudioContext`), and surfaces active live classes.
-6. **Scheduling, Course Completion & Ratings (`CalendarView.jsx`, `ScheduleModal.jsx`, `StarRating.jsx`, `ReviewModal.jsx`, `subscriptionService.js`)**:
-   - Students and admins can view/request/schedule sessions on an interactive calendar (`sessions` collection).
-   - Teachers/admins can mark a student's course or module subscription as `'completed'` (or reopen as `'active'`) in the Admin Panel, which keeps course materials accessible, displays a `"Completed"` badge on `/courses`, sends a `'completion'` notification to the student, and unlocks the ability to rate/review.
-   - Students whose course/module is marked `'completed'` can rate courses/modules (1–5 stars publicly aggregated, with private written feedback visible only to admins in `ratings/{userId}_{courseId}_{sectionId}`).
+6. **Multi-Student Classes, Scheduling, Course Completion, Grading & Certificates (`classService.js`, `gradeService.js`, `scheduleService.js`, `subscriptionService.js`, `CalendarView.jsx`, `ScheduleModal.jsx`, `StarRating.jsx`, `ReviewModal.jsx`)**:
+   - Admins can group multiple students into persistent **Classes / Cohorts** (`classService.js`, stored in the `classes` array on `courses/{courseId}`) to schedule group calendar sessions, launch cohort LiveKit classrooms, or grade/complete an entire class at once.
+   - Students and admins can view/request/schedule sessions on an interactive calendar (`sessions` collection; class sessions create per-student linked docs with `batchGroupId` so student queries and admin master schedule deduplication both work seamlessly).
+   - Teachers/admins can mark a student's course/module subscription or class cohort as `'completed'` (or reopen as `'active'`) and assign an official **Grade** (`score` `0–100%`, automatic `letterGrade` `A+`..`F`, and optional `remarks`, stored on `subscriptions/{subId}`).
+   - Completing and grading a course/module keeps course materials accessible, displays `"Completed"` and `"Grade: <letter> (<score>%)"` badges on `/courses`, sends a `'completion'` notification, unlocks course/module ratings & reviews, and enables a **My Grades** tab (`/courses#mygrades`) with a printable **Certificate of Achievement**.
 7. **Admin Control Panel (`src/pages/AdminPanel.jsx`)**:
-   - Multi-tab dashboard for authorized admins: **Users** (view/delete non-admin users), **Course Pricing** (edit full-course and module rates in Firestore), **Subscriptions** (view revenue/subscriptions, manually grant or delete subscriptions, and toggle student course/module status between `Active` and `Completed`), **Calendar** (master schedule management), **Form Submissions** (view/delete `/contact` messages), **Live Classes** (start course or 1-on-1 LiveKit sessions, cleanup zombie sessions), and **Course Reviews** (read student ratings & private reviews).
-8. **Global UI & Accessibility (`Header.jsx`, `Footer.jsx`, `AccessibilityWidget.jsx`, `ParticleBackground.jsx`)**:
-   - Fixed `<Header />` with responsive mobile drawer, Dark/Light theme persistence (`localStorage.getItem('theme')`), and notification bell.
+   - Grouped 8-tab dashboard (`Students & Cohorts`: **Users**, **Classes**, **Subscriptions**; `Teaching & Schedule`: **Calendar**, **Live Classes**; `Catalog & Feedback`: **Course Pricing**, **Course Reviews**, **Form Submissions**) with live search/filtering, user profile details (`phone`, `category`, `company`, `position`), cohort management, and student grading.
+8. **Global UI, Mobile Responsiveness & Accessibility (`Header.jsx`, `Footer.jsx`, `AccessibilityWidget.jsx`, `ParticleBackground.jsx`)**:
+   - Fixed `<Header />` with active-route highlighting, responsive mobile drawer, Dark/Light theme persistence (`localStorage.getItem('theme')`), and notification bell.
    - `<AccessibilityWidget />` toggles body classes for Large Text, High Contrast, Dyslexia Friendly font, Highlight Links, and Greyscale.
    - `<ParticleBackground />` renders a theme-aware falling digital matrix background on an HTML5 canvas.
 
 ## 4. Firestore Collections Summary
-- `users/{uid}`: User profiles & `profileComplete` flag.
-- `courses/{courseId}` & `courses/{courseId}/sections/{sectionId}`: Course & module pricing (`overallVideoRate`, `overallLiveRate`, `videoRate`, `liveRate`, `videoLink`).
-- `subscriptions/{subId}` & `transactions/{transId}`: Active enrollments and payment logs.
-- `sessions/{sessionId}`: Scheduled calendar coaching sessions.
-- `liveSessions/{sessionId}`: Active LiveKit classroom state (`roomId`, `isActive`, `startedAt`).
+- `users/{uid}`: User profiles (`firstName`, `lastName`, `dob`, `phone`, `category`, `company`, `position`) & `profileComplete` flag.
+- `courses/{courseId}` & `courses/{courseId}/sections/{sectionId}`: Course & module pricing (`overallVideoRate`, `overallLiveRate`, `videoRate`, `liveRate`, `videoLink`) plus multi-student `classes` array (`id`, `name`, `courseId`, `sectionId`, `studentIds`, `status`).
+- `subscriptions/{subId}` & `transactions/{transId}`: Active/completed enrollments (`status: 'active' | 'completed'`, plus official grading fields `score`, `letterGrade`, `remarks`, `gradedAt`) and payment logs.
+- `sessions/{sessionId}`: Scheduled calendar coaching sessions (individual and `batchGroupId`-linked class sessions).
+- `liveSessions/{sessionId}`: Active LiveKit classroom state (`roomId`, `isActive`, `startedAt`, plus optional `classId`, `className`, `studentIds`).
 - `chats/{userId}` & `chats/{userId}/messages/{msgId}`: Real-time 1-on-1 support chat threads.
 - `notifications/{notifId}`: Real-time alerts for users (`userId: uid`) and admins (`userId: 'admin'`).
 - `ratings/{userId}_{courseId}_{sectionId}`: Star ratings and admin-private written reviews.

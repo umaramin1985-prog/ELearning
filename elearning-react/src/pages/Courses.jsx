@@ -6,6 +6,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { getCourses, getSections } from '../services/courseService';
 import { createSubscription, getUserSubscriptions } from '../services/subscriptionService';
 import { getUserSessions, createSession, deleteSession } from '../services/scheduleService';
+import { getUserClasses } from '../services/classService';
+import { getUserGrades, calculateLetterGrade } from '../services/gradeService';
 import CalendarView from '../components/CalendarView';
 import ScheduleModal from '../components/ScheduleModal';
 import { getRatingsForCourse } from '../services/ratingService';
@@ -21,7 +23,7 @@ const Courses = () => {
 
     useEffect(() => {
         const hash = location.hash.replace('#', '');
-        if (['powerbi', 'sql', 'access', 'excel'].includes(hash)) {
+        if (['powerbi', 'sql', 'access', 'excel', 'myschedule', 'mygrades'].includes(hash)) {
             setActiveTab(hash);
         }
     }, [location.hash]);
@@ -33,12 +35,16 @@ const Courses = () => {
     const [courses, setCourses] = useState({});
     const [sections, setSections] = useState([]);
     const [userSubscriptions, setUserSubscriptions] = useState([]);
+    const [userClasses, setUserClasses] = useState([]);
+    const [userGrades, setUserGrades] = useState([]);
     const [userSessions, setUserSessions] = useState([]);
     const [loading, setLoading] = useState(true);
 
     // Schedule Modal State
     const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
     const [selectedSlotInfo, setSelectedSlotInfo] = useState(null);
+    const [selectedUserSession, setSelectedUserSession] = useState(null);
+    const [certificateData, setCertificateData] = useState(null);
     const [expandedModules, setExpandedModules] = useState({});
     const toggleModule = (moduleId) => {
         setExpandedModules(prev => ({ ...prev, [moduleId]: !prev[moduleId] }));
@@ -82,12 +88,18 @@ const Courses = () => {
                 powerBiSections.sort((a, b) => a.id.localeCompare(b.id));
                 setSections(powerBiSections);
 
-                // Fetch User Subscriptions & Sessions
+                // Fetch User Subscriptions, Classes, Grades & Sessions
                 if (user) {
-                    const subs = await getUserSubscriptions(user.uid);
+                    const [subs, cls, grds, sess] = await Promise.all([
+                        getUserSubscriptions(user.uid),
+                        getUserClasses(user.uid),
+                        getUserGrades(user.uid),
+                        getUserSessions(user.uid)
+                    ]);
                     setUserSubscriptions(subs);
+                    setUserClasses(cls);
+                    setUserGrades(grds);
 
-                    const sess = await getUserSessions(user.uid);
                     const formattedSessions = sess.map(s => ({
                         ...s,
                         start: s.startTime?.toDate ? s.startTime.toDate() : new Date(s.startTime),
@@ -115,16 +127,39 @@ const Courses = () => {
     };
 
     const isEnrolled = (sectionId) => {
-        return hasAccess('all', 'video') || hasAccess('all', 'live') || hasAccess(sectionId, 'video') || hasAccess(sectionId, 'live');
+        const subEnrolled = hasAccess('all', 'video') || hasAccess('all', 'live') || hasAccess(sectionId, 'video') || hasAccess(sectionId, 'live');
+        const classEnrolled = userClasses.some(
+            c => c.courseId === activeTab && (c.sectionId === 'all' || c.sectionId === sectionId)
+        );
+        return subEnrolled || classEnrolled;
     };
 
     const isCompleted = (sectionId) => {
         if (!user) return false;
-        return userSubscriptions.some(sub =>
+        const subCompleted = userSubscriptions.some(sub =>
             sub.courseId === activeTab &&
             (sub.sectionId === 'all' || sub.sectionId === sectionId) &&
             sub.status === 'completed'
         );
+        const classCompleted = userClasses.some(
+            c => c.courseId === activeTab && (c.sectionId === 'all' || c.sectionId === sectionId) && c.status === 'completed'
+        );
+        const gradeExists = userGrades.some(
+            g => g.courseId === activeTab && (g.sectionId === 'all' || g.sectionId === sectionId)
+        );
+        return subCompleted || classCompleted || gradeExists;
+    };
+
+    const getSectionGrade = (sectionId) => {
+        if (!user) return null;
+        const directGrade = userGrades.find(g => g.courseId === activeTab && g.sectionId === sectionId);
+        if (directGrade) return directGrade;
+        const allGrade = userGrades.find(g => g.courseId === activeTab && g.sectionId === 'all');
+        if (allGrade) return allGrade;
+        const subWithGrade = userSubscriptions.find(
+            sub => sub.courseId === activeTab && (sub.sectionId === sectionId || sub.sectionId === 'all') && sub.letterGrade
+        );
+        return subWithGrade || null;
     };
 
     // Handle Stripe redirect on mount
@@ -191,7 +226,7 @@ const Courses = () => {
     const totalSpent = userSubscriptions.reduce((acc, sub) => acc + sub.amount, 0);
 
     const renderModuleHeader = (moduleNum, moduleTitle, moduleId) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(0.75rem, 2vw, 1.5rem)', width: '100%' }}>
             <span className="module-number">{moduleNum}</span>
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -202,6 +237,18 @@ const Courses = () => {
                                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.65rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600, background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
                                     <i className="fa-solid fa-circle-check"></i> Completed
                                 </span>
+                                {(() => {
+                                    const g = getSectionGrade(moduleId);
+                                    if (!g) return null;
+                                    return (
+                                        <span
+                                            title={g.remarks ? `Instructor Feedback: ${g.remarks}` : 'Official Grade'}
+                                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.65rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 700, background: 'rgba(245, 158, 11, 0.15)', color: 'var(--accent-color)', border: '1px solid rgba(245, 158, 11, 0.35)' }}
+                                        >
+                                            <i className="fa-solid fa-award"></i> Grade: {g.letterGrade} ({g.score}%)
+                                        </span>
+                                    );
+                                })()}
                                 <button
                                     className="btn btn-secondary"
                                     style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}
@@ -271,6 +318,29 @@ const Courses = () => {
                                     <h1>Welcome, {user.displayName || user.email}</h1>
                                     {!isAdmin && <p className="subscription-total">Total Invested in Learning: <strong>${totalSpent}</strong></p>}
                                     {isAdmin && <p className="subscription-total">Administrator Mode</p>}
+                                    {!isAdmin && userClasses.length > 0 && (
+                                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.45rem' }}>
+                                            {userClasses.map(cls => (
+                                                <span
+                                                    key={cls.id}
+                                                    style={{
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        gap: '0.35rem',
+                                                        padding: '0.22rem 0.7rem',
+                                                        borderRadius: '16px',
+                                                        fontSize: '0.8rem',
+                                                        fontWeight: 600,
+                                                        background: 'rgba(var(--primary-rgb), 0.12)',
+                                                        color: 'var(--primary-color)',
+                                                        border: '1px solid rgba(var(--primary-rgb), 0.25)'
+                                                    }}
+                                                >
+                                                    <i className="fa-solid fa-users"></i> Cohort: {cls.name}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         ) : (
@@ -298,9 +368,14 @@ const Courses = () => {
                             <i className="fa-solid fa-file-excel"></i> Excel
                         </button>
                         {user && !isAdmin && (
-                            <button className={`tab-btn ${activeTab === 'myschedule' ? 'active' : ''}`} onClick={() => setActiveTab('myschedule')}>
-                                <i className="fa-solid fa-calendar"></i> My Schedule
-                            </button>
+                            <>
+                                <button className={`tab-btn ${activeTab === 'myschedule' ? 'active' : ''}`} onClick={() => setActiveTab('myschedule')}>
+                                    <i className="fa-solid fa-calendar"></i> My Schedule
+                                </button>
+                                <button className={`tab-btn ${activeTab === 'mygrades' ? 'active' : ''}`} onClick={() => setActiveTab('mygrades')}>
+                                    <i className="fa-solid fa-award"></i> My Grades
+                                </button>
+                            </>
                         )}
                     </div>
 
@@ -365,6 +440,18 @@ const Courses = () => {
                                                             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.55rem 1rem', borderRadius: '30px', fontSize: '0.9rem', fontWeight: 600, background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
                                                                 <i className="fa-solid fa-graduation-cap"></i> Course Completed
                                                             </span>
+                                                            {(() => {
+                                                                const g = getSectionGrade('all');
+                                                                if (!g) return null;
+                                                                return (
+                                                                    <span
+                                                                        title={g.remarks ? `Instructor Feedback: ${g.remarks}` : 'Official Course Grade'}
+                                                                        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.55rem 1rem', borderRadius: '30px', fontSize: '0.9rem', fontWeight: 700, background: 'rgba(245, 158, 11, 0.15)', color: 'var(--accent-color)', border: '1px solid rgba(245, 158, 11, 0.35)' }}
+                                                                    >
+                                                                        <i className="fa-solid fa-award"></i> Final Grade: {g.letterGrade} ({g.score}%)
+                                                                    </span>
+                                                                );
+                                                            })()}
                                                             <button
                                                                 className="btn btn-secondary"
                                                                 onClick={() => setReviewModalData({ isOpen: true, sectionId: 'all', sectionTitle: currentCourse.title, initialRating: getUserReview('all') })}
@@ -480,7 +567,7 @@ const Courses = () => {
 
                                         <div className="course-modules">
                                             {/* Module 1 */}
-                                            <div className="module-card" style={{ padding: expandedModules['module-1'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-1'] ? 'clamp(1.25rem, 3vw, 2.5rem)' : '1.25rem clamp(1rem, 3vw, 2.5rem)' }}>
                                                 <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-1'] ? '1.5rem' : '0', marginBottom: expandedModules['module-1'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-1')}>
                                                     {renderModuleHeader(1, "Power Query & Data Cleaning (ETL)", "module-1")}
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-1'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
@@ -512,7 +599,7 @@ const Courses = () => {
                                             </div>
 
                                             {/* Module 2 */}
-                                            <div className="module-card" style={{ padding: expandedModules['module-2'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-2'] ? 'clamp(1.25rem, 3vw, 2.5rem)' : '1.25rem clamp(1rem, 3vw, 2.5rem)' }}>
                                                 <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-2'] ? '1.5rem' : '0', marginBottom: expandedModules['module-2'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-2')}>
                                                     {renderModuleHeader(2, "Power Pivot, DAX, and Data Analytics", "module-2")}
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-2'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
@@ -547,7 +634,7 @@ const Courses = () => {
                                             </div>
 
                                             {/* Module 3 */}
-                                            <div className="module-card" style={{ padding: expandedModules['module-3'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-3'] ? 'clamp(1.25rem, 3vw, 2.5rem)' : '1.25rem clamp(1rem, 3vw, 2.5rem)' }}>
                                                 <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-3'] ? '1.5rem' : '0', marginBottom: expandedModules['module-3'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-3')}>
                                                     {renderModuleHeader(3, "Data Visualization & Storytelling", "module-3")}
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-3'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
@@ -581,7 +668,7 @@ const Courses = () => {
                                             </div>
 
                                             {/* Module 4 */}
-                                            <div className="module-card" style={{ padding: expandedModules['module-4'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-4'] ? 'clamp(1.25rem, 3vw, 2.5rem)' : '1.25rem clamp(1rem, 3vw, 2.5rem)' }}>
                                                 <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-4'] ? '1.5rem' : '0', marginBottom: expandedModules['module-4'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-4')}>
                                                     {renderModuleHeader(4, "Data Modeling and Optimization", "module-4")}
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-4'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
@@ -609,7 +696,7 @@ const Courses = () => {
                                             </div>
 
                                             {/* Module 5 */}
-                                            <div className="module-card" style={{ padding: expandedModules['module-5'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-5'] ? 'clamp(1.25rem, 3vw, 2.5rem)' : '1.25rem clamp(1rem, 3vw, 2.5rem)' }}>
                                                 <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-5'] ? '1.5rem' : '0', marginBottom: expandedModules['module-5'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-5')}>
                                                     {renderModuleHeader(5, "Power BI Service & Publishing", "module-5")}
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-5'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
@@ -637,7 +724,7 @@ const Courses = () => {
                                             </div>
 
                                             {/* Module 6 */}
-                                            <div className="module-card" style={{ padding: expandedModules['module-6'] ? '2.5rem' : '1.5rem 2.5rem' }}>
+                                            <div className="module-card" style={{ padding: expandedModules['module-6'] ? 'clamp(1.25rem, 3vw, 2.5rem)' : '1.25rem clamp(1rem, 3vw, 2.5rem)' }}>
                                                 <div className="module-header" style={{ justifyContent: 'space-between', paddingBottom: expandedModules['module-6'] ? '1.5rem' : '0', marginBottom: expandedModules['module-6'] ? '1.5rem' : '0', cursor: 'pointer' }} onClick={() => toggleModule('module-6')}>
                                                     {renderModuleHeader(6, "From Raw Data to Executive Dashboards", "module-6")}
                                                     <i className={`fa-solid fa-chevron-${expandedModules['module-6'] ? 'up' : 'down'}`} style={{ fontSize: '1.2rem', color: 'var(--primary-color)', marginLeft: '1rem' }}></i>
@@ -670,29 +757,14 @@ const Courses = () => {
                                     </div>
                                 )}
 
-                                {activeTab === 'myschedule' && (
+                                 {activeTab === 'myschedule' && (
                                     <div className="course-content fade-in">
                                         <h2>My Live Classes</h2>
-                                        <p>View your scheduled live sessions below.</p>
+                                        <p>View your scheduled live sessions below. Click on any time slot to request a session, or click an existing session to join or manage it.</p>
                                         <CalendarView
                                             events={userSessions}
-                                            onSelectEvent={async (event) => {
-                                                const wantsToDelete = window.confirm(
-                                                    `Session: ${event.title}\n\nDo you want to delete this session? (Click Cancel to keep or join it)`
-                                                );
-
-                                                if (wantsToDelete) {
-                                                    try {
-                                                        await deleteSession(event.id);
-                                                        alert("Session deleted successfully.");
-                                                        window.location.reload();
-                                                    } catch (err) {
-                                                        console.error(err);
-                                                        alert("Failed to delete session.");
-                                                    }
-                                                } else if (event.meetingLink) {
-                                                    window.open(event.meetingLink, '_blank');
-                                                }
+                                            onSelectEvent={(event) => {
+                                                setSelectedUserSession(event);
                                             }}
                                             onSelectSlot={(slotInfo) => {
                                                 setSelectedSlotInfo(slotInfo);
@@ -702,17 +774,277 @@ const Courses = () => {
                                     </div>
                                 )}
 
+                                {activeTab === 'mygrades' && user && !isAdmin && (
+                                    <div className="course-content fade-in">
+                                        <div className="glass-panel" style={{ padding: '2rem', borderRadius: '16px' }}>
+                                            <h2 style={{ marginTop: 0, marginBottom: '0.5rem' }}>
+                                                <i className="fa-solid fa-award" style={{ color: 'var(--accent-color)', marginRight: '0.6rem' }}></i>
+                                                My Grades &amp; Academic Standing
+                                            </h2>
+                                            <p style={{ color: 'var(--text-light)', marginBottom: '2rem' }}>
+                                                View your official course and module grades, percentage scores, and personalized instructor feedback.
+                                            </p>
+
+                                            {userGrades.length === 0 ? (
+                                                <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-light)' }}>
+                                                    <i className="fa-solid fa-graduation-cap" style={{ fontSize: '3rem', opacity: 0.4, marginBottom: '1rem', display: 'block' }}></i>
+                                                    <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-main)' }}>No Grades Posted Yet</h3>
+                                                    <p style={{ margin: 0 }}>Once your instructor marks your enrolled course or module as completed, your official grade and feedback will appear here.</p>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    {(() => {
+                                                        const avgScore = Math.round(
+                                                            userGrades.reduce((sum, g) => sum + Number(g.score || 0), 0) / userGrades.length
+                                                        );
+                                                        const overallLetter = calculateLetterGrade(avgScore);
+                                                        return (
+                                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+                                                                <div style={{ padding: '1.25rem', borderRadius: '12px', background: 'var(--bg-alt)', border: '1px solid var(--border-color)', textAlign: 'center' }}>
+                                                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginBottom: '0.4rem' }}>Completed Assessments</div>
+                                                                    <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--primary-color)' }}>{userGrades.length}</div>
+                                                                </div>
+                                                                <div style={{ padding: '1.25rem', borderRadius: '12px', background: 'var(--bg-alt)', border: '1px solid var(--border-color)', textAlign: 'center' }}>
+                                                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginBottom: '0.4rem' }}>Average Score</div>
+                                                                    <div style={{ fontSize: '2rem', fontWeight: 700, color: '#10b981' }}>{avgScore}%</div>
+                                                                </div>
+                                                                <div style={{ padding: '1.25rem', borderRadius: '12px', background: 'var(--bg-alt)', border: '1px solid var(--border-color)', textAlign: 'center' }}>
+                                                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginBottom: '0.4rem' }}>Overall Standing</div>
+                                                                    <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--accent-color)' }}>{overallLetter}</div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })()}
+
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                                        {userGrades.map(g => {
+                                                            const courseTitle = courses[g.courseId]?.title || (g.courseId === 'powerbi' ? 'Microsoft Power BI' : g.courseId);
+                                                            const sectionObj = sections.find(s => s.id === g.sectionId);
+                                                            const sectionLabel = g.sectionId === 'all' ? 'Full Course Certification' : (sectionObj?.title || g.sectionId);
+                                                            return (
+                                                                <div
+                                                                    key={g.id}
+                                                                    style={{
+                                                                        padding: '1.5rem',
+                                                                        borderRadius: '12px',
+                                                                        background: 'var(--bg-alt)',
+                                                                        border: '1px solid var(--border-color)',
+                                                                        display: 'flex',
+                                                                        justifyContent: 'space-between',
+                                                                        alignItems: 'center',
+                                                                        flexWrap: 'wrap',
+                                                                        gap: '1.25rem'
+                                                                    }}
+                                                                >
+                                                                    <div style={{ flex: '1 1 280px' }}>
+                                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.35rem' }}>
+                                                                            <h3 style={{ margin: 0, fontSize: '1.2rem' }}>{courseTitle}</h3>
+                                                                            <span style={{ fontSize: '0.85rem', padding: '0.2rem 0.65rem', borderRadius: '12px', background: 'rgba(var(--primary-rgb), 0.12)', color: 'var(--primary-color)', fontWeight: 600 }}>
+                                                                                {sectionLabel}
+                                                                            </span>
+                                                                            {g.className && (
+                                                                                <span style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>
+                                                                                    &bull; Class: {g.className}
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                        {g.remarks ? (
+                                                                            <p style={{ margin: '0.5rem 0 0 0', color: 'var(--text-main)', fontStyle: 'italic', background: 'var(--bg-main)', padding: '0.75rem 1rem', borderRadius: '8px', borderLeft: '3px solid var(--primary-color)' }}>
+                                                                                <strong>Instructor Feedback:</strong> &ldquo;{g.remarks}&rdquo;
+                                                                            </p>
+                                                                        ) : (
+                                                                            <p style={{ margin: '0.35rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-light)' }}>
+                                                                                Successfully completed and verified by instructor.
+                                                                            </p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                                                                        <div style={{ textAlign: 'right' }}>
+                                                                            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#10b981', lineHeight: 1.1 }}>
+                                                                                {g.letterGrade} <span style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-main)' }}>({g.score}%)</span>
+                                                                            </div>
+                                                                            <div style={{ fontSize: '0.78rem', color: 'var(--text-light)', marginTop: '0.25rem' }}>
+                                                                                {g.updatedAt?.toDate ? new Date(g.updatedAt.toDate()).toLocaleDateString() : 'Completed'}
+                                                                            </div>
+                                                                        </div>
+                                                                        <button
+                                                                            className="btn btn-primary"
+                                                                            style={{ padding: '0.45rem 0.9rem', fontSize: '0.85rem' }}
+                                                                            onClick={() => {
+                                                                                setCertificateData({
+                                                                                    studentName: user.displayName || user.email,
+                                                                                    courseTitle,
+                                                                                    sectionLabel,
+                                                                                    letterGrade: g.letterGrade,
+                                                                                    score: g.score,
+                                                                                    className: g.className || null,
+                                                                                    date: g.updatedAt?.toDate ? new Date(g.updatedAt.toDate()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+                                                                                });
+                                                                            }}
+                                                                        >
+                                                                            <i className="fa-solid fa-certificate" style={{ marginRight: '0.35rem' }}></i>
+                                                                            Certificate
+                                                                        </button>
+                                                                        <button
+                                                                            className="btn btn-secondary"
+                                                                            style={{ padding: '0.45rem 0.9rem', fontSize: '0.85rem' }}
+                                                                            onClick={() => {
+                                                                                setActiveTab(g.courseId || 'powerbi');
+                                                                                setReviewModalData({
+                                                                                    isOpen: true,
+                                                                                    sectionId: g.sectionId,
+                                                                                    sectionTitle: sectionLabel,
+                                                                                    initialRating: getUserReview(g.sectionId)
+                                                                                });
+                                                                            }}
+                                                                        >
+                                                                            <i className="fa-solid fa-star" style={{ color: '#f59e0b', marginRight: '0.35rem' }}></i>
+                                                                            {getUserReview(g.sectionId) ? 'Update Review' : 'Leave Review'}
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
                                 {(activeTab === 'sql' || activeTab === 'access' || activeTab === 'excel') && (
                                     <div className="course-content placeholder-content fade-in">
                                         <i className={`fa-solid ${activeTab === 'sql' ? 'fa-database' : activeTab === 'access' ? 'fa-table-list' : 'fa-file-excel'} placeholder-icon`}></i>
-                                        <h2>Course Content</h2>
-                                        <p>Coming Soon! This section will be updated with the syllabus.</p>
+                                        <h2>{activeTab === 'sql' ? 'SQL for Data Analysis' : activeTab === 'access' ? 'MS Access Database Development' : 'Advanced Excel for Business Analysis'}</h2>
+                                        <p style={{ maxWidth: '520px', margin: '0.75rem auto 1.5rem auto' }}>
+                                            Coming Soon! We are finalizing the interactive modules and datasets for this track. Request early access or custom coaching below.
+                                        </p>
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={() => navigate(`/contact?subject=${encodeURIComponent(`Early Access Inquiry: ${activeTab.toUpperCase()} Track`)}`)}
+                                        >
+                                            <i className="fa-solid fa-bell" style={{ marginRight: '0.5rem' }}></i> Notify Me / Request Early Access
+                                        </button>
                                     </div>
                                 )}
                             </>
                         )}
                     </div>
                 </div>
+
+                {selectedUserSession && (
+                    <div className="payment-modal-overlay" onClick={() => setSelectedUserSession(null)}>
+                        <div className="payment-modal-content" style={{ maxWidth: '440px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+                            <button className="payment-modal-close" onClick={() => setSelectedUserSession(null)}>&times;</button>
+                            <h2 style={{ marginBottom: '0.5rem' }}>{selectedUserSession.title}</h2>
+                            {selectedUserSession.className && (
+                                <p style={{ margin: '0 0 0.5rem 0', color: 'var(--primary-color)', fontWeight: 600, fontSize: '0.9rem' }}>
+                                    <i className="fa-solid fa-users" style={{ marginRight: '0.35rem' }}></i>
+                                    Class: {selectedUserSession.className}
+                                </p>
+                            )}
+                            <p className="payment-description" style={{ marginBottom: '1.5rem' }}>
+                                {selectedUserSession.start?.toLocaleString()} &ndash; {selectedUserSession.end?.toLocaleString()}
+                            </p>
+                            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                                {selectedUserSession.meetingLink && (
+                                    <a
+                                        href={selectedUserSession.meetingLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn btn-primary"
+                                        style={{ padding: '0.6rem 1.2rem', textDecoration: 'none' }}
+                                    >
+                                        <i className="fa-solid fa-video" style={{ marginRight: '0.4rem' }}></i> Join Session
+                                    </a>
+                                )}
+                                <button
+                                    className="btn"
+                                    style={{ background: '#ef4444', color: 'white', padding: '0.6rem 1.2rem' }}
+                                    onClick={async () => {
+                                        try {
+                                            await deleteSession(selectedUserSession.id);
+                                            setUserSessions(prev => prev.filter(s => s.id !== selectedUserSession.id));
+                                            setSelectedUserSession(null);
+                                        } catch (err) {
+                                            console.error(err);
+                                            alert("Failed to delete session.");
+                                        }
+                                    }}
+                                >
+                                    <i className="fa-solid fa-trash" style={{ marginRight: '0.4rem' }}></i> Cancel Session
+                                </button>
+                                <button
+                                    className="btn btn-secondary"
+                                    style={{ padding: '0.6rem 1.2rem' }}
+                                    onClick={() => setSelectedUserSession(null)}
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {certificateData && (
+                    <div className="payment-modal-overlay" onClick={() => setCertificateData(null)}>
+                        <div
+                            className="payment-modal-content"
+                            style={{ maxWidth: '720px', padding: '2.5rem', textAlign: 'center', border: '3px double var(--primary-color)' }}
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <button className="payment-modal-close" onClick={() => setCertificateData(null)}>&times;</button>
+                            <div id="printable-certificate" style={{ padding: '1.5rem', borderRadius: '12px', background: 'var(--bg-alt)', border: '1px solid var(--border-color)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                                    <img src="/images/logo.webp" alt="YYZ Data Matrix Inc" style={{ width: '48px', height: '48px', borderRadius: '8px', objectFit: 'cover' }} />
+                                    <span style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--primary-color)', letterSpacing: '0.5px' }}>
+                                        YYZ DATA MATRIX INC.
+                                    </span>
+                                </div>
+                                <div style={{ fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.2em', color: 'var(--text-light)', marginBottom: '0.5rem' }}>
+                                    Certificate of Achievement
+                                </div>
+                                <p style={{ margin: '0.5rem 0', color: 'var(--text-light)', fontSize: '0.95rem' }}>This is to certify that</p>
+                                <h2 style={{ fontSize: '2rem', color: 'var(--text-main)', margin: '0.5rem 0 0.75rem 0', fontFamily: 'var(--font-heading)' }}>
+                                    {certificateData.studentName}
+                                </h2>
+                                <p style={{ margin: '0.5rem 0', color: 'var(--text-light)', fontSize: '0.95rem' }}>
+                                    has successfully completed the Business Intelligence training requirements for
+                                </p>
+                                <h3 style={{ fontSize: '1.45rem', color: 'var(--primary-color)', margin: '0.6rem 0 0.3rem 0' }}>
+                                    {certificateData.courseTitle} &mdash; {certificateData.sectionLabel}
+                                </h3>
+                                {certificateData.letterGrade && (
+                                    <div style={{ margin: '0.9rem 0' }}>
+                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 1rem', borderRadius: '20px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: 700, fontSize: '0.95rem', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                                            <i className="fa-solid fa-award"></i> Official Standing: {certificateData.letterGrade} ({certificateData.score}%)
+                                        </span>
+                                    </div>
+                                )}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '2rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-color)', flexWrap: 'wrap', gap: '1rem', textAlign: 'left' }}>
+                                    <div>
+                                        <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>Rauf Anwar</div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>MBA, CMA, CPA, PMP, PL-300 Certified</div>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--primary-color)', fontWeight: 600 }}>Lead Instructor, YYZ Data Matrix Inc</div>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>Date Issued</div>
+                                        <div style={{ fontWeight: 600, color: 'var(--text-main)', fontSize: '0.9rem' }}>{certificateData.date}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1.5rem' }}>
+                                <button className="btn btn-primary" onClick={() => window.print()}>
+                                    <i className="fa-solid fa-print" style={{ marginRight: '0.4rem' }}></i> Print / Save PDF
+                                </button>
+                                <button className="btn btn-secondary" onClick={() => setCertificateData(null)}>
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 <ScheduleModal
                     isOpen={isScheduleModalOpen}

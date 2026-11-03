@@ -49,6 +49,9 @@ const GlobalLiveBanner = () => {
         if (session.courseId === 'direct' && session.sectionId === user?.uid) {
             return true;
         }
+        if (session.courseId === 'class' && Array.isArray(session.studentIds) && session.studentIds.includes(user?.uid)) {
+            return true;
+        }
         return userSubscriptions.some(sub => 
             sub.courseId === session.courseId && 
             (sub.sectionId === 'all' || session.sectionId === 'all' || sub.sectionId === session.sectionId)

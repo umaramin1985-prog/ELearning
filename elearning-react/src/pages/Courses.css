@@ -402,17 +402,70 @@
 }
 
 @media (max-width: 768px) {
+    .dashboard-section {
+        padding: 5.5rem 0 3rem 0;
+    }
+
     .course-grid {
         grid-template-columns: 1fr;
     }
-    
-    .dashboard-header h1 {
-        font-size: 2rem;
+
+    .profile-section {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
     }
-    
+
+    .dashboard-header h1 {
+        font-size: 1.65rem;
+        word-break: break-word;
+    }
+
+    .dashboard-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.65rem;
+        margin-bottom: 2rem;
+    }
+
     .tab-btn {
         width: 100%;
+        padding: 0.75rem 0.65rem;
+        font-size: 0.92rem;
         justify-content: center;
+    }
+
+    .powerbi-header h2 {
+        font-size: 1.75rem !important;
+    }
+
+    .module-header {
+        gap: 0.75rem;
+    }
+
+    .module-header h3 {
+        font-size: 1.15rem;
+    }
+
+    .module-number {
+        width: 2.3rem;
+        height: 2.3rem;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .module-image-container {
+        height: 200px;
+    }
+
+    .placeholder-content {
+        padding: 2.5rem 1.25rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .dashboard-tabs {
+        grid-template-columns: 1fr;
     }
 }
 

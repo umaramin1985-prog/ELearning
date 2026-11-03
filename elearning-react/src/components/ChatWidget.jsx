@@ -147,7 +147,7 @@ const ChatWidget = () => {
                 )}
                 
                 {selectedUser && isOpen && (
-                    <div className="chat-widget" style={{right: '310px'}}>
+                    <div className="chat-widget admin-chat-widget">
                         <div id="chat-window" className="chat-window">
                             <div className="chat-header">
                                 <div className="chat-header-info">

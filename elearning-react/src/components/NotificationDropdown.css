@@ -171,3 +171,14 @@
     flex-shrink: 0;
     margin-top: 0.3rem;
 }
+
+@media (max-width: 500px) {
+    .notification-dropdown-menu {
+        position: fixed;
+        top: 76px;
+        left: 0.75rem;
+        right: 0.75rem;
+        width: auto;
+        margin-top: 0;
+    }
+}

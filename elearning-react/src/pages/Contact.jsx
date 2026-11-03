@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import SEO from '../components/SEO';
 
 const Contact = () => {
+    const location = useLocation();
     const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
     const [status, setStatus] = useState({ submitting: false, success: false, error: null });
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const prefilledSubject = params.get('subject');
+        if (prefilledSubject) {
+            setFormData(prev => ({ ...prev, subject: prefilledSubject }));
+        }
+    }, [location.search]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -1,7 +1,7 @@
 import { collection, addDoc, getDocs, doc, updateDoc, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 
-export const startLiveSession = async (courseId, sectionId, title, adminId) => {
+export const startLiveSession = async (courseId, sectionId, title, adminId, extraData = {}) => {
     try {
         const roomId = `${courseId}-${sectionId}-live-${Date.now()}`;
         const docRef = await addDoc(collection(db, 'liveSessions'), {
@@ -11,9 +11,10 @@ export const startLiveSession = async (courseId, sectionId, title, adminId) => {
             title,
             isActive: true,
             startedAt: new Date(),
-            createdBy: adminId
+            createdBy: adminId,
+            ...extraData
         });
-        return { id: docRef.id, roomId, courseId, sectionId, title };
+        return { id: docRef.id, roomId, courseId, sectionId, title, ...extraData };
     } catch (error) {
         console.error("Error starting live session:", error);
         alert("Detailed Error: " + error.message);

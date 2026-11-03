@@ -69,3 +69,31 @@
 .rbc-agenda-view table {
     color: var(--text-color);
 }
+
+@media (max-width: 768px) {
+    .calendar-container {
+        padding: 0.75rem;
+        overflow-x: auto;
+    }
+
+    .rbc-toolbar {
+        flex-direction: column;
+        gap: 0.65rem;
+        margin-bottom: 1rem;
+    }
+
+    .rbc-toolbar .rbc-toolbar-label {
+        padding: 0.25rem 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+    }
+
+    .rbc-toolbar button {
+        padding: 4px 8px;
+        font-size: 0.82rem;
+    }
+
+    .rbc-calendar {
+        min-width: 100%;
+    }
+}

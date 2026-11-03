@@ -13,28 +13,28 @@ const About = () => {
             />
             
             {/* HERO SECTION */}
-            <div className="page-header" style={{ padding: '6rem 0', background: 'var(--hero-bg)', textAlign: 'center', borderBottom: '1px solid var(--border-color)' }}>
+            <div className="page-header" style={{ padding: 'clamp(6rem, 10vw, 7.5rem) 0 3.5rem 0', background: 'var(--hero-bg)', textAlign: 'center', borderBottom: '1px solid var(--border-color)' }}>
                 <div className="container">
-                    <h1 className="section-title" style={{ fontSize: '3.5rem', marginBottom: '1rem', background: 'linear-gradient(to right, var(--secondary-color), var(--primary-color))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    <h1 className="section-title" style={{ fontSize: 'clamp(1.85rem, 4.5vw, 3.5rem)', marginBottom: '1rem', background: 'linear-gradient(to right, var(--secondary-color), var(--primary-color))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                         Empowering Professionals With Practical, Job-Ready Data Skills
                     </h1>
-                    <p className="section-desc" style={{ fontSize: '1.2rem', maxWidth: '800px', margin: '0 auto' }}>
+                    <p className="section-desc" style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)', maxWidth: '800px', margin: '0 auto' }}>
                         We help learners build analytical skills, confidence, and practical experience for data-driven work.
                     </p>
                 </div>
             </div>
 
             {/* MISSION SECTION */}
-            <section className="section bg-light" style={{ padding: '5rem 0' }}>
+            <section className="section bg-light" style={{ padding: 'clamp(3rem, 6vw, 5rem) 0' }}>
                 <div className="container">
                     <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
-                        <h2 style={{ fontSize: '2.5rem', color: 'var(--primary-color)', marginBottom: '1.5rem' }}>
+                        <h2 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.5rem)', color: 'var(--primary-color)', marginBottom: '1.5rem' }}>
                             Training That Builds Competence, Confidence, and Career Momentum
                         </h2>
                         <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--text-main)', marginBottom: '1.5rem' }}>
                             As data becomes increasingly vital in driving business decisions, our professional development programs equip you to harness its potential. We specialize in providing comprehensive training and coaching in business analysis, data analytics, and business intelligence.
                         </p>
-                        <p style={{ fontSize: '1.2rem', lineHeight: '1.8', fontWeight: 'bold', color: 'var(--secondary-color)', background: 'var(--bg-alt)', padding: '1.5rem', borderRadius: '12px', borderLeft: '4px solid var(--primary-color)' }}>
+                        <p style={{ fontSize: '1.15rem', lineHeight: '1.8', fontWeight: 'bold', color: 'var(--secondary-color)', background: 'var(--bg-alt)', padding: '1.5rem', borderRadius: '12px', borderLeft: '4px solid var(--primary-color)' }}>
                             You won't just learn how to use tools — you'll learn how to think like an analyst.
                         </p>
                     </div>
@@ -42,11 +42,11 @@ const About = () => {
             </section>
 
             {/* WHO WE ARE SECTION */}
-            <section className="section bg-alt" style={{ padding: '5rem 0' }}>
+            <section className="section bg-alt" style={{ padding: 'clamp(3rem, 6vw, 5rem) 0' }}>
                 <div className="container">
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: '4rem', alignItems: 'center' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: 'clamp(2rem, 5vw, 4rem)', alignItems: 'center' }}>
                         <div>
-                            <h2 style={{ fontSize: '2.5rem', color: 'var(--secondary-color)', marginBottom: '1.5rem' }}>Industry-Experienced. Practical. Results-Focused.</h2>
+                            <h2 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.5rem)', color: 'var(--secondary-color)', marginBottom: '1.5rem' }}>Industry-Experienced. Practical. Results-Focused.</h2>
                             <ul style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', fontSize: '1.1rem' }}>
                                 <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                     <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--glass-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--primary-color)' }}>
@@ -113,10 +113,10 @@ const About = () => {
             </section>
 
             {/* WHY STUDENTS CHOOSE YYZ DATA MATRIX */}
-            <section className="section bg-alt" style={{ padding: '5rem 0' }}>
+            <section className="section bg-alt" style={{ padding: 'clamp(3rem, 6vw, 5rem) 0' }}>
                 <div className="container">
                     <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '3rem' }}>Why Students Choose Us</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
                         
                         <div className="glass-panel" style={{ padding: '2rem', display: 'flex', gap: '1rem' }}>
                             <i className="fa-solid fa-check" style={{ color: 'var(--primary-color)', fontSize: '1.5rem' }}></i>

@@ -22,19 +22,21 @@ An interactive E-Learning and Live Coaching platform for **YYZ Data Matrix Inc**
   - Full Course bundles (`sectionId: 'all'`) and Individual Module (`module-1`..`module-6`) subscriptions across **Self-Paced Video** and **Live Coaching** tiers.
   - Dynamic pricing managed in Firestore and editable in real time from the Admin Control Panel.
 - **Embedded Live Video Classes (LiveKit)**:
-  - Admins can launch live video classrooms for any course/module or start 1-on-1 direct sessions for a specific student.
-  - Subscribed students receive a real-time pulsing **"Join Live Class"** banner (`GlobalLiveBanner`) and notification alert.
+  - Admins can launch live video classrooms for any course/module, for a multi-student **Class Cohort**, or start 1-on-1 direct sessions for a specific student.
+  - Subscribed and cohort students receive a real-time pulsing **"Join Live Class"** banner (`GlobalLiveBanner`) and notification alert.
+- **Multi-Student Classes (Cohorts / Batches)**:
+  - Admins can create and manage multi-student classes (`classService.js`) to schedule group coaching sessions on the calendar, launch cohort LiveKit classrooms, and grade/complete an entire cohort at once.
 - **Real-Time Support Chat & Notifications**:
-  - Floating support chat widget for students (`chats/{userId}/messages`) and a fixed multi-user live chat sidebar for admins.
+  - Floating support chat widget for students (`chats/{userId}/messages`) and a responsive multi-user live chat sidebar for admins.
   - Real-time notification bell (`NotificationDropdown`) with Web Audio API chime alerts.
-- **Interactive Calendar, Course Completion & Reviews**:
-  - Students and admins can schedule and manage coaching sessions on an interactive calendar (`sessions` collection).
-  - Teachers/admins can mark a student's course or module enrollment as **Completed** (sending an automatic notification to the student while keeping course materials accessible).
-  - Students who have completed a course or module can submit a 1–5 star rating (publicly aggregated) and written feedback (private to admins).
-- **Admin Control Panel (`/admin`)**:
-  - 7-tab management dashboard covering **Users**, **Course Pricing**, **Subscriptions** (including manual subscription grants and `Active` / `Completed` status toggling), **Calendar**, **Form Submissions**, **Live Classes**, and **Course Reviews**.
-- **Accessibility & Theming**:
-  - Built-in `<AccessibilityWidget />` (Large Text, High Contrast, Dyslexia Friendly font, Highlight Links, Greyscale), Light/Dark mode persistence, and an HTML5 canvas Matrix background (`<ParticleBackground />`).
+- **Interactive Calendar, Course Completion, Grading & Certificates**:
+  - Students and admins can schedule and manage individual or class coaching sessions on an interactive calendar (`sessions` collection).
+  - Teachers/admins can mark a student's course/module enrollment or class cohort as **Completed** and assign an official percentage score (`0–100%`), automatic letter grade (`A+` to `F`), and instructor feedback (`gradeService.js`).
+  - Students can view their academic standing in the **My Grades** tab (`/courses#mygrades`), print/save an official **Certificate of Achievement**, and submit 1–5 star ratings and reviews for completed courses/modules.
+- **Grouped Admin Control Panel (`/admin`)**:
+  - Organized 8-tab management dashboard grouped into **Students & Cohorts** (`Users`, `Classes`, `Subscriptions`), **Teaching & Schedule** (`Calendar`, `Live Classes`), and **Catalog & Feedback** (`Course Pricing`, `Course Reviews`, `Form Submissions`), with live search/filtering and student profile details.
+- **Responsive Design, Accessibility & Theming**:
+  - Fully responsive layout across mobile, tablet, and desktop screens, built-in `<AccessibilityWidget />` (Large Text, High Contrast, Dyslexia Friendly font, Highlight Links, Greyscale), Light/Dark mode persistence, and an HTML5 canvas Matrix background (`<ParticleBackground />`).
 
 ## 🛠️ Local Development
 

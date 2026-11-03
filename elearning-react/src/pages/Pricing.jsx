@@ -111,11 +111,11 @@ const Pricing = () => {
                 title="Course Pricing | YYZ Data Matrix"
                 description="Invest in your future with our Business Intelligence tracks."
             />
-            <section className="section bg-light" style={{ padding: '8rem 0 4rem 0', minHeight: '80vh' }}>
+            <section className="section bg-light" style={{ padding: 'clamp(6rem, 10vw, 8rem) 0 4rem 0', minHeight: '80vh' }}>
                 <div className="container" style={{ maxWidth: '1000px' }}>
                     <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                        <h1 style={{ fontSize: '3rem', color: 'var(--primary-color)', marginBottom: '1rem' }}>Invest in Your Data Career</h1>
-                        <p style={{ fontSize: '1.2rem', color: 'var(--text-light)' }}>Choose the learning style that fits you best.</p>
+                        <h1 style={{ fontSize: 'clamp(1.85rem, 5vw, 3rem)', color: 'var(--primary-color)', marginBottom: '0.75rem' }}>Invest in Your Data Career</h1>
+                        <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)', color: 'var(--text-light)' }}>Choose the learning style that fits you best.</p>
                     </div>
 
                     <div className="dashboard-tabs" style={{ justifyContent: 'center', marginBottom: '3rem' }}>
@@ -145,12 +145,21 @@ const Pricing = () => {
                         <div className="glass-panel" style={{ textAlign: 'center', padding: '4rem 2rem', marginTop: '2rem' }}>
                             <i className={`fa-solid ${activeTab === 'sql' ? 'fa-database' : activeTab === 'access' ? 'fa-table-list' : 'fa-file-excel'}`} style={{ fontSize: '3rem', color: 'var(--primary-color)', marginBottom: '1rem' }}></i>
                             <h2>Pricing Coming Soon</h2>
-                            <p style={{ color: 'var(--text-light)', marginTop: '1rem' }}>We are currently finalizing the curriculum and pricing for this track. Please check back later!</p>
+                            <p style={{ color: 'var(--text-light)', marginTop: '1rem', maxWidth: '560px', marginInline: 'auto' }}>
+                                We are currently finalizing the curriculum and pricing for this track. Request early access or custom coaching options below!
+                            </p>
+                            <button
+                                className="btn btn-primary"
+                                style={{ marginTop: '1.5rem' }}
+                                onClick={() => navigate(`/contact?subject=${encodeURIComponent(`Early Access / Pricing Inquiry: ${activeTab.toUpperCase()} Track`)}`)}
+                            >
+                                <i className="fa-solid fa-bell" style={{ marginRight: '0.5rem' }}></i> Notify Me / Request Info
+                            </button>
                         </div>
                     ) : (
                         <>
                             <h2 style={{ textAlign: 'center', marginBottom: '1rem', color: 'var(--secondary-color)' }}>Full Course Bundles</h2>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginTop: '3rem', paddingBottom: '3rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem', marginTop: '2rem', paddingBottom: '2rem' }}>
                                 {/* Video Tier */}
                                 <div className="glass-panel" style={{ padding: '2rem 2rem 3rem 2rem', textAlign: 'center', display: 'flex', flexDirection: 'column', height: '100%', border: '2px solid var(--primary-color)' }}>
                                     <div style={{ display: 'inline-block', padding: '0.4rem 1.2rem', marginBottom: '1.5rem', visibility: 'hidden' }}>
@@ -209,12 +218,12 @@ const Pricing = () => {
                                 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                     {sections.length > 0 ? sections.map((section, idx) => (
-                                        <div key={section.id} className="glass-panel" style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                                            <div style={{ flex: '1 1 300px' }}>
-                                                <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Module {idx + 1}: {section.title || `Module ${idx + 1}`}</h3>
+                                        <div key={section.id} className="glass-panel" style={{ padding: 'clamp(1.2rem, 3vw, 1.5rem) clamp(1.2rem, 3vw, 2rem)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                                            <div style={{ flex: '1 1 min(100%, 240px)' }}>
+                                                <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>Module {idx + 1}: {section.title || `Module ${idx + 1}`}</h3>
                                                 <p style={{ color: 'var(--text-light)', margin: 0, fontSize: '0.9rem' }}>Access specific topics only.</p>
                                             </div>
-                                            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', width: 'auto' }}>
                                                 <button
                                                     className="btn btn-secondary"
                                                     style={{ padding: '0.6rem 1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}

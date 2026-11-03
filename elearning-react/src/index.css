@@ -928,16 +928,81 @@ h4 {
 }
 
 @media (max-width: 768px) {
+    .container {
+        padding: 0 1.25rem;
+    }
+
     .header-container {
         padding: 0 1rem;
     }
 
+    .header-actions {
+        gap: 0.45rem;
+    }
+
+    .header-profile {
+        margin-left: 0.35rem !important;
+        margin-right: 0.15rem !important;
+    }
+
     .logo-text {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
     }
 
     .hero-title {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
+    }
+
+    .glass-panel,
+    .service-card,
+    .platform-comparison {
+        padding: 1.5rem;
+    }
+
+    .footer {
+        padding: 3.5rem 0 0;
+    }
+
+    .footer-brand p {
+        margin-inline: auto;
+    }
+
+    .footer-logo {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 1rem;
+    }
+
+    .logo {
+        gap: 8px !important;
+    }
+
+    .logo img {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .logo-text {
+        font-size: 0.92rem;
+    }
+
+    .hero-title {
+        font-size: 1.85rem;
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .glass-panel,
+    .service-card,
+    .platform-comparison {
+        padding: 1.25rem;
     }
 }
 
@@ -1287,6 +1352,30 @@ h4 {
     display: flex;
     flex-direction: column;
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.05);
+}
+
+.admin-chat-widget {
+    right: 310px;
+}
+
+@media (max-width: 768px) {
+    .admin-chat-sidebar-fixed {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .admin-chat-widget {
+        right: 16px;
+        left: 16px;
+        bottom: 80px;
+        z-index: 1001;
+    }
+
+    .admin-chat-widget .chat-window {
+        width: 100%;
+        max-height: calc(100vh - 170px);
+        margin-bottom: 0;
+    }
 }
 
 .admin-chat-user-item {

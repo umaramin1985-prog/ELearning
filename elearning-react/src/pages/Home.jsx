@@ -14,8 +14,8 @@ const Home = () => {
             {/* HERO SECTION */}
             <section id="home" className="hero">
                 <div className="container hero-container" style={{ flexDirection: 'column', alignItems: 'center', paddingTop: 'clamp(2rem, 6vh, 4.5rem)', paddingBottom: 'clamp(3rem, 6vh, 5rem)', position: 'relative', zIndex: 2 }}>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 'clamp(3rem, 5vw, 6rem)', width: '100%' }}>
-                        <div className="hero-content" style={{ flex: '1.2 1 450px', marginBottom: '0', maxWidth: '100%' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 'clamp(2rem, 5vw, 6rem)', width: '100%' }}>
+                        <div className="hero-content" style={{ flex: '1.2 1 min(100%, 450px)', marginBottom: '0', maxWidth: '100%' }}>
                             <h1 className="hero-title" style={{ marginBottom: '1.2rem', lineHeight: '1.15' }}>Power BI & Data Analytics Training in Toronto</h1>
                             <p className="hero-subtitle" style={{ marginBottom: '0.75rem' }}>
                                 <strong style={{ color: 'var(--primary-color)', fontSize: '1.25rem' }}>Become a job ready data analyst in 16 weeks</strong>
@@ -51,7 +51,7 @@ const Home = () => {
                             </div>
                         </div>
 
-                        <div className="hero-image-wrapper" style={{ flex: '0.95 1 400px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', width: '100%' }}>
+                        <div className="hero-image-wrapper" style={{ flex: '0.95 1 min(100%, 400px)', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', width: '100%' }}>
                             <div style={{ position: 'relative', width: '100%', maxWidth: '630px', transform: 'perspective(1000px) rotateY(-4deg) rotateX(2deg)', transition: 'transform 0.4s ease-out' }} onMouseOver={(e) => e.currentTarget.style.transform = 'perspective(1000px) rotateY(0) rotateX(0)'} onMouseOut={(e) => e.currentTarget.style.transform = 'perspective(1000px) rotateY(-4deg) rotateX(2deg)'}>
                                 <img src="/images/hero-dashboard-light.webp" width="650" height="365" alt="Data analytics dashboard showing key business metrics and visualizations" className="show-light" style={{ width: '100%', height: 'auto', borderRadius: '12px', boxShadow: '0 12px 32px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.04)', objectFit: 'contain' }} />
                                 <img src="/images/hero-dashboard-dark.webp" width="650" height="365" alt="Data analytics dashboard showing key business metrics and visualizations" className="show-dark" style={{ width: '100%', height: 'auto', borderRadius: '12px', boxShadow: '0 12px 32px rgba(0,0,0,0.4), 0 2px 6px rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.08)', objectFit: 'contain' }} />
@@ -168,7 +168,7 @@ const Home = () => {
                         <p className="section-desc" style={{ margin: '0 auto' }}>Learn by doing, not just watching.</p>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}>
 
                         <div className="glass-panel" style={{ padding: '2.5rem' }}>
                             <div className="card-icon" style={{ marginBottom: '1.5rem', width: '50px', height: '50px' }}><i className="fa-solid fa-laptop-file"></i></div>
@@ -205,7 +205,7 @@ const Home = () => {
                         <h2 className="section-title">What You'll Build</h2>
                         <p className="section-desc" style={{ margin: '0 auto' }}>Complete practical business projects that demonstrate what you can do.</p>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}>
                         <div className="glass-panel" style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                             <div style={{ height: '180px', background: 'linear-gradient(135deg, #2d3748, #1a202c)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem', color: '#f2c811' }}>
                                 <i className="fa-solid fa-chart-line"></i>
@@ -251,10 +251,10 @@ const Home = () => {
             </section>
 
             {/* INSTRUCTOR SECTION */}
-            <section className="section bg-alt" style={{ padding: '5rem 0' }}>
+            <section className="section bg-alt" style={{ padding: 'clamp(3rem, 6vw, 5rem) 0' }}>
                 <div className="container">
-                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4rem' }}>
-                        <div style={{ flex: '1 1 400px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 'clamp(2rem, 5vw, 4rem)' }}>
+                        <div style={{ flex: '1 1 min(100%, 400px)' }}>
                             <h2 className="section-title">Learn from an Industry Professional</h2>
                             <p style={{ color: 'var(--text-light)', fontSize: '1.1rem', lineHeight: '1.8', marginBottom: '2rem' }}>
                                 I'm Rauf Anwar, a finance and data analytics leader with over 20 years of experience in multinational organizations across healthcare, manufacturing, automotive, and oil & gas industries. Through practical training and real-world insights, I help professionals build skills in data analytics, business intelligence, digital transformation, and performance management.
@@ -267,7 +267,7 @@ const Home = () => {
                                 <li style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}><i className="fa-solid fa-award" style={{ color: 'var(--primary-color)' }}></i> Mentor credentials: MBA, CMA, CPA, PMP and PL 300 Data analytics</li>
                             </ul>
                         </div>
-                        <div style={{ flex: '1 1 400px', display: 'flex', justifyContent: 'center' }}>
+                        <div style={{ flex: '1 1 min(100%, 320px)', display: 'flex', justifyContent: 'center' }}>
                             <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', maxWidth: '350px' }}>
                                 <div style={{ width: '120px', height: '120px', borderRadius: '50%', margin: '0 auto 1.5rem auto', overflow: 'hidden', border: '3px solid var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--card-bg)' }}>
                                     <img src="/images/instructor.webp" width="120" height="120" alt="Rauf Anwar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -287,7 +287,7 @@ const Home = () => {
                     <h2 className="section-title">What Our Learners Say</h2>
                     <p className="section-desc" style={{ marginBottom: '3rem' }}>Hear from professionals who have elevated their careers through our practical training.</p>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}>
                         {/* TODO: Add legitimate testimonials here when available from the site owner. */}
                         <div className="glass-panel" style={{ padding: '2rem', opacity: 0.9, display: 'flex', flexDirection: 'column' }}>
                             <div style={{ color: '#f59e0b', marginBottom: '1rem' }}>
@@ -313,8 +313,8 @@ const Home = () => {
                                 </div>
                                 {/* When you have the picture, delete the div above and uncomment the img tag below: */}
                                 {/* <img src="/images/student2.jpeg" alt="Student" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary-color)' }} /> */}
-                                <h4 style={{ margin: 0 }}>Verified Graduate</h4>
-                                <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>Business Intelligence Analyst</span>
+                                <h4 style={{ margin: 0 }}>Aneeqa Yousef</h4>
+                                <span style={{ fontSize: '0.9rem', color: 'var(--primary-color)' }}>Industrial Process Engineer, K &amp; N</span>
                             </div>
                         </div>
                         <div className="glass-panel" style={{ padding: '2rem', opacity: 0.9, display: 'flex', flexDirection: 'column' }}>

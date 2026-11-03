@@ -48,3 +48,26 @@
 @keyframes shimmer {
     100% { left: 200%; }
 }
+
+@media (max-width: 768px) {
+    .global-live-banner-container {
+        padding: 90px 16px 0 16px;
+    }
+
+    .live-session-banner {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: 0.85rem;
+        padding: 14px 16px;
+    }
+
+    .live-session-banner h3 {
+        justify-content: center;
+        font-size: 1rem;
+    }
+
+    .live-session-banner .btn {
+        width: 100%;
+    }
+}

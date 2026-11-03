@@ -98,20 +98,20 @@ const Header = () => {
                 </Link>
                 <nav className={`nav ${isMobileMenuOpen ? 'active' : ''}`}>
                     <ul className="nav-list">
-                        <li><Link to="/" className="nav-link" onClick={closeMobileMenu}>Home</Link></li>
-                        <li><Link to="/about" className="nav-link" onClick={closeMobileMenu}>About Us</Link></li>
-                        <li><Link to="/courses" className="nav-link" onClick={closeMobileMenu}>Courses</Link></li>
-                        <li><Link to="/pricing" className="nav-link" onClick={closeMobileMenu}>Pricing</Link></li>
-                        {isAdmin && <li><Link to="/admin" className="nav-link" onClick={closeMobileMenu}>Admin Panel</Link></li>}
+                        <li><Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`} onClick={closeMobileMenu}>Home</Link></li>
+                        <li><Link to="/about" className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`} onClick={closeMobileMenu}>About Us</Link></li>
+                        <li><Link to="/courses" className={`nav-link ${location.pathname === '/courses' ? 'active' : ''}`} onClick={closeMobileMenu}>Courses</Link></li>
+                        <li><Link to="/pricing" className={`nav-link ${location.pathname === '/pricing' ? 'active' : ''}`} onClick={closeMobileMenu}>Pricing</Link></li>
+                        {isAdmin && <li><Link to="/admin" className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`} onClick={closeMobileMenu}>Admin Panel</Link></li>}
                         {!user ? (
-                            <li className="mobile-nav-item"><Link to="/signin" className="nav-link" onClick={closeMobileMenu}>Sign In</Link></li>
+                            <li className="mobile-nav-item"><Link to="/signin" className={`nav-link ${location.pathname === '/signin' ? 'active' : ''}`} onClick={closeMobileMenu}>Sign In</Link></li>
                         ) : (
                             <>
-                                <li className="mobile-nav-item"><Link to="/profile" className="nav-link" onClick={closeMobileMenu}>Profile</Link></li>
+                                <li className="mobile-nav-item"><Link to="/profile" className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`} onClick={closeMobileMenu}>Profile</Link></li>
                                 <li className="mobile-nav-item"><button className="nav-link" style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%' }} onClick={() => { handleLogout(); closeMobileMenu(); }}>Log Out</button></li>
                             </>
                         )}
-                        <li className="mobile-nav-item"><Link to="/contact" className="nav-link" onClick={closeMobileMenu}>Contact Us</Link></li>
+                        <li className="mobile-nav-item"><Link to="/contact" className={`nav-link ${location.pathname === '/contact' ? 'active' : ''}`} onClick={closeMobileMenu}>Contact Us</Link></li>
                     </ul>
                 </nav>
                 <div className="header-actions">

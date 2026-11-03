@@ -138,7 +138,56 @@
     border-color: #ef4444;
 }
 
-/* New Admin Tabs & Content */
+/* Grouped Admin Tabs & Content */
+.admin-tabs-grouped {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2.25rem;
+    align-items: stretch;
+}
+
+.admin-tab-group {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.65rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    box-shadow: var(--box-shadow);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.admin-tab-group.has-active {
+    border-color: rgba(37, 99, 235, 0.45);
+}
+
+.admin-tab-group-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-color-light);
+    padding: 0 0.4rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    opacity: 0.85;
+}
+
+.admin-tab-group.has-active .admin-tab-group-label {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+.admin-tab-group-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+}
+
 .admin-tabs {
     display: flex;
     gap: 1rem;
@@ -149,24 +198,27 @@
 
 .admin-tab-btn {
     background: transparent;
-    border: none;
+    border: 1px solid transparent;
     color: var(--text-color-light);
-    font-size: 1.1rem;
-    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.45rem 0.85rem;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 6px;
+    transition: all 0.25s ease;
+    border-radius: 8px;
+    white-space: nowrap;
 }
 
 .admin-tab-btn:hover {
-    background: rgba(var(--primary-rgb), 0.05);
+    background: rgba(37, 99, 235, 0.08);
     color: var(--text-color);
 }
 
 .admin-tab-btn.active {
-    background: rgba(var(--primary-rgb), 0.1);
+    background: rgba(37, 99, 235, 0.14);
+    border-color: rgba(37, 99, 235, 0.3);
     color: var(--primary-color);
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .admin-pricing-container .pricing-card {
@@ -514,6 +566,30 @@
 }
 
 @media (max-width: 768px) {
+    .admin-section {
+        padding: 5.5rem 0 3rem 0;
+    }
+    .admin-header {
+        margin-bottom: 1.75rem;
+    }
+    .admin-tabs-grouped {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .admin-tab-group {
+        width: 100%;
+    }
+    .admin-tab-group-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+    }
+    .admin-tab-btn {
+        flex: 1 1 auto;
+        text-align: center;
+        font-size: 0.85rem;
+        padding: 0.45rem 0.65rem;
+    }
     .admin-tabs {
         flex-wrap: wrap;
         justify-content: center;
@@ -525,10 +601,28 @@
         font-size: 0.9rem;
     }
     .admin-header h1 {
-        font-size: 2rem;
+        font-size: 1.85rem;
+    }
+    .admin-table-container {
+        padding: 1.25rem;
+        -webkit-overflow-scrolling: touch;
     }
     .admin-table th, .admin-table td {
-        padding: 1rem;
+        padding: 0.85rem 1rem;
+        font-size: 0.88rem;
+    }
+    .pricing-inputs,
+    .revenue-stats {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    .pricing-inputs .form-group,
+    .pricing-inputs .admin-action-btn {
+        width: 100%;
+    }
+    .stat-value {
+        font-size: 1.85rem;
     }
 }
 @media (max-width: 500px) {
@@ -536,6 +630,10 @@
         font-size: 1.5rem;
     }
     .admin-table-container {
-        padding: 1rem;
+        padding: 0.9rem;
+    }
+    .admin-table th, .admin-table td {
+        padding: 0.7rem 0.75rem;
+        font-size: 0.82rem;
     }
 }

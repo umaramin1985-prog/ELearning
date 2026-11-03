@@ -55,10 +55,12 @@ const LiveClass = () => {
 
                 setSession(currentSession);
 
-                // If not admin, check if subscribed to the course/module
+                // If not admin, check if subscribed to the course/module or included in the class
                 if (!userIsAdmin) {
                     if (currentSession.courseId === 'direct' && currentSession.sectionId === user.uid) {
                         // User is the specific target of this direct session
+                    } else if (currentSession.courseId === 'class' && Array.isArray(currentSession.studentIds) && currentSession.studentIds.includes(user.uid)) {
+                        // User is a member of this live class cohort
                     } else {
                         const subscriptions = await getUserSubscriptions(user.uid);
                         const isSubscribed = subscriptions.some(sub => 
