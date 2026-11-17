@@ -13,6 +13,7 @@ import ScheduleModal from '../components/ScheduleModal';
 import { getRatingsForCourse } from '../services/ratingService';
 import StarRating from '../components/StarRating';
 import ReviewModal from '../components/ReviewModal';
+import ShortcutDeck from '../components/ShortcutDeck';
 import './Courses.css';
 
 const DEFAULT_ASSIGNMENT_FILES = [
@@ -549,12 +550,22 @@ const Courses = () => {
                                                         </button>
                                                     )}
                                                     <button
+                                                        type="button"
                                                         className="btn btn-secondary"
                                                         onClick={() => {
                                                             document.querySelector('.demo-video-container')?.scrollIntoView({ behavior: 'smooth' });
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-play"></i> Watch Free Demo
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-secondary"
+                                                        onClick={() => {
+                                                            document.getElementById('shortcut-playbook')?.scrollIntoView({ behavior: 'smooth' });
+                                                        }}
+                                                    >
+                                                        <i className="fa-solid fa-keyboard"></i> Shortcuts &amp; Checklist
                                                     </button>
                                                     {isCompleted('all') ? (
                                                         <>
@@ -872,6 +883,8 @@ const Courses = () => {
                                             </div>
 
                                         </div>
+
+                                        <ShortcutDeck id="shortcut-playbook" />
                                     </div>
                                 )}
 
