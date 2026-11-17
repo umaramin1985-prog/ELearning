@@ -27,12 +27,48 @@ const Footer = () => {
 
             </div>
             <div className="footer-bottom">
-                <div className="container" style={{ textAlign: 'center' }}>
-                    <p style={{ margin: 0 }}>
-                        &copy; {new Date().getFullYear()} YYZ Data Matrix Inc. All rights reserved.
-                        <span style={{ margin: '0 0.5rem', color: 'var(--text-light)' }}>|</span>
-                        <span style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>Release v{packageJson.version}</span>
-                    </p>
+                <div
+                    className="container"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexWrap: 'wrap',
+                        gap: '0.4rem 0.65rem',
+                        textAlign: 'center'
+                    }}
+                >
+                    <span>&copy; {new Date().getFullYear()} YYZ Data Matrix Inc. All rights reserved.</span>
+                    <span style={{ color: 'var(--text-light)' }} aria-hidden="true">|</span>
+                    <span style={{ fontSize: '0.9rem', color: 'var(--text-light)' }}>Release v{packageJson.version}</span>
+                    <span style={{ color: 'var(--text-light)' }} aria-hidden="true">|</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.9rem', color: '#94a3b8' }}>
+                        <span>Powered by</span>
+                        <a
+                            href="https://prynivo.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.4rem',
+                                color: '#f8fafc',
+                                fontWeight: 600,
+                                textDecoration: 'none'
+                            }}
+                        >
+                            <img
+                                src="/images/prynivo-logo.webp"
+                                alt="Prynivo"
+                                width="18"
+                                height="19"
+                                style={{ height: '18px', width: 'auto', display: 'block', objectFit: 'contain' }}
+                            />
+                            <span style={{ color: '#93c5fd', textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                                prynivo.com
+                            </span>
+                        </a>
+                    </span>
                 </div>
             </div>
         </footer>

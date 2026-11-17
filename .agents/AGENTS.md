@@ -2,7 +2,7 @@
 
 ## 1. Project Overview & Domain
 This project is an interactive E-Learning and Live Coaching platform for **YYZ Data Matrix Inc** (`https://yyzdm.ca` / `elearning-site-woad.vercel.app`), based in Mississauga/Toronto, ON, Canada. It focuses on practical, project-based Business Intelligence tracks led by **Rauf Anwar** (MBA, CMA, CPA, PMP, PL-300 Certified):
-- **Power BI (`powerbi`)**: Full 6-module curriculum (`module-1` to `module-6`), sample PDF reports, demo video, and dynamic bundle/module pricing.
+- **Power BI (`powerbi`)**: Full 6-module curriculum (`module-1` to `module-6`), sample PDF reports, demo video, interactive **Power BI, Power Query & DAX Shortcuts Guide + 6-Stage Data Model Startup Checklist** (`ShortcutDeck.jsx`), and dynamic bundle/module pricing.
 - **SQL (`sql`)**, **MS Access (`access`)**, and **Advanced Excel (`excel`)**: Featured on the landing page; syllabus and pricing tabs currently display *"Coming Soon"* placeholders.
 
 ## 2. Technology Stack
@@ -21,11 +21,12 @@ This project is an interactive E-Learning and Live Coaching platform for **YYZ D
 2. **Route Guards (`src/components/ProtectedRoute.jsx` & `AdminRoute.jsx`)**:
    - `ProtectedRoute` (protects `/profile` and `/live-class/:roomId`): Restricts access based on whether the authenticated user's `users/{uid}` document exists in Firestore (auto-logs out deleted users).
    - `AdminRoute` (protects `/admin`): Checks that the user's email matches the comma-separated list in `import.meta.env.VITE_ADMIN_EMAILS` and that their Firestore user document exists.
-3. **Course Catalog, Assignments, Pricing & Stripe Checkout (`src/pages/Courses.jsx`, `Pricing.jsx`, `PaymentModal.jsx`, `public/docs/Assignments/`)**:
+3. **Course Catalog, Assignments, Shortcuts Guide, Pricing & Stripe Checkout (`src/pages/Courses.jsx`, `Pricing.jsx`, `PaymentModal.jsx`, `ShortcutDeck.jsx`, `public/docs/Assignments/`)**:
    - Supports **Full Course (`sectionId: 'all'`)** and **Individual Module (`module-1`..`module-6`)** subscriptions across two tiers: **Self-Paced Video (`video`)** and **Live Coaching (`live`)**.
    - **Enrolled Module Assignments (`public/docs/Assignments/`)**: Automatically discovered at build/dev time via `vite.config.js` (`globalThis.__ASSIGNMENT_FILES__`) and displayed exclusively to enrolled/completed students and admins inside the expanded module cards on `/courses`:
      - **Module 1 (`module-1` — *"Power Query & Data Cleaning (ETL)"*)**: Displays all files starting with `"Assignment"` (e.g., `Assignment No 01.07.zip`, `Assignment No 01.10.xlsx` .. `01.18.xlsx`).
      - **Module 2 (`module-2` — *"Power Pivot, DAX, and Data Analytics"*)**: Displays `"DAX Assignment"` files (`DAX Assignment.xlsx`).
+   - **Compiled Power BI Shortcuts & Data Model Checklist (`src/components/ShortcutDeck.jsx`, `#shortcut-playbook`)**: Searchable, tabbed text reference with `<kbd>` keycaps, one-click clipboard copy, **70** curated keyboard shortcuts (`Power BI Desktop`, `Power Query`, `DAX Formulas`), and the **6-Stage Data Model Startup Checklist**, linked directly from the Power BI header on `/courses`.
    - `PaymentModal` posts to `/api/create-checkout-session` and redirects to Stripe Checkout.
    - Upon redirect back to `/courses?payment=success&...`, `Courses.jsx` records the subscription (`subscriptions` collection) and transaction (`transactions` collection) in Firestore.
 4. **Live Video Classes, Docked Mini-Player & Picture-in-Picture (`src/pages/LiveClass.jsx`, `Layout.jsx`, `GlobalLiveBanner.jsx`, `liveSessionService.js`)**:

@@ -11,7 +11,7 @@
    - **Module 4 (`module-4`)**: Data Modeling and Optimization
    - **Module 5 (`module-5`)**: Power BI Service & Publishing
    - **Module 6 (`module-6`)**: From Raw Data to Executive Dashboards
-   - Includes downloadable sample project PDFs (`/docs/Historical Sales Report.pdf`, `/docs/Efficiency Report.pdf`) and a course demo video (`/videos/powerbi-demo.mp4`).
+   - Includes downloadable sample project PDFs (`/docs/Historical Sales Report.pdf`, `/docs/Efficiency Report.pdf`), a course demo video (`/videos/powerbi-demo.mp4`), enrolled Module 1 & Module 2 practice assignments (`/docs/Assignments/`), and an interactive **Power BI, Power Query & DAX Shortcuts Guide + 6-Stage Data Model Startup Checklist** (`ShortcutDeck.jsx`).
 2. **SQL for Data Analysis (`sql`)** — Featured on Home page; syllabus & pricing marked *"Coming Soon"* on `/courses` and `/pricing`.
 3. **MS Access Database Development (`access`)** — Featured on Home page; syllabus & pricing marked *"Coming Soon"*.
 4. **Advanced Excel for Business Analysis (`excel`)** — Featured on Home page; syllabus & pricing marked *"Coming Soon"*.
@@ -67,7 +67,8 @@ c:\Code\ELearning\
     │   ├── create-checkout-session.js   # POST: Creates Stripe Checkout Session
     │   └── livekit-token.js             # GET: Generates LiveKit room JWT access token
     ├── public/                          # Static assets served at "/"
-    │   ├── docs/                        # Sample Power BI PDF reports
+    │   ├── docs/                        # Sample Power BI PDF reports & Assignments/
+    │   │   └── Assignments/             # Hands-on workbooks & databases (Module 1 & Module 2)
     │   ├── icons/                       # Certification badges (powerbi-badge.webp)
     │   ├── images/                      # WebP images (light/dark variants) & modules/
     │   ├── videos/                      # Course demo video (powerbi-demo.mp4)
@@ -83,10 +84,10 @@ c:\Code\ELearning\
     │   │   ├── AdminRoute.jsx           # Route guard: checks VITE_ADMIN_EMAILS + Firestore user doc
     │   │   ├── CalendarView.jsx         # Wrapper around react-big-calendar (month/week/day views)
     │   │   ├── ChatWidget.jsx           # Real-time support chat (User widget + Admin fixed sidebar)
-    │   │   ├── Footer.jsx               # Site footer + dynamic package.json version display
-    │   │   ├── GlobalLiveBanner.jsx     # Pulsing top banner alerting subscribed users of active live classes
+    │   │   ├── Footer.jsx               # Site footer + dynamic package.json version display (v1.2.0)
+    │   │   ├── GlobalLiveBanner.jsx     # Pulsing top banner alerting subscribed/cohort users of active live classes
     │   │   ├── Header.jsx               # Fixed top navbar, mobile drawer, theme toggle, notifications, profile
-    │   │   ├── Layout.jsx               # Shared page shell (Header, GlobalLiveBanner, Outlet, ChatWidget, A11y, Footer)
+    │   │   ├── Layout.jsx               # Shared page shell (Header, GlobalLiveBanner, persistent LiveClass, Outlet, ChatWidget, A11y, Footer)
     │   │   ├── Loader.jsx               # Animated spinner (inline or fullScreen)
     │   │   ├── NotificationDropdown.jsx # Real-time bell dropdown + Web Audio API chime (AudioContext)
     │   │   ├── ParticleBackground.jsx   # Fixed background canvas rendering theme-aware digital rain
@@ -95,6 +96,7 @@ c:\Code\ELearning\
     │   │   ├── ReviewModal.jsx          # Modal for submitting 1-5 star ratings & private admin reviews
     │   │   ├── ScheduleModal.jsx        # Modal for requesting or scheduling calendar sessions
     │   │   ├── SEO.jsx                  # react-helmet-async metadata & OpenGraph wrapper
+    │   │   ├── ShortcutDeck.jsx         # Searchable compiled Power BI / Power Query / DAX shortcuts & 6-stage checklist
     │   │   └── StarRating.jsx           # Interactive or read-only 5-star display with half-star support
     │   ├── contexts/
     │   │   └── AuthContext.jsx          # Firebase auth provider + automatic Firestore user synchronization
@@ -103,11 +105,11 @@ c:\Code\ELearning\
     │   │   └── useSmoothScroll.js       # Lenis smooth scrolling initialization hook
     │   ├── pages/
     │   │   ├── About.jsx                # Mission, instructor credentials, philosophy
-    │   │   ├── AdminPanel.jsx           # 7-tab Admin Dashboard (Users, Pricing, Subscriptions, Calendar, Messages, Live Classes, Reviews)
+    │   │   ├── AdminPanel.jsx           # Grouped 8-tab Admin Dashboard (Users, Classes, Subscriptions, Calendar, Live Classes, Pricing, Reviews, Form Submissions)
     │   │   ├── Contact.jsx              # Contact info + Firestore contact form submission
-    │   │   ├── Courses.jsx              # Main course catalog, syllabus accordions, ratings, schedule tab, Stripe return handler
+    │   │   ├── Courses.jsx              # Course catalog, modules, assignments, ShortcutDeck, ratings, schedule & My Grades / Certificates
     │   │   ├── Home.jsx                 # Landing page (Hero, tracks, project showcase, instructor bio, testimonials, platform comparison)
-    │   │   ├── LiveClass.jsx            # Protected LiveKit video conference room (/live-class/:roomId)
+    │   │   ├── LiveClass.jsx            # Persistent LiveKit video room (/live-class/:roomId) with mini-player & Picture-in-Picture
     │   │   ├── NotFound.jsx             # 404 page
     │   │   ├── Pricing.jsx              # Dedicated pricing page (Full Course bundles + Individual Modules)
     │   │   ├── Privacy.jsx              # Privacy Policy page
@@ -116,10 +118,12 @@ c:\Code\ELearning\
     │   │   └── SignUp.jsx               # Account registration page
     │   ├── services/
     │   │   ├── chatService.js           # Firestore CRUD & onSnapshot listeners for chats & messages
+    │   │   ├── classService.js          # Cohort / class management stored on courses/{courseId}.classes
     │   │   ├── courseService.js         # Firestore CRUD & initial seeding for courses & module sections
+    │   │   ├── gradeService.js          # Grading helpers, letter grade calculation & student grade persistence
     │   │   ├── liveSessionService.js    # Firestore management for active LiveKit sessions (with 12h zombie filter)
     │   │   ├── ratingService.js         # Firestore composite-key rating & review service
-    │   │   ├── scheduleService.js       # Firestore CRUD for calendar sessions + notification trigger
+    │   │   ├── scheduleService.js       # Firestore CRUD for individual & cohort calendar sessions + notification trigger
     │   │   └── subscriptionService.js   # Firestore CRUD for user subscriptions & payment transactions
     │   ├── App.jsx                      # Root router & global providers
     │   ├── firebase.js                  # Firebase app, Auth, GoogleAuthProvider, and Firestore initialization
@@ -145,11 +149,12 @@ c:\Code\ELearning\
    - `profileComplete`: `boolean` (initialized to `false`; set to `true` when user saves `/profile`)
    - `firstName`, `lastName`, `dob`, `phone`, `category` (`'Student' | 'Professional'`), `company`, `position`: `string` (populated via `Profile.jsx`)
 
-2. **`courses/{courseId}`** (Managed in `courseService.js`)
+2. **`courses/{courseId}`** (Managed in `courseService.js` & `classService.js`)
    - Document IDs: e.g., `'powerbi'`
    - `title`: `string` (e.g., `'Microsoft Power BI'`)
    - `overallVideoRate`: `number` (default `499`)
    - `overallLiveRate`: `number` (default `999`)
+   - `classes`: `array` (managed via `classService.js`; cohort objects `{ id, name, courseId, sectionId, studentIds, status, createdAtMs, updatedAtMs, completedAtMs }`)
    - **Subcollection `courses/{courseId}/sections/{sectionId}`**:
      - Document IDs: `'module-1'` through `'module-6'`
      - `id`: `string`
@@ -158,15 +163,15 @@ c:\Code\ELearning\
      - `liveRate`: `number` (default `199`)
      - `videoLink`: `string`
 
-3. **`subscriptions/{subId}`** (Managed in `subscriptionService.js`)
+3. **`subscriptions/{subId}`** (Managed in `subscriptionService.js` & `gradeService.js`)
    - `userId`: `string`
    - `courseId`: `string` (`'powerbi'`, etc.)
    - `sectionId`: `string` (`'all'` for full course bundle, or `'module-1'`..`'module-6'`)
    - `type`: `'video' | 'live'`
    - `amount`: `number`
-   - `status`: `'active' | 'completed'` (toggled by teachers/admins via `updateSubscriptionStatus` in `AdminPanel.jsx`)
-   - `createdAt`: `Timestamp`
-   - `completedAt`: `Timestamp | null` (set when marked `'completed'`)
+   - `status`: `'active' | 'completed'` (toggled by teachers/admins via `updateSubscriptionStatus` or graded via `saveStudentGrade` in `AdminPanel.jsx`)
+   - `score`, `letterGrade`, `remarks`, `gradedBy`, `classId`, `className`: optional official grading/cohort fields
+   - `createdAt`, `completedAt`, `updatedAt`: `Timestamp | null`
 
 4. **`transactions/{transId}`** (Managed in `subscriptionService.js`)
    - Created automatically alongside every subscription in `createSubscription()`.
@@ -177,7 +182,7 @@ c:\Code\ELearning\
    - `date`: `Timestamp`
 
 5. **`sessions/{sessionId}`** (Managed in `scheduleService.js`)
-   - Scheduled calendar events for 1-on-1 or live coaching.
+   - Scheduled calendar events for individual or cohort live coaching (`createSession`, `createClassSession`).
    - `userId`: `string`
    - `courseId`: `string`
    - `sectionId`: `string`
@@ -185,13 +190,14 @@ c:\Code\ELearning\
    - `startTime`: `Date | Timestamp`
    - `endTime`: `Date | Timestamp`
    - `meetingLink`: `string`
+   - `classId`, `className`, `batchGroupId`, `studentCount`: optional fields linking cohort sessions (deduplicated by `batchGroupId` in `getAllSessions()`)
    - `createdAt`: `Timestamp`
 
 6. **`liveSessions/{sessionId}`** (Managed in `liveSessionService.js`)
    - Real-time active LiveKit video classrooms.
    - `roomId`: `string` (`${courseId}-${sectionId}-live-${Date.now()}`)
-   - `courseId`: `string` (Course ID like `'powerbi'`, or `'direct'` for 1-on-1 direct user sessions)
-   - `sectionId`: `string` (`'all'`, `'module-1'`, etc., or target `userId` when `courseId === 'direct'`)
+   - `courseId`: `string` (Course ID like `'powerbi'`, `'class'` for cohort sessions, or `'direct'` for 1-on-1 direct user sessions)
+   - `sectionId`: `string` (`'all'`, `'module-1'`, cohort ID, or target `userId` when `courseId === 'direct'`)
    - `title`: `string`
    - `isActive`: `boolean`
    - `startedAt`: `Date | Timestamp`
@@ -259,15 +265,17 @@ c:\Code\ELearning\
 5. A `useEffect` in `Courses.jsx` (lines 155–199) intercepts `?payment=success`, clears the URL query params via `window.history.replaceState`, calls `createSubscription(..., 'stripe')` to write to `subscriptions` and `transactions` in Firestore, refreshes the user's subscriptions, and (if a single video module was purchased) opens `section.videoLink`.
 
 ### 5.3 Live Classes (LiveKit Video Conferencing)
-1. **Starting a Class**: In `AdminPanel.jsx` -> **Live Classes** tab, an admin can start either:
+1. **Starting a Class**: In `AdminPanel.jsx` -> **Live Classes** tab, an admin can start:
    - A **Course Session** (`courseId` = e.g. `'powerbi'`, `sectionId` = `'all'` or `'module-X'`).
+   - A **Class Cohort Session** (`courseId` = `'class'`, `sectionId` = cohort `id`, plus `studentIds`).
    - A **Direct User Session** (`courseId` = `'direct'`, `sectionId` = target `user.uid`).
 2. `startLiveSession()` creates an active document in `liveSessions` and navigates the admin to `/live-class/:roomId`.
-3. **Student Discovery**: `GlobalLiveBanner.jsx` and `NotificationDropdown.jsx` subscribe in real time (`subscribeToActiveSessions`) and check if the logged-in non-admin user has a matching subscription (or is the target of a `'direct'` session). If so, a pulsing `"LIVE NOW"` banner and notification appear with a **"Join Live Class"** button.
-4. **Joining & Access Verification (`LiveClass.jsx`)**:
-   - Verifies session is active and user is either an admin, the target of a direct session, or subscribed to the course/module.
+3. **Student Discovery**: `GlobalLiveBanner.jsx` and `NotificationDropdown.jsx` subscribe in real time (`subscribeToActiveSessions`) and check if the logged-in non-admin user has a matching subscription, cohort membership, or `'direct'` target. If so, a pulsing `"LIVE NOW"` banner and notification appear with a **"Join Live Class"** button.
+4. **Joining, Persistence & Picture-in-Picture (`Layout.jsx`, `LiveClass.jsx`)**:
+   - `Layout.jsx` keeps `<LiveClass />` mounted when navigating within the site (`isMinimized` docks the room into a bottom-left mini-player).
+   - Verifies session is active and user is either an admin, a cohort member, the target of a direct session, or subscribed to the course/module.
    - Fetches a signed JWT from `GET /api/livekit-token?room=...&username=...&userId=...`.
-   - Connects to `import.meta.env.VITE_LIVEKIT_URL` using `<LiveKitRoom>`.
+   - Connects to `import.meta.env.VITE_LIVEKIT_URL` using `<LiveKitRoom>` with `adaptiveStream: false` and `disconnectOnPageLeave: false`, and enables **Picture-in-Picture (PiP)** so video keeps streaming across tab/window switches.
    - Subscribes to the session document in Firestore; when the admin clicks **"End Class for Everyone"** (or disconnects), `isActive` becomes `false` and all connected students have their token cleared and are disconnected immediately.
 
 ### 5.4 Real-Time Support Chat & Notifications

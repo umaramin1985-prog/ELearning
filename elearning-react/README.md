@@ -18,9 +18,10 @@ An interactive E-Learning and Live Coaching platform for **YYZ Data Matrix Inc**
 - **Role-Based Route Guards**:
   - `ProtectedRoute` verifies both Firebase Authentication and Firestore user document existence (auto-signing out deleted accounts).
   - `AdminRoute` verifies that the authenticated user's email matches the comma-separated list in `VITE_ADMIN_EMAILS`.
-- **Flexible Course Subscriptions, Practice Assignments & Stripe Checkout**:
+- **Flexible Course Subscriptions, Practice Assignments, Shortcuts Guide & Stripe Checkout**:
   - Full Course bundles (`sectionId: 'all'`) and Individual Module (`module-1`..`module-6`) subscriptions across **Self-Paced Video** and **Live Coaching** tiers.
   - **Enrolled Module Assignments & Datasets**: Students enrolled in a course/module (via subscription or cohort) unlock downloadable hands-on assignment workbooks and databases from `public/docs/Assignments` directly inside Module 1 (*Power Query & Data Cleaning (ETL)*) and Module 2 (*Power Pivot, DAX, and Data Analytics*).
+  - **Compiled Power BI Shortcuts & Data Model Checklist (`ShortcutDeck.jsx`)**: Interactive, searchable cheat sheet on `/courses` featuring 70 curated shortcuts across Power BI Desktop, Power Query, and DAX (with tactile `<kbd>` keycaps & one-click copy) alongside a 6-stage Data Model Startup Checklist.
   - Dynamic pricing managed in Firestore and editable in real time from the Admin Control Panel.
 - **Persistent Live Video Classes, Docked Mini-Player & Picture-in-Picture (LiveKit)**:
   - Admins can launch live video classrooms for any course/module, for a multi-student **Class Cohort**, or start 1-on-1 direct sessions for a specific student.
